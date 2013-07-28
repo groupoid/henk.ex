@@ -37,6 +37,7 @@ Type Constructors
 -----------------
 
 Type constructors are being parametrized by types or other type constructors.
+Type constructors are Λ type-level functions and are distinguishable from λ value-level functions.
 
     type/Arity = product/Arity | sum/Arity | fun/Arity | cat/Arity | list/1 | any .
 
@@ -70,7 +71,7 @@ Here is mix of dependance of concrete types and partially constructed:
 Functions
 ---------
 
-Function type signature are supposed to be compatible with dializer:
+Value-level function type signature are supposed to be compatible with dializer:
 
     fun((A,B,...)->C).
 
