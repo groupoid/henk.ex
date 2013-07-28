@@ -4,7 +4,7 @@ Erlang with Types
 
 Here is very erly proposal to include some type system with
 extension to Erlang dializer syntax. We suggest to impliement
-Erlang with Types copiler on top of BEAM.
+Erlang with Types compiler on top of BEAM.
 
 Types
 -----
