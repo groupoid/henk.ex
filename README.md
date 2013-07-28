@@ -106,22 +106,22 @@ This is cat instance that includes erlang code inside which turns typed.
 Example
 -------
 
-program = cat ->
-    a = product/2 -> {string,integer}.
-    a = product(string,integer).
-    a = {string,integer}.
-    lst(Type) = type/1 -> {Type,lst(Type)} | none.
-    lst = type(Type) -> sum(product(Type,lst(Type)),none).
-    strlst = type/0 -> lst(string).
-    b = list(string).
-    join = fun(A::a,B::b) -> lists:join(element(1,A),hd(B),program:join(A,B)) end.
-    program(EP::program,List::type/1) :: cat
+    program = cat ->
+        a = product/2 -> {string,integer}.
+        a = product(string,integer).
+        a = {string,integer}.
+        lst(Type) = type/1 -> {Type,lst(Type)} | none.
+        lst = type(Type) -> sum(product(Type,lst(Type)),none).
+        strlst = type/0 -> lst(string).
         b = list(string).
-        join = fun((A::a,B::b) -> string()) -> v2:join(A,B) end.
+        join = fun(A::a,B::b) -> lists:join(element(1,A),hd(B),program:join(A,B)) end.
+        program(EP::program,List::type/1) :: cat
+            b = list(string).
+            join = fun((A::a,B::b) -> string()) -> v2:join(A,B) end.
+        end.
+        functor = cat(Type::type/1) ->
+            fmap = fun(fun(A::x,B::y),Type(x),Type(y)).
+        end.
+        listFunctor = functor(list/1).
+        atomFunctor = functor(product/1).
     end.
-    functor = cat(Type::type/1) ->
-        fmap = fun(fun(A::x,B::y),Type(x),Type(y)).
-    end.
-    listFunctor = functor(list/1).
-    atomFunctor = functor(product/1).
-end.
