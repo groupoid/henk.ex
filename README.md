@@ -86,7 +86,7 @@ However you can define function types using any type constructor.
 Modules
 -------
 
-Modules are paramerized by type constructors, which is form local programs.
+Modules are paramerized by type constructors, which form local programs.
 
     tree(A) = sum(product(A),product(tree(A),tree(A))) = {A} | {tree(A),tree(A)}.
     Functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
