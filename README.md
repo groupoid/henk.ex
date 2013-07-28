@@ -2,14 +2,26 @@
 Erlang with Types
 =================
 
-Here is very erly proposal to include some type system with
-extension to Erlang dializer syntax. We suggest to impliement
-Erlang with Types compiler on top of BEAM.
+Maxim Sokhatsky maxim@synrc.com
+
+Abstract
+--------
+
+Here is very early proposal to include some type system which is partially
+compatible with Dializer syntax on top of Erlang. We are going to implement
+Typed Erlang Compiler that will produce regular BEAM files.
+
+The purpose of this document is to discuss Typed Erlang syntax and runtime
+implementation details. Internally all types data are going to be represented as
+native erlang complex types: tuples and lists.
+
+The core of type system are proposed to be classic second-order
+polymorphic lambda calculus.
 
 Types
 -----
 
-All morphisms, composeable domains and categories itself are treated as types.
+All morphisms, constructable domains and categories itself are treated as types.
 Categories which are Modules are denoted as 'cat'. Morphisms which are
 Function are denoted as 'fun'. Algebraic data types are denoted
 as 'product' and 'sum'. Here is syntax of type definitions:
@@ -24,10 +36,7 @@ where A, B, ... are type constructors.
 Type Constructors
 -----------------
 
-Type constructors are parametrized by type constructors.
-As soon as we can construct new data types based on old data type we introduce
-type constructors, a funtions on types that produces types.
-Type constructors belongs to 'type' type.
+Type constructors are being parametrized by types or other type constructors.
 
     type/Arity = product/Arity | sum/Arity | fun/Arity | cat/Arity | list/1 | any .
 
@@ -65,11 +74,11 @@ Function type signature are supposed to be compatible with dializer:
 
     fun((A,B,...)->C).
 
-Ans also to have simpler form:
+And also to have simpler form:
 
     fun(A,B,...,C).
 
-Functions argument are parametrised by concrete types.
+Function arguments are parametrised by concrete types:
 
     listmap = fun((Fun::fun(A::X,B::Y),In::list(X))->list(Y)) ->
         io:format("In: ~p",[In]),
@@ -80,7 +89,7 @@ Functions argument are parametrised by concrete types.
 However you can define function types using any type constructor.
 
     fmap = fun(fun(any,any),list/1).
-    map(A,B) = fun(fun(A,B),list(A),list(B)).
+    listmap = fun(fun(A,B),list(A),list(B)).
     unimap(A,B,T::type/1) = fun(fun(A,B),T(A),T(B)).
 
 Modules
@@ -94,14 +103,14 @@ Modules are paramerized by type constructors, which form local programs.
     Square = fun(X) -> X * X end.
     Listfunctor:fmap(Square,[1,2,3,4]).
 
-So here we have fully typed version of list map. Let us look on more Erlangish
-example:
+So here we have fully typed version of list map.
+Let us look on more Erlangish example:
 
     TreeFunctor = Functor(tree/1) ->
         fmap(F,{X}) -> { F(X) };
         fmap(F,{L,R}) -> { fmap(F,{L}), fmap(F,{R}) }. end.
 
-This is cat instance that includes erlang code inside which turns typed.
+This is cat instance that includes erlang code which turns typed.
 
 Example
 -------
