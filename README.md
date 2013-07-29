@@ -37,7 +37,8 @@ Type Constructors
 -----------------
 
 Type constructors are being parametrized by types or other type constructors.
-Type constructors are Λ type-level functions and are distinguishable from λ value-level functions.
+Type constructors are Λ type-level functions and are distinguishable
+from λ value-level functions.
 
     type/Arity = product/Arity | sum/Arity | fun/Arity | cat/Arity | list/1 | any .
 
@@ -93,6 +94,19 @@ However you can define function types using any type constructor.
     listmap = fun(fun(A,B),list(A),list(B)).
     unimap(A,B,T::type/1) = fun(fun(A,B),T(A),T(B)).
 
+Historically Erlang uses identifiers started with capital latter for variables
+ans started with small letter for types -- reversed to Haskell. So if in left
+side from matching operator = is small latter started indentifier i.e. type,
+if capital -- variable.
+
+    a = tree(integer()).
+    B = {1}.
+
+Exeption is functions which are treated as fun types with binded body values:
+
+    b = tree(integer()) -> {1}.
+    join = fun(A,B) -> lists:join(A,B) end.
+
 Modules
 -------
 
@@ -124,8 +138,8 @@ Example
         lst = type(Type) -> sum(product(Type,lst(Type)),none).
         strlst = type/0 -> lst(string).
         b = list(string).
-        join = fun(A::a,B::b) -> lists:join(element(1,A),hd(B),program:join(A,B)) end.
-        program(EP::program,List::type/1) :: cat
+        Join = fun(A::a,B::b) -> lists:join(element(1,A),hd(B),program:join(A,B)) end.
+        Program = cat(EP::program,List::type/1) ->
             b = list(string).
             join = fun((A::a,B::b) -> string()) -> v2:join(A,B) end.
         end.
