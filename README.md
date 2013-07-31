@@ -52,6 +52,7 @@ compatiblity with Erlang dializer syntax, e.g.:
 
 Here is type constructors depended only from concrete types.
 
+    tree(A) = sum(product(A),product(tree(A),tree(A))) = {A} | {tree(A),tree(A)}.
     array(T) = list(list(T)).
     cube(T) = list(array(T)).
     typeCons(A,B,C) = product(A,B,list(C)).
