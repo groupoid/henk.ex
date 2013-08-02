@@ -70,6 +70,26 @@ Here is mix of dependance of concrete types and partially constructed:
 
     mixed(T,A) = product(A,any,sum(T,list(T)),product/3,fun/2,functor(list/1)).
 
+Kinds Notion
+------------
+
+Type constructors 'cat', 'fun', 'sum' and 'product' belongs to type 'type' which
+is also typeable by number of arguments and signature of type construdctor:
+
+    Typed Erlang      System Fω
+    ------------      ---------
+    type(A)           * -> *
+    type(A,B)         * -> * -> *
+    type(A::type/2)   (* -> *) -> *
+
+Here is example of Free Modands using kinds notions:
+
+    functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
+    other = fun((F::type(A))->lift(F,A)).
+    pure = fun((A)->lift(type(A))).
+    lift(F::type(A)) = sum(pure(A),other(F(A))).
+    free(F::functor(A)) = sum(pure(A), free(F(free(F(A))))).
+
 Functions
 ---------
 
@@ -150,3 +170,4 @@ Example
         listFunctor = functor(list/1).
         atomFunctor = functor(product/1).
     end.
+

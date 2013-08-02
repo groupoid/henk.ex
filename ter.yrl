@@ -17,11 +17,12 @@ type -> sum_ctor : '$1'.
 type -> fun_ctor : '$1'.
 type -> cat_ctor : '$1'.
 type -> rec_ctor : '$1'.
+type -> var : '$1'.
 
 fun_ctor -> 'fun' '(' value_args ')' '->' fun_body 'end' : #'fun'     { type='$3', value='$6' }.
-cat_ctor -> 'cat' '(' type_args ')' '->' types 'end'       : #'cat'     { type='$3', value='$6' }.
-rec_ctor -> 'product' '(' types ')'                  : #'product' { type='$3', value=[] }.
-sum_ctor -> 'sum' '(' types ')'                      : #'sum'     { type='$3',   value=[] }.
+cat_ctor -> 'cat' '(' type_args ')' '->' types 'end'     : #'cat'     { type='$3', value='$6' }.
+rec_ctor -> 'product' '(' types ')'                      : #'product' { type='$3', value=[] }.
+sum_ctor -> 'sum' '(' types ')'                          : #'sum'     { type='$3', value=[] }.
 
 type_args  -> exp : '$1'.
 value_args -> exp : '$1'.
@@ -40,3 +41,6 @@ bind -> atom : '$1'.
 Erlang code.
 
 -include("ter.hrl").
+-export([string/1]).
+
+string(S) -> {ok,Scan,_} = ter_scan:string(S), {ok,X} = ter:parse(Scan), X.
