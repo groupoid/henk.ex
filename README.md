@@ -1,4 +1,3 @@
-
 Erlang with Types
 =================
 
@@ -82,7 +81,7 @@ is also typeable by number of arguments and signature of type construdctor:
     type(A,B)         * -> * -> *
     type(A::type/2)   (* -> *) -> *
 
-Here is example of Free Modands using kinds notions:
+Here is example of Free Monads using kinds notions:
 
     functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
     other = fun((F::type(A))->lift(F,A)).
