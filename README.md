@@ -3,6 +3,8 @@ Erlang with Types
 
 Maxim Sokhatsky maxim@synrc.com
 
+![Om](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Georg_Simon_Ohm3.jpg/200px-Georg_Simon_Ohm3.jpg)
+
 Abstract
 --------
 
