@@ -5,7 +5,7 @@ Maxim Sokhatsky maxim@synrc.com
 
 ![Om](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Georg_Simon_Ohm3.jpg/200px-Georg_Simon_Ohm3.jpg)
 
-Georg Simon Ohm was a German physicist and mathematician who's borin in german town Erlangen. 
+Georg Simon Ohm -- a German physicist and mathematician who was born in german town Erlangen. 
 
 Abstract
 --------
