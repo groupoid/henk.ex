@@ -1,5 +1,5 @@
-Erlang with Types
-=================
+Om: Erlang System F-Omega
+=========================
 
 Maxim Sokhatsky maxim@synrc.com
 
