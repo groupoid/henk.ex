@@ -83,7 +83,7 @@ is also typeable by number of arguments and signature of type construdctor:
     ------------      ---------
     type(A)           * -> *
     type(A,B)         * -> * -> *
-    type(A::type/2)   (* -> *) -> *
+    type(A::type/1)   (* -> *) -> *
 
 Here is example of Free Monads using kinds notions:
 
