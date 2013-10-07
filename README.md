@@ -5,7 +5,7 @@ Maxim Sokhatsky maxim@synrc.com
 
 ![Om](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Georg_Simon_Ohm3.jpg/200px-Georg_Simon_Ohm3.jpg)
 
-Georg Simon Ohm -- a German physicist and mathematician who was born in german town Erlangen. 
+Georg Simon Ohm -- a German physicist and mathematician who was born in German town Erlangen. 
 
 Abstract
 --------
@@ -47,7 +47,7 @@ from λ value-level functions.
 
 Note than list/1 is special type constructor only for built-in Erlang list types.
 All type constructors with zero arity denoted as concrete types. It has 
-compatiblity with Erlang dializer syntax, e.g.:
+compatibility with Erlang dializer syntax, e.g.:
 
     string() = list(char) = string/0.
     integer().
@@ -69,7 +69,7 @@ Here is type constructors which are partially constructed with not concrete type
     lst = list/1.
     functorArg = type/1.
 
-Here is mix of dependance of concrete types and partially constructed:
+Here is mix of dependence of concrete types and partially constructed:
 
     mixed(T,A) = product(A,any,sum(T,list(T)),product/3,fun/2,functor(list/1)).
 
@@ -77,7 +77,7 @@ Kinds Notion
 ------------
 
 Type constructors 'cat', 'fun', 'sum' and 'product' belongs to type 'type' which
-is also typeable by number of arguments and signature of type construdctor:
+is also typeable by number of arguments and signature of type constructor:
 
     Typed Erlang      System Fω
     ------------      ---------
@@ -126,7 +126,7 @@ if capital -- variable.
     a = tree(integer()).
     B = {1}.
 
-Exeption is functions which are treated as fun types with binded body values:
+Exception is functions which are treated as fun types with binded body values:
 
     b = tree(integer()) -> {1}.
     join = fun(A,B) -> lists:join(A,B) end.
@@ -134,7 +134,7 @@ Exeption is functions which are treated as fun types with binded body values:
 Modules
 -------
 
-Modules are paramerized by type constructors, which form local programs.
+Modules are parametrized by type constructors, which form local programs.
 
     tree(A) = sum(product(A),product(tree(A),tree(A))) = {A} | {tree(A),tree(A)}.
     Functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
