@@ -1,0 +1,61 @@
+
+Imagine we want to tag value with types {Type,Value}.
+
+Erlang simple types
+
+    {integer,42}
+    {float,4.2}
+    {atom,ok}
+    {binary,<<"maxim">>}
+    {pid,<0.0.42>}
+    {fun,#Fun<erl_eval.6.82930912>}
+    {ref,#Ref<0.0.0.29>}
+    {port,#Port<0.42>}
+
+Composite types
+
+    {list,[1,2,3,4]}
+    {tuple,{a,1,"list"}}
+
+Imagine we want to add parameters to type constructors:
+
+    {{integer,0,[]},12}
+    {{list,1,[{integer,0,[]}]},[1,2,3,3]}
+    {{product,3,[{unknown,_,_},{list,0,[]},integer]},{x,[1,2,3],2}}
+
+    {{type,0,[]},{integer,0,[]}}
+    {{type,1,[{A,2,[{_,_,_},{_,_,_}]}]},{integer,0,[]}}
+
+The types turns to {Name,Arity,ArgList}.
+
+Recursive Types:
+
+    tree(A) = sum(product(A),product(tree(A),tree(A))) = {A} | {tree(A),tree(A)}.
+
+    {{tree,1,[A]},{sum,2,[{product,1,[A]},{product,2,[{tree,1,[A]},{tree,1,[A]}]}]}}
+
+where A is {Name,Arity,ArgList}
+
+Modules:
+
+    {{cat,0,[],Types,Morphisms},Implementation}
+
+Free Monads Example:
+
+    functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
+
+    {{'functor',1,'_'},
+     {'cat',1,[{'Type',1,'_'}],
+            [],
+            [{'fun',3,[{'fun',2,['A','B']},
+                     {'Type',1,['A']},
+                     {'Type',2,['B']}]}]}}
+
+    other = fun((F::type(A))->lift(F,A)).
+    pure = fun((A)->lift(type(A))).
+    lift(F::type(A)) = sum(pure(A),other(F(A))).
+    free(F::functor(A)) = sum(pure(A), free(F(free(F(A))))).
+
+
+
+
