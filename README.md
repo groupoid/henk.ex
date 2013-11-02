@@ -87,7 +87,7 @@ is also typeable by number of arguments and signature of type constructor:
 
 Here is example of Free Monads using kinds notions:
 
-at(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
+    functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
     other = fun(F::type(A),lift(F(A))).
     pure = fun(A,lift(type(A)).
     lift(F::type(A)) = sum(pure(A),other(F(A))).
