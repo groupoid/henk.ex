@@ -1,4 +1,3 @@
-
 string() = list(char) = string/0.
 int = integer().
 at = atom().
@@ -22,6 +21,7 @@ fmap = fun(fun(any,any),list/1).
 map(A,B) = fun(fun(A,B),list(A),list(B)).
 unimap(A,B,T::type/1) = fun(fun(A,B),T(A),T(B)).
 tree(A) = sum(product(A),product(tree(A),tree(A))) = {A} | {tree(A),tree(A)}.
+
 Functor = cat(Type::type/1) -> fmap = fun(fun(A,B),Type(A),Type(B)). end.
 Listfunctor = Functor(list/1) -> fmap(F,X) -> listmap(F,X). end.
 Square = fun(X) -> X * X end.
