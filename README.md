@@ -72,9 +72,7 @@ Om Intermediate Language
 
 ```erlang
 
-   > om:main().
-
-     (∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))
+   > om:parse(<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>).
 
    {[],
  [{pi,
