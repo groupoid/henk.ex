@@ -57,6 +57,45 @@ Om Intermediate Language
    to produce verifiable programs that can be distributed over the networks and compiled at target with
    safe linkage.
 
+   The Om Systax is follow:
+
+```
+    EXPR :=                   EXPR             EXPR
+          | "λ" "(" LABEL ":" EXPR ")" "arrow" EXPR
+          | "∀" "(" LABEL ":" EXPR ")" "arrow" EXPR
+          |                   EXPR     "arrow" EXPR
+          |         LABEL
+          | "*"
+          | "[]"
+          |     "("           EXPR ")"
+```
+
+```erlang
+
+   > om:main().
+
+     (∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))
+
+   {[],
+ [{pi,
+      {{arg,"a"},
+       {const,star},
+       {lambda,
+           {{arg,"b"},
+            {arrow,
+                {{const,star},{arrow,{{const,star},{const,star}}}}},
+            {lambda,
+                {{arg,"c"},
+                 {arrow,{{const,star},{var,"a"}}},
+                 {app,
+                     {{app,
+                          {{app,
+                               {{var,"b"},
+                                {app,{{var,"c"},{var,"a"}}}}},
+                           {var,"a"}}},
+                      {var,"a"}}}}}}}}}]}
+```
+
 Target Erlang VM and LLVM platforms
 -----------------------------------
 
