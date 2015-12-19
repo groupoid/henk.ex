@@ -13,7 +13,9 @@ Abstract
 This library is created to provide backbone lambda assembler as target language for
 general purpose languages, possibly with dependent types. This work is based on lambda
 cube assembler Henk, and Morte implementation by Gabriel Gonzalez. Om is indended
-to be compatible version of Morte.
+to be compatible version of Morte. Om is useful as an intermediate language for
+high level front-end languages with <b>System F<sub>ω<sub></b>, <b>System F<sub>&lg;:</sub> or
+<b>CoC</b>.
 
 Types
 -----
