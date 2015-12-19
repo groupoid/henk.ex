@@ -1,0 +1,534 @@
+% copyright (c) 2015 Synrc Research Center
+
+\documentclass[11pt,oneside]{article}
+
+\input{synrc.tex}
+\begin{document}
+
+\thispagestyle{empty}
+\begin{center}
+
+\begin{minipage}[t]{2cm}
+    \includegraphics[scale=0.4]{img/S}
+\end{minipage}
+\begin{minipage}[t]{12cm}
+    \begin{flushright}
+        \textsc{{\Large {\bf {\color{Blue}syn}{\color{OrangeRed}rc} research center s.r.o.}}}\\
+        \textsc{Roháčova 141/18, Praha 3 13000, Czech Republic}\\
+    \end{flushright}
+\end{minipage}
+
+\vspace{3cm}
+
+    \vspace{3cm}   {\Large \bf Categorical semantic of general purpose functional language \\ \vspace{0.2cm}
+                               that compiles to Om\\ }\par
+    \vspace{0.3cm} {\Large Technical Article\par}
+    \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
+    \vspace{4cm}   {\Large December 2015}
+
+\end{center}
+
+\newpage
+\vspace{2cm}
+\tableofcontents
+\newpage
+\section{Вступ}
+
+\vspace{1cm}
+
+%\vspace{0.5cm}
+
+\subsection{Functional Language Compiler Pipeline}
+
+   \paragraph{}
+   This article describes the frontend language along with its categorical semantic and Categorical Abstract Machine,
+   but that compiles not to CAM, but to a non-recursive subset of dependent type theory from which you can extract LLVM code,
+   untyped lambda code with erased type information, or even $System F_\omega$ programs.
+
+\subsubsection{General Purpose Functional Language Exe}
+
+   \paragraph{}
+   General purpose function language with functors (lambdas on types), recursive algebraic types,
+   higher order functions and embedded process calculus with corecursion. This language will be called
+   Exe and dedicated to be high level general purpose functional programming language frontend to small core
+   of dependent type system without recursion called Exe. This language indended to be useful
+   enough to encode KVS, N2O and BPE applications.
+
+\subsubsection{Intermediate Language Om}
+
+   \paragraph{}
+   An intermediate Om language is base on Henk\cite{henk} languages described first
+   by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
+   of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
+   It is based only on $\pi$, $\lambda$ and $apply$ constructions, one axiom and four deduction rules.
+   The design of Exe language resemble Henk and Morte both design and implementation.
+   This language indended to be small, conside, easy provable and clean and produce
+   verifiable peace of code that can be distributed over the networks and compiled at target with
+   safe linkage.
+
+\subsubsection{Target Erlang VM and LLVM platforms}
+
+   \paragraph{}
+   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
+   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
+
+\newpage
+\subsection{Basic Theories}
+\vspace{0.3cm}
+
+   \subsubsection{Category Theory}
+   Category theory is widely used as an instrument for mathematicians for software analisys.
+   Category theory could be treated as an abstract algebra of functions. Let's define an Category
+   formally: {\bf Category} consists of two lists: the one is morphisms (arrows) and the second is
+   objects (domains and codomains of arrows) along with assoociative operation of composition and
+   unit morphism that exists for all objects in category.
+
+   \paragraph{}
+   The formation axoims of objects and arrows are not given here and autopostulating yet. Formation axoims
+   will be introduced during exponential definition. Objects $A$ and $B$ of an arrow $f: A \rightarrow B$
+   are called {\bf domain} and {\bf codomain} respectively.
+
+   \paragraph{}
+   Intro axioms -- associativity of composition and left/right unit arrow compisitions show that
+   categories are actually typed monoids, which consist of morphisms and operation of composition.
+   There are many language to show the semantic of categories such as commutative diagrams and string diagrams
+   however here we define here in proof-theoretic manner:
+
+\begingroup
+\parbox[t][][l]{0.60\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
+\AxiomC{$\Gamma\ \vdash g: B \rightarrow C$ }
+\BinaryInfC{$\Gamma \vdash g \circ f : A \rightarrow C $}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash f : B \rightarrow A$ }
+\AxiomC{$\Gamma \vdash g : C \rightarrow B$ }
+\AxiomC{$\Gamma \vdash h : D \rightarrow C$ }
+\TrinaryInfC{$\Gamma \vdash (f \circ g) \circ h = f \circ (g \circ h) : D \rightarrow A $}
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$$ }
+\UnaryInfC{$\Gamma \vdash id_A : A \rightarrow A $}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
+\UnaryInfC{$\Gamma \vdash f \circ id_A = f : A \rightarrow B$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
+\UnaryInfC{$\Gamma \vdash id_B \circ f = f : A \rightarrow B $}
+\end{prooftree}
+
+}
+\endgroup
+
+\paragraph{}
+Composition shows an ability to connect the area of values of the previous evaluation (codoman)
+and are of defenition the next evaluation (domain). Composition is fundamental property of morphisms.
+
+\paragraph{}
+\begin{tabular}{lll}
+$1.$ & $A: *$\\
+$2.$ & $A: *\ ,\ B: * \implies f: A \rightarrow B$\\
+$3.$ & $f: B \rightarrow C\ ,\ g: A \rightarrow B \implies f \circ g : A \rightarrow C$\\
+$4.$ & $(f \circ g) \circ h = f \circ (g \circ h)$\\
+$5.$ & $A \implies id : A \rightarrow A$\\
+$6.$ & $f \circ id = f$\\
+$7.$ & $id \circ f = f$\\
+\end{tabular}
+
+\newpage
+\subsubsection*{Algebraic Datatypes}
+
+After composition operation of construction of new objects with morphisms we introduce
+operation of construction cartesian product of two objects $A$ and $B$ of a given
+category along with morphism product $<f,g>$ with a common domain, that is needed
+for full definition of cartesian product of $A \times B$.
+
+\paragraph{}
+This is an internal language of cartesian category, in which for all two selected objects there is an object
+of cartesian product (coproduct) of two objects along with its $\bot$ terminal (or $\top$ coterminal) type.
+Exe languages is always equiped with product and sum types.
+
+\paragraph{}
+Product has two eliminators $\pi$ with an common domain, which are also called projections of an product.
+The sum has eliminators $i$ with an common codomain.
+Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = \sigma \circ \pi = id$.
+
+\begingroup
+\parbox[t][][l]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ x: A \times B$ }
+\UnaryInfC{$\Gamma \vdash \pi_1\ : A \times B \rightarrow A$;
+           $\Gamma \vdash \pi_2\ : A \times B \rightarrow B$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash\  a:A$ }
+\AxiomC{$\Gamma \vdash\  b:B$ }
+\BinaryInfC{$\Gamma \vdash\ (a,b) : A \times B$ }
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash\ \bot$ }
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash\ \top$ }
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash\  a:A$ }
+\AxiomC{$\Gamma \vdash\  b:B$ }
+\BinaryInfC{$\Gamma\vdash a\ |\ b : A \otimes B$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ x: A \otimes B$ }
+\UnaryInfC{$\Gamma \vdash \i_1: A \rightarrow A \otimes B$;
+           $\Gamma \vdash \i_2: B \rightarrow A \otimes B$}
+\end{prooftree}
+
+}
+\endgroup
+
+\paragraph{}
+   Also we include here an axiom of morphism product which are given durin definition of product commutative diagram.
+   This axiom is needed for applicative programming in categorical abstract machine.
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash\ f:A \rightarrow B$ }
+\AxiomC{$\Gamma \vdash\ g:A \rightarrow C$ }
+\AxiomC{$\Gamma \vdash\ B \times C$ }
+\TrinaryInfC{$\Gamma \vdash\ \langle f,g \rangle : A \rightarrow B \times C$ }
+\end{prooftree}
+
+\begin{center}
+%$(f \circ g) \circ h = f \circ (g \circ h)$\\
+%$f \circ id = f$\\
+%$id \circ f = f$\\
+$\pi_1 \circ \langle f, g \rangle = f$\\
+$\pi_2 \circ \langle f, g \rangle = g$\\
+$\langle f \circ \pi_1, f \circ \pi_2 \rangle = f$\\
+$\langle f, g \rangle \circ h = \langle f \circ h, g \circ h \rangle$\\
+$\langle \pi_1, \pi_2 \rangle = id$\\
+\end{center}
+
+\newpage
+   \subsubsection{Exponential}
+  Being an internal language of cartesian closed category, lambda calculus except variables and constants
+  provides two operations of abstraction and applications which defines complete evaluation language
+  with higher order functions, recursion and corecursion, etc.
+
+   \paragraph{}
+   To explain functions from the categorical point of vew we need to define categorica exponential
+   $f: A^B$, which are analogue to functions $f: A \rightarrow B$ in category of {\bf Programs} or powerset in category of {\bf Sets}.
+   As we already defined the products and terminals we could define an exponentials with three
+   axioms of function construction, one eliminator of application with apply a function to its argument
+   and axiom of currying the function of two arguments to function of one argument.
+
+\begingroup
+\parbox[t][][l]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma  x:A \vdash M : B$}
+\UnaryInfC{$\Gamma \vdash \lambda\ x\ .\ M : A \rightarrow B$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ f:A \rightarrow B$ }
+\AxiomC{$\Gamma\ a:A$ }
+\BinaryInfC{$\Gamma \vdash apply\ f\ a\ : (A \rightarrow B) \times A \rightarrow B$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash f: A \times B \rightarrow C$ }
+\UnaryInfC{$\Gamma \vdash curry\ f : A \rightarrow (B \rightarrow C)$}
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
+
+\begin{center}
+$apply \circ \langle (curry\ f) \circ \pi_1 , \pi_2 \rangle = f$\\
+$curry\ apply \circ \langle g \circ \pi_1, \pi_2 \rangle) = g$\\
+$apply \circ \langle curry\ f, g \rangle = f \circ \langle id , g\rangle$\\
+$(curry\ f) \circ g = curry\ (f \circ \langle g \circ \pi_1,\pi_2\rangle)$\\
+$curry\ apply = id$\\
+\end{center}
+
+\begin{center}
+Об’єкти : $\bot\ |\ \rightarrow\ |\ \times$\\
+Морфізми : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\ curry$
+\end{center}
+
+}
+\endgroup
+
+\newpage
+   \subsubsection{Recursive Datatypes}
+
+   As we know there are several ways to appear for variable in recursive algebraic type.
+   Least fixpoint are known as an recursive expressions that have a base of recursion
+   like sums with terminal components (constants or fully specified concrete types). Dual to least fixpoints
+   there are greatest fixpoints that doesn't have base of recursion and thus defining corecursive types.
+   Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
+   as an non-recursive definitions of folds that include in indentity signature all the
+   constructor components of inductive or coinductive type.
+
+
+\begingroup
+\parbox[t][][l]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma  \vdash M : F\ (\mu\ F)$}
+\UnaryInfC{$\Gamma \vdash in_{\mu F}\ M : \mu\ F$}
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma  \vdash M : \mu F$}
+\UnaryInfC{$\Gamma \vdash out_{\mu F}\ M : F\ (\mu\ F)$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma  \vdash M : A \rightarrow A$}
+\UnaryInfC{$\Gamma \vdash fix\ M : A$}
+\end{prooftree}
+
+}
+\endgroup
+
+   Not that there is a class of recursive types such when fixpoint is defined in codomain of morphism,
+   such terms could not be normalized.
+
+\newpage
+   \subsubsection{Process Calculus}
+   Теорія $\pi$-числення процесів Роберта Мілнера є основним формалізмом обчислювальної
+   теорії розподілених систем та її імплементації. З часів виникнення CSP числення розробленого Хоаром,
+   Мілнеру вдалося значно розширити та адаптувати теорію до сучасних
+   телекомунікаційних вимог, як наприклад хендовери в мобільних мережах.
+   Основні теорми в моделі $\pi$-числення стосуються непротиречивості та неблокованості
+   у синхронному виконанні мобільних процесів. Так як сучасний Web можно розглядати
+   як телекомунікаційну систему, тому у розробці додатків можна покладатися у тому
+   числі і на такі моделі як $\pi$-числення.
+
+  \subsubsection*{Процеси і протоколи}
+  Також ми анонсуємо процес як фундаменльний тип даних, подібний до функції але який здатний
+  тримати певний стан у вигляді типа коротежа та є морфізмом-одиницею типу свого стану.
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash E, \Sigma, X$ }
+\AxiomC{$\Gamma\ \vdash action : \Sigma \times X \rightarrow \Sigma \times X$ }
+\BinaryInfC{$\Gamma \vdash {spawn}\ action : \pi_\Sigma $}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash pid : \pi_\Sigma$ }
+\AxiomC{$\Gamma\ \vdash msg : \Sigma$ }
+\BinaryInfC{$\Gamma \vdash join\ msg\ pid : \Sigma \times \pi_\Sigma \xrightarrow{\bullet} \Sigma$;
+            $\Gamma \vdash send\ msg\ pid : \Sigma \times \pi_\Sigma \rightarrow \Sigma$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash L : A + B, R : X + Y$ }
+\AxiomC{$\Gamma\ \vdash M : A \rightarrow X, N : B \rightarrow Y$ }
+\BinaryInfC{$\Gamma \vdash receive\ L\ M\ N : L \xrightarrow{\bullet} R$}
+\end{prooftree}
+
+\paragraph{}
+
+
+  \subsubsection*{Алгебра процесів}
+
+  Алгебра процесів визначає базові операції мультиплексування двох чи декількох
+  протоколів в рамках одного процесу (добуток), а також паралельного та повністю
+  ізольованого запуску включно зі стеком та областю памяті (сума) на
+  віртуальній машині.
+
+\begin{center}
+\begin{tabular}{lcl}
+$\oplus$   &:& $\pi \parallel \pi$\\
+$\otimes$  &:& $\pi \mid \pi$\\
+\end{tabular}
+\end{center}
+
+  \subsubsection*{Типи процесів}
+
+\begin{center}
+\begin{tabular}{lll}
+         $action$ &:& ${proc}_{Proc}\  (BPE\ |\ \Sigma) \times process \rightarrow process$ \\
+          $event$ &:& ${proc}_{App}\   (N2O\ |\ \Sigma) \times cx \rightarrow cx$ \\
+      $operation$ &:& ${proc}_{Store}\ (KVS\ |\ \Sigma) \times container \rightarrow container$ \\
+\end{tabular}
+\end{center}
+
+\newpage
+   \subsubsection{Інтуітіоністична теорія типів Мартіна Льофа}
+   Системи з залежними типами як верифікаційні математичні формальні моделі
+   для доведення корректності. Система $\Sigma$ та $\Pi$ типів, як кванторів
+   існування та узагальнення. Системи Mizar, Coq, Agda, Idris, F*, Lean. Ми будемо
+   використовувати автоматизовану систему теорем Lean від Microsoft Research.
+   \paragraph{}
+   Розбудовуючи певний фреймворк чи систему конструктивними методами
+   так чи інакше доведеться зробити певний вибір у мові та способі кодування.
+   Так при розробці теорії абстрактної алгебри в Coq були використані
+   поліморфні індуктивні структури\cite{coqalg}. Однак Agda та Idris використувують
+   для побудови алгебраїчної теорії типи класів, а у Idris взагалі відсутні
+   поліморфірні індуктивні структури та коіндуктивні структури. В Lean
+   теж відсутні коіндуктивні структури проте повністю реалізована теорія
+   HoTT на нерекурсивних поліморфних структурах що обєднує основні чотири
+   класи математичних теорій: логіка, топологія, теорія множин, теорія типів.
+   Як було показано Стефаном Касом\cite{kaes}, одна з
+   стратегій імплементації типів класів --- це використання поліморфних структур.
+   Хоча в Lean також підтримуються типи класів нами була вибрана стратегія
+   імплементації нашої теорії з використаннями нерекурсивних індуктивних структур,
+   що дозволить нам оперувати з персистентними структурами на низькому рівні.
+   Крім того такий спосіб кодування ієрархій повністю відповідає семантиці Erlang,
+   де немає типів класів, а дані передаються запаковані в кортежі-структури.
+
+  \subsubsection{Logic and Quantification}
+
+Далі йдуть квантори $\forall$ та $\exists$ які теж виражаються як конструкції типів:
+
+\begingroup
+\parbox[t][][l]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ x: A \vdash B$ }
+\AxiomC{$\Gamma\ \vdash A$ }
+\BinaryInfC{$\Gamma\ \vdash \Pi (x : A) B $}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ x: A \vdash B$ }
+\AxiomC{$\Gamma\ \vdash A$ }
+\BinaryInfC{$\Gamma\ \vdash \Sigma (x : A) B $}
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash a : A$ }
+\AxiomC{$\Gamma\ x : A \vdash B$ }
+\AxiomC{$\Gamma\ b : B (x=a)$ }
+\TrinaryInfC{$\Gamma\ \vdash (a,b) : \Pi (x : A) B $}
+\end{prooftree}
+
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash a : A$ }
+\AxiomC{$\Gamma\ x : A \vdash B$ }
+\AxiomC{$\Gamma\ b : B (x=a)$ }
+\TrinaryInfC{$\Gamma\ \vdash (a,b) : \Sigma (x : A) B $}
+\end{prooftree}
+
+}
+\endgroup
+
+\begingroup
+\parbox[t][][l]{0.40\textwidth}{
+
+\begin{prooftree}
+\AxiomC{$\Gamma\ \vdash x: A$ }
+\AxiomC{$\Gamma\ \vdash x': A$ }
+\BinaryInfC{$\Gamma\ \vdash Id_A (x,x')$}
+\end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
+}\endgroup
+
+
+\begin{center}
+\begin{tabular}{lll}
+  рефлексивність &:& $Id_A(a,a)$ \\
+  підстановка    &:& $Id_A(a,a') \rightarrow B(x=a) \rightarrow B(x=a')$ \\
+  симетричність  &:& $Id_A(a,b) \rightarrow Id_A(b,a)$  \\
+  транзитивність &:& $Id_A(a,b) \rightarrow Id_A(b,c) \rightarrow Id_A(a,c)$ \\
+  конгруентність &:& $(f: A \rightarrow B) \rightarrow Id_A(x,x') \rightarrow Id_B(f(x),f(x'))$ \\
+\end{tabular}
+\end{center}
+
+\newpage
+  \subsection{Encoding Product, Unit and Maybe Types}
+
+\begin{lstlisting}
+   type Product (A: *) (B: *) : * = Make (a: A) (b: B)
+   type Maybe   (A: *)        : * = Nothing            | Just (value: A)
+   type List    (A: *)        : * = Nil                | Cons (head: A)  (tail: List)
+   type Unit                  : * = Make
+\end{lstlisting}
+
+\newpage
+  \subsection{Encoding Inductive Types}
+
+\begin{lstlisting}
+
+  $ cat List/(++)
+  let (++) (a : *) (as1 : #List a) (as2 : #List a) : #List a =
+       \ (List : *)
+    -> \ (Cons : a -> List -> List)
+    -> \ (Nil : List)
+    -> as1 List Cons (as2 List Cons Nil)
+  in (++)
+
+  $ cat List/head
+  let head (a : *) (xs : #List a) : #Maybe a =
+    xs
+    (#Maybe a)
+    (\(x : a) -> \(_ : #Maybe a) -> #Maybe/Just a x)
+    (#Maybe/Nothing a)
+  in head
+
+\end{lstlisting}
+
+\newpage
+\begin{thebibliography}{9}
+
+\bibitem{henk}      Per Martin-Löf \textit{Intermediate Language} 1984
+\bibitem{recursive} P.Wadler \textit{Recursive types for free!} 2014 % http://homepages.inf.ed.ac.uk/wadler/papers/free-rectypes/free-rectypes.txt
+\bibitem{lof}      Per Martin-Löf \textit{Intuitionistic Type Theory.} 1984
+\bibitem{baer}     A.Baer \textit{Programming with Algebraic Effects and Handlers} 2012
+\bibitem{baastad}    P.Wadler \textit{Monads for functional programming}
+\bibitem{curien1} PL. Curien \textit{Category theory: a programming language-oriented introduction} 2008
+\bibitem{comm}     Robin Milner. \textit{A Calculus of Communicating Systems.} 1986.
+\bibitem{lawvere}  William Lawvere. \textit{Conceptual Mathematics.} 1997.
+\bibitem{mclane}   Сандерс Мак Лейн. \textit{Категории для работающего математика.} 2004.
+\bibitem{bakur}    И.Бакур, А.Деляну. \textit{Введение в теорию категори и функторов.} 1972.
+\bibitem{commpi}   Robin Milner. \textit{Communicating and Mobile Systems: The $\pi$-calculus.} 1999.
+\bibitem{polypi}   Robin Milner. \textit{The Polyadic $\pi$-Calculus: A Tutorial.} 1993.
+\bibitem{coqhuet}  T.Coquand, G.Huet \textit{The Calculus of Constructions.} 1988
+\bibitem{chipvm}   A.Chlipala \textit{Certified Programming with Dependent Types} 2015
+\bibitem{idris}    E.Brady \textit{Programming in IDRIS: A Tutorial} 2015
+\bibitem{mcbrideapp} C.McBride, R.Patterson \textit{Applicative programming with effects} 2002
+
+\end{thebibliography}
+
+\end{document}

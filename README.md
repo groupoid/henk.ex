@@ -38,8 +38,10 @@ Om just check the given terms in its own language.
 Publications
 ------------
 
+* Compilation from OM to Erlang and LLVM
 * Om Intermediate Language
-* Categorical Semantics of 
+* Categorical semantic of general purpose functional language that compiles to Om
+* Exe Processing Language
 
 OM A HUM
 
