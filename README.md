@@ -35,6 +35,35 @@ using F-algebras please refer to Morte.Turtorial. Also Om doesn't support type i
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just check the given terms in its own language.
 
+
+Exe Langauge
+------------
+
+   General purpose function language with lambdas on types, recursive algebraic types,
+   higher order functions and embedded process calculus with corecursion. This language will be called
+   Exe and dedicated to be high level general purpose functional programming language frontend to small core
+   of dependent type system without recursion called Exe. This language indended to be useful
+   enough to encode KVS, N2O and BPE applications.
+
+Om Intermediate Language
+------------------------
+
+   An intermediate Om language is based on Henk languages described first
+   by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
+   of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
+   It has constatnts, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
+   one axiom and four deduction rules. The design of Om language resemble Henk and Morte both design
+   and implementation. This language indended to be small, concise, easy provable, clean and be able
+   to produce verifiable programs that can be distributed over the networks and compiled at target with
+   safe linkage.
+
+Target Erlang VM and LLVM platforms
+-----------------------------------
+
+   This works expect to compile to limited target platforms. For now Erlang is awaiting.
+   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
+   The desired implementation should translate Om directly to Erlang AST.
+
 Publications
 ------------
 
