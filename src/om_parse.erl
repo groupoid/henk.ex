@@ -1,0 +1,29 @@
+-module(om_parse).
+-compile(export_all).
+
+%    EXPR := EXPR EXPR                                    => {APP,[           I:EXPR, O:EXPR]}
+%          | "lambda" "(" LABEL ":" EXPR ")" "arrow" EXPR => {LAM,[{ARG:LABEL,I:EXPR, O;EXPR]}
+%          | "pi"     "(" LABEL ":" EXPR ")" "arrow" EXPR => {PI, [{ATH:LABEL,I:EXPR, O;EXPR]}
+%          |                        EXPR     "arrow" EXPR => {PI, [{"_",      I:EXPR, O;EXPR]}
+%          |  LABEL                                       => {VAR,LABEL}
+%          | "star"                                       => {Star}
+%          | "box"                                        => {Box}
+%          | "(" EXPR ")"                                 => EXPR
+
+expr([],           Acc) -> {[],Acc};
+expr([close   |T], Acc) -> {T1,Acc1}=rewind(Acc,T,[]), expr(T1,Acc1);
+expr([star    |T], Acc) -> expr(T,[{const,star}|Acc]);
+expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
+expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
+expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
+expr([pi  |T], Acc)     -> expr(T,[{lambda}|Acc]);
+expr([{name,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
+expr([{name,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
+
+rewind([{arrow},{C,Y}|Acc],T, [{N,X}|Rest]) -> rewind(Acc,T,[{arrow,{{C,Y},{N,X}}}|Rest]);
+rewind([{lambda}     |Acc],T, [{arrow,{{app,{{typevar,Label},X}},Y}}|Rest]) -> rewind(Acc,T,[{lambda,{{arg,Label},X,Y}}|Rest]);
+rewind([{N,X}        |Acc],T, [{C,Y}|Rest]) -> rewind(Acc,T,[{app,{{N,X},{C,Y}}}|Rest]);
+rewind([{N,X}        |Acc],T, Rest) -> rewind(Acc,T,[{N,X}|Rest]);
+rewind([{open}       |Acc],T, Rest) -> {T,lists:flatten([Rest|Acc])}.
+
+
