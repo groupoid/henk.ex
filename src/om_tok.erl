@@ -14,7 +14,7 @@ tokens(X,Y) -> string:tokens(X,Y).
 
 tokens(<<>>,                  _, {_,C}, Acc) -> lists:reverse(stack(C,Acc));
 tokens(<<$\n,     R/binary>>, L, {_,C}, Acc) -> tokens(R,L+1,{1,[]},   stack(C,Acc));
-tokens(<<$(,      R/binary>>, L, {t,_}, Acc) -> tokens(R,L,{t,[$(]},   Acc);
+tokens(<<$(,      R/binary>>, L, {t,C}, Acc) -> tokens(R,L,{t,[$(]},   stack(C,Acc));
 tokens(<<$),      R/binary>>, L, {t,C}, Acc) -> tokens(R,L,{t,[$)|C]}, Acc);
 tokens(<<$(,      R/binary>>, L, {_,C}, Acc) -> tokens(R,L,{t,[]},     [open   | stack(C,  Acc)]);
 tokens(<<$),      R/binary>>, L, {_,C}, Acc) -> tokens(R,L,{t,[]},     [close  | stack(C,  Acc)]);
@@ -37,10 +37,10 @@ stack(C,Acc) -> case rev(flat(C)) of []  -> Acc;
                  [X|A] when ?is_termi(X) -> name([X|A],Acc);
                                       X  -> atom(X,Acc) end.
 
-inet(X,Acc) -> [{name,{X,0}}|Acc].
+inet(X,Acc) -> [{var,{X,0}}|Acc].
 atom(X,Acc) -> [list_to_atom(X)|Acc].
-name(X,Acc) -> [{name,{X,0}}|Acc].
+name(X,Acc) -> [{var,{X,0}}|Acc].
 ivar([N,I]) -> [N,I];
 ivar([N])   -> [N,"0"].
 vars(X,Acc) -> [Name,Index]= ivar(tokens(X,"@")),
-               [{name,{list_to_atom(Name),list_to_integer(Index)}}|Acc].
+               [{var,{list_to_atom(Name),list_to_integer(Index)}}|Acc].
