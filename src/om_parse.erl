@@ -7,7 +7,7 @@
 %          | "λ"   "(" LABEL ":" EXPR ")" "arrow" EXPR => {LAM,[{ARG:LABEL,I:EXPR, O;EXPR]}
 %          | "π"   "(" LABEL ":" EXPR ")" "arrow" EXPR => {PI, [{ATH:LABEL,I:EXPR, O;EXPR]}
 %          |                     EXPR     "arrow" EXPR => {PI, [{"_",      I:EXPR, O;EXPR]}
-%          |  LABEL                                    => {VAR,LABEL}
+%          |           LABEL                           => {VAR,LABEL}
 %          | "*"                                       => {Star}
 %          | "[]"                                      => {Box}
 %          |       "("           EXPR ")"              => EXPR
@@ -20,6 +20,7 @@ expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
 expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
 expr([pi  |T], Acc)     -> expr(T,[{pi}|Acc]);
 expr([{name,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
+expr([{N,X}|T],[{C,Y}|Acc])  -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
 expr([{name,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
 rewind([],                 T,         Rest) -> {T,Rest};
