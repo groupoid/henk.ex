@@ -12,9 +12,9 @@
 %          | "[]"                                      => {Box}
 %          |       "("           EXPR ")"              => EXPR
 
-expr([],           Acc) -> {[],Acc};
+expr([],           Acc) -> rewind(Acc,[],[]);
 expr([{N,X}|T],[{typevar,Y}|Acc])  -> expr(T,[{N,X},{typevar,Y}|Acc]);
-expr([{N,X}|T],[{C,Y}|Acc])  -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr([{N,X}|T],[{C,Y}|Acc])        -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
 expr([close   |T], Acc) -> {T1,Acc1}=rewind(Acc,T,[]), expr(T1,Acc1);
 expr([star    |T], Acc) -> expr(T,[{const,star}|Acc]);
 expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
