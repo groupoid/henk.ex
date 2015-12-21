@@ -37,9 +37,9 @@ stack(C,Acc) -> case rev(flat(C)) of []  -> Acc;
                  [X|A] when ?is_termi(X) -> name([X|A],Acc);
                                       X  -> atom(X,Acc) end.
 
-inet(X,Acc) -> [{remote,X}|Acc].
+inet(X,Acc) -> [{name,{X,0}}|Acc].
 atom(X,Acc) -> [list_to_atom(X)|Acc].
-name(X,Acc) -> [{name,X}|Acc].
+name(X,Acc) -> [{name,{X,0}}|Acc].
 ivar([N,I]) -> [N,I];
 ivar([N])   -> [N,"0"].
 vars(X,Acc) -> [Name,Index]= ivar(tokens(X,"@")),
