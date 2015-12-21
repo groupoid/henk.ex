@@ -18,9 +18,9 @@ expr([star    |T], Acc) -> expr(T,[{const,star}|Acc]);
 expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
 expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
 expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
-expr([pi  |T], Acc)     -> expr(T,[{pi}|Acc]);
-expr([{name,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
+expr([pi      |T], Acc) -> expr(T,[{pi}|Acc]);
 expr([{N,X}|T],[{C,Y}|Acc])  -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr([{name,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
 expr([{name,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
 rewind([],                 T,         Rest) -> {T,Rest};
@@ -28,6 +28,7 @@ rewind([{arrow},{C,Y}|Acc],T, [{N,X}|Rest]) -> rewind(Acc,T,[{arrow,{{C,Y},{N,X}
 rewind([{Fun}|Acc],T, [{arrow,{{app,{{typevar,Label},X}},Y}}|Rest]) when Fun==lambda;Fun==pi -> rewind(Acc,T,[{Fun,{{arg,Label},X,Y}}|Rest]);
 rewind([{N,X}|Acc],T, [{C,Y}|Rest]) -> rewind(Acc,T,[{app,{{N,X},{C,Y}}}|Rest]);
 rewind([{N,X}|Acc],T, Rest) -> rewind(Acc,T,[{N,X}|Rest]);
+rewind([{open},{N,X}|Acc],T,[{C,Y}|Rest]) -> rewind(Acc,T,[{app,{{N,X},{C,Y}}}|Rest]);
 rewind([{open}|Acc],T, Rest) -> {T,lists:flatten([Rest|Acc])}.
 
 
