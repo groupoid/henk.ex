@@ -14,9 +14,9 @@ main()     -> Term=om_parse:expr(read(),[]),
 read()     -> Bin = file(),
               io:format("~ts~n",[unicode:characters_to_list(Bin)]),
               om_tok:tokens(Bin,0,{1,[]},[]).
-file()     -> {ok,Bin2} = file:read_file("priv/cat2.txt"),
+file()     -> {ok,Bin2} = file:read_file("priv/List/(>>=)"),
               %<<"( ( a → (b x) → x) → ( c → d ) ) ( a b ) a b"/utf8>>.
               %<<"(c → (a → c) → v)"/utf8>>.
               %<<"(λ (a: c → (a (x a)) → v) → λ (a:*) → *)"/utf8>>.
-              Bin2.
+              <<"("/utf8,Bin2/binary,")"/utf8>>.
 

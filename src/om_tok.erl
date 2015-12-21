@@ -1,12 +1,12 @@
 -module(om_tok).
 -compile(export_all).
 -define(is_space(C), C =:= $\r; C =:= $\s; C =:= $\t).
--define(is_alpha(C), C >= $a, C =< $z; C >= $A, C =< $Z; C >= $0, C =< $9; C=:=$@).
--define(is_termi(C), C =:= $!; C =:= $#; C =:= $$; C =:= $%; C =:= $&; C =:= $(; C =:= $:;
+-define(is_alpha(C), C >= $a, C =< $z; C >= $A, C =< $Z; C >= $0, C =< $9; C=:=$@; C=:=$#).
+-define(is_termi(C), C =:= $!; C =:= $$; C =:= $%; C =:= $&; C =:= $(; C =:= $:;
                      C =:= $+; C =:= $-; C =:= $*; C =:= $/; C =:= $.; C =:= $\\;C =:= $);
                      C =:= $<; C =:= $>; C =:= $=; C =:= $|; C =:= $^; C =:= $~).
 
-% om parses depends on only three functions:
+% om parser depends on three functions:
 
 rev(X)      -> lists:reverse(X).
 flat(X)     -> lists:flatten(X).
@@ -29,16 +29,18 @@ tokens(<<X,       R/binary>>, L, {t,C}, Acc) when ?is_termi(X) -> tokens(R,L,{t,
 tokens(<<X,       R/binary>>, L, {_,C}, Acc) when ?is_termi(X) -> tokens(R,L,{t,[X]},    stack(C, [Acc]));
 tokens(<<X,       R/binary>>, L, {_,C}, Acc) when ?is_space(X) -> tokens(R,L,{s,[C]},              Acc).
 
-stack(C,Acc) -> case lists:flatten(C) of  []  -> Acc;
-                                          "(" -> [open|Acc];
-                                          ")" -> [close|Acc];
-                     [X|Aa] when ?is_alpha(X) -> var([X|Aa],Acc);
-                     [X|Aa] when ?is_termi(X) -> name([X|Aa],Acc);
-                                           X  -> atom(X,Acc) end.
+stack(C,Acc) -> case rev(flat(C)) of []  -> Acc;
+                                     "(" -> [open|Acc];
+                                     ")" -> [close|Acc];
+                                  [$#|A] -> inet(A,Acc);
+                 [X|A] when ?is_alpha(X) -> vars([X|A],Acc);
+                 [X|A] when ?is_termi(X) -> name([X|A],Acc);
+                                      X  -> atom(X,Acc) end.
 
-atom(X,Acc) -> flat([list_to_atom(rev(X))|Acc]).
-name(X,Acc) -> flat([{name,rev(X)}|Acc]).
+inet(X,Acc) -> [{remote,X}|Acc].
+atom(X,Acc) -> [list_to_atom(X)|Acc].
+name(X,Acc) -> [{name,X}|Acc].
 ivar([N,I]) -> [N,I];
 ivar([N])   -> [N,"0"].
-var(X,Acc)  -> [Name,Index]= ivar(tokens(rev(X),"@")),
-               flat([{name,{list_to_atom(Name),list_to_integer(Index)}}|Acc]).
+vars(X,Acc) -> [Name,Index]= ivar(tokens(X,"@")),
+               [{name,{list_to_atom(Name),list_to_integer(Index)}}|Acc].
