@@ -5,4 +5,4 @@
   → ∀ (tail: List)
   → List)
 → ∀ (Nil: List)
-→ ((((List a))))
+→ List
