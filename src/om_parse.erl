@@ -32,18 +32,17 @@ expr([{N,X}|T],[{C,Y}|Acc])         -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
 expr([],           Acc) -> rewind(Acc,[],[]);
 expr([close   |T], Acc) -> {T1,Acc1} = rewind(Acc,T,[]), expr(T1,Acc1);
 expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
-expr([star    |T], Acc) -> expr(T,[{const,star}|Acc]);
+expr([star    |T], Acc) -> expr(T,[{const,func(star)}|Acc]);
 expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
 expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
 expr([pi      |T], Acc) -> expr(T,[{pi}|Acc]);
 expr([colon   |T], Acc) -> expr(T,[{colon}|Acc]);
 expr([{var,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
 expr([{remote,L}|T],   Acc) -> expr(T,[om:type(L)|Acc]);
-%expr([{remote,L}|T],   Acc) -> expr(T,[{remote,L}|Acc]);
 expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
 rewind([{F}|Acc],         T, [{arrow,{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
-                                        -> rewind(Acc,T,[{F,{{arg,L},{A,X},{B,Y}}}|R]);
+                                        -> rewind(Acc,T,[{{F,L},{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, [{B,Y}|R]) -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, R)         -> rewind(Acc,T,[{A,X}|R]);
 rewind([{arrow},Y|Acc],   T, [X|R])     -> rewind(Acc,T,[{arrow,{Y,X}}|R]);
@@ -51,3 +50,10 @@ rewind([{open},{A,X}|Acc],T, [{B,Y}|R]) -> {T,om:flat([{app,{{A,X},{B,Y}}}|[R|Ac
 rewind([{open}|Acc],      T, R)         -> {T,om:flat([R|Acc])};
 rewind([{colon}|Acc],     T, R)         -> {T,om:flat([R|Acc])};
 rewind([],                T, R)         -> {T,R}.
+
+func(lambda) -> "λ";
+func(pi)     -> "∀";
+func(arrow)  -> "→";
+func(star)   -> "*";
+func(Sym)    -> Sym.
+

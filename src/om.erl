@@ -16,9 +16,8 @@ parse(F)    -> om_parse:expr(read(F),[]).
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).
 file(F)     -> {ok,Bin} = file:read_file(F), Bin.
-scan()      -> [ show(F) || F <- filelib:wildcard("priv/**/*"), not filelib:is_dir(F) ], ok.
-show(F)     -> {X,Y,Z} = {F,unicode:characters_to_binary(file(F)),parse(F)},
-               error_logger:info_msg("~80p~n~ts~n~p~n",[X,Y,Z]),Z.
+scan()      -> [ show(F) || F <- filelib:wildcard("priv/**/*"), filelib:is_dir(F) /= true ], ok.
+show(F)     -> error_logger:info_msg("~130p~n~ts~n~130tp~n",[F,file(F),parse(F)]).
 
 % om parser depends on three functions:
 

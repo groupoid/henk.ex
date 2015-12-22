@@ -1,7 +1,7 @@
   λ (a: *)
 → λ (b: *)
-→ λ (m: #List a)
-→ λ (f: a → #List b)
+→ λ (m: #List/@ a)
+→ λ (f: a → #List/@ b)
 → λ (List: *)
 → λ (Cons:
     ∀ (head: b)
