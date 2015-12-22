@@ -42,7 +42,7 @@ expr([{remote,L}|T],   Acc) -> expr(T,[om:type(L)|Acc]);
 expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
 rewind([{F}|Acc],         T, [{arrow,{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
-                                        -> rewind(Acc,T,[{{F,L},{{A,X},{B,Y}}}|R]);
+                                        -> rewind(Acc,T,[{{func(F),L},{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, [{B,Y}|R]) -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, R)         -> rewind(Acc,T,[{A,X}|R]);
 rewind([{arrow},Y|Acc],   T, [X|R])     -> rewind(Acc,T,[{arrow,{Y,X}}|R]);
