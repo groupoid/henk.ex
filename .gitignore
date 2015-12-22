@@ -9,10 +9,4 @@ Mnesia*
 **/deps/*
 relx.config
 erl_crash.dump
-edoc-info
-programs.js
-deposits_protocol.js
 .applist
-.idea/**
-apps/deposits/README*
-apps/deposits/doc/**
