@@ -12,6 +12,6 @@
 → λ (Cons:
     ∀ (head: a)
   → ∀ (tail: List)
-    → List)
+  → List)
 → λ (Nil: List)
 → Cons head (tail List Cons Nil)

@@ -11,12 +11,14 @@ start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 init([])    -> scan(), {ok, {{one_for_one, 5, 10}, []}}.
-show(F)     -> error_logger:info_msg("~80p~n~ts~n~p~n",[F,unicode:characters_to_binary(file(F)),parse(F)]).
+type(F)     -> show(lists:concat(["priv/",F])).
 parse(F)    -> om_parse:expr(read(F),[]).
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).
 file(F)     -> {ok,Bin} = file:read_file(F), Bin.
 scan()      -> [ show(F) || F <- filelib:wildcard("priv/**/*"), not filelib:is_dir(F) ], ok.
+show(F)     -> {X,Y,Z} = {F,unicode:characters_to_binary(file(F)),parse(F)},
+               error_logger:info_msg("~80p~n~ts~n~p~n",[X,Y,Z]),Z.
 
 % om parser depends on three functions:
 

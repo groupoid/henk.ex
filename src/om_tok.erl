@@ -35,7 +35,7 @@ stack(C,Ac) -> case om:rev(om:flat(C)) of [] -> Ac;
                      [X|A] when ?is_termi(X) -> name([X|A],Ac);
                                           X  -> atom(X,Ac) end.
 
-inet(X,Acc) -> [{var,{X,0}}|Acc].
+inet(X,Acc) -> [{remote,X}|Acc].
 atom(X,Acc) -> [list_to_atom(X)|Acc].
 name(X,Acc) -> [{var,{X,0}}|Acc].
 ivar([N,I]) -> [N,I];

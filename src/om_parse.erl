@@ -21,23 +21,24 @@
 % We need to preserve applies to typevars as they should
 % be processes lately on rewind pass, so we have just typevars bypassing rule.
 % On the rewind pass we stack lambdas by matching arrow/apply signatures
-% where typevar(x) is introduction an variable "x" to the Gamma context.
+% where typevar(x) is an introduction of variable "x" to the Gamma context.
 %
 %                   apply: (A->B) x A -> B
 %                  lambda: arrow(app(typevar(x),A),B)
 %
 
+expr([{N,X}|T],[{typevar,Y}|Acc])   -> expr(T,[{N,X},{typevar,Y}|Acc]);
+expr([{N,X}|T],[{C,Y}|Acc])         -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
 expr([],           Acc) -> rewind(Acc,[],[]);
-expr([{N,X}|T],[{typevar,Y}|Acc])  -> expr(T,[{N,X},{typevar,Y}|Acc]);
-expr([{N,X}|T],[{C,Y}|Acc])        -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr([close   |T], Acc) -> {T1,Acc1} = rewind(Acc,T,[]), expr(T1,Acc1);
 expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
-expr([close   |T], Acc) -> {T1,Acc1}=rewind(Acc,T,[]), expr(T1,Acc1);
 expr([star    |T], Acc) -> expr(T,[{const,star}|Acc]);
 expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
 expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
 expr([pi      |T], Acc) -> expr(T,[{pi}|Acc]);
 expr([colon   |T], Acc) -> expr(T,[{colon}|Acc]);
 expr([{var,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
+expr([{remote,L}|T],   Acc) -> expr(T,[om:type(L)|Acc]);
 expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
 rewind([{F}|Acc],         T, [{arrow,{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
