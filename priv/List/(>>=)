@@ -1,0 +1,11 @@
+  λ (a: *)
+→ λ (b: *)
+→ λ (m: #List a)
+→ λ (f: a → #List b)
+→ λ (List: *)
+→ λ (Cons:
+    ∀ (head: b)
+  → ∀ (tail: List)
+  → List)
+→ m List (λ (x: a)
+          → f x List Cons)
