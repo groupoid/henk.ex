@@ -11,7 +11,7 @@ start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 init([])    -> scan(), {ok, {{one_for_one, 5, 10}, []}}.
-type(F)     -> show(lists:concat(["priv/",F])).
+type(F)     -> parse(lists:concat(["priv/",F])).
 parse(F)    -> om_parse:expr(read(F),[]).
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).
