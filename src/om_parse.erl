@@ -40,12 +40,11 @@ expr([colon   |T], Acc) -> expr(T,[{colon}|Acc]);
 expr([{var,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
 expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
-rewind([],T,Rest) -> {T,Rest};
 rewind([{arrow},{C,Y}|Acc],T, [{N,X}|Rest])     -> rewind(Acc,T,[{arrow,{{C,Y},{N,X}}}|Rest]);
-rewind([{open},{typevar,X}|Acc],T,[{C,Y}|Rest]) -> rewind(Acc,T,[{C,Y},{typevar,X},{open}|Rest]);
-rewind([{open},{N,X}|Acc],T,[{C,Y}|Rest])       -> rewind(Acc,T,[{app,{{N,X},{C,Y}}}|Rest]);
-rewind([{open}|Acc],T, Rest)                    -> {T,om:flat([Rest|Acc])};
 rewind([{N,X}|Acc],T, [{C,Y}|Rest])             -> rewind(Acc,T,[{app,{{N,X},{C,Y}}}|Rest]);
 rewind([{N,X}|Acc],T, Rest)                     -> rewind(Acc,T,[{N,X}|Rest]);
-rewind([{Fun}|Acc],T, [{arrow,{{app,{{typevar,{Label,Index}},X}},Y}}|Rest]) when Fun==lambda; Fun==pi
-                                                -> rewind(Acc,T,[{Fun,{{arg,Label},X,Y}}|Rest]).
+rewind([{open},{typevar,X}|Acc],T,[{C,Y}|Rest]) -> rewind(Acc,T,[{C,Y},{typevar,X},{open}|Rest]);
+rewind([{open}|Acc],T, Rest)                    -> {T,om:flat([Rest|Acc])};
+rewind([{Fun}|Acc],T, [{_,{{app,{{_,{L,_}},X}},Y}}|Rest])             -> rewind(Acc,T,[{Fun,{{arg,L},X,Y}}|Rest]);
+rewind([{Fun}|Acc],[arrow,lambda,open,Y|T], [{_,{{_,{L,_}},X}}|Rest]) -> rewind(Acc,T,[{Fun,{{arg,L},X,Y}}|Rest]);
+rewind([],T,Rest) -> {T,Rest}.
