@@ -40,17 +40,12 @@ expr([colon   |T], Acc) -> expr(T,[{colon}|Acc]);
 expr([{var,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
 expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
 
-%rewind([{open},{typevar,X}|Acc],T,[{C,Y}|Rest]) -> rewind(Acc,T,[{C,Y},{typevar,X},{open}|Rest]);
-%rewind([{open}|Acc],T,[X,Z|Rest])       -> rewind(Acc,T,[{app,{X,Z}}|Rest]);
-%rewind([{F}|Acc],[arrow,lambda,open,Y|T], [{_,{{_,{L,_}},X}}|Rest]) when F==lambda;F==pi-> rewind(Acc,T,[{F,{{arg,L},X,Y}}|Rest]);
-%rewind([{arrow},Y|Acc],T,[X|Rest])  -> rewind(Acc,T,[{arrow,{Y,X}}|Rest]);
-%rewind([{F}|Acc],[arrow,lambda,open,Y|T], [{_,{{_,{L,_}},X}}|Rest]) when F==lambda;F==pi-> rewind(Acc,T,[{F,{{arg,L},X,Y}}|Rest]);
-%rewind([{open},_,X|Acc],T,[Y|Rest])   -> io:format("x: ~p~n",[X]), rewind(Acc,T,[{app,{X,Y}}|Rest]);
-
-rewind([{F}|Acc],T, [{_,{{_,{{_,{L,_}},X}},Y}}|Rest]) when F==lambda;F==pi-> rewind(Acc,T,[{F,{{arg,L},X,Y}}|Rest]);
-rewind([{A,X}|Acc],T, [{B,Y}|Rest]) -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|Rest]);
-rewind([{A,X}|Acc],T, Rest)         -> rewind(Acc,T,[{A,X}|Rest]);
-rewind([{arrow},Y|Acc],T,[X|Rest])  -> rewind(Acc,T,[{arrow,{Y,X}}|Rest]);
-rewind([{open}|Acc],T, Rest)        -> {T,om:flat([Rest|Acc])};
-rewind([{colon}|Acc],T, Rest)       -> {T,om:flat([Rest|Acc])};
-rewind([],T,Rest)                   -> {T,Rest}.
+rewind([{A,X}|Acc],T, [{B,Y}|R])       -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|R]);
+rewind([{A,X}|Acc],T, R)               -> rewind(Acc,T,[{A,X}|R]);
+rewind([{arrow},Y|Acc],T,[X|R])        -> rewind(Acc,T,[{arrow,{Y,X}}|R]);
+rewind([{open},{A,X}|Acc],T,[{B,Y}|R]) -> {T,om:flat([{app,{{A,X},{B,Y}}}|[R|Acc]])};
+rewind([{open}|Acc],T,R)               -> {T,om:flat([R|Acc])};
+rewind([{colon}|Acc],T, R)             -> {T,om:flat([R|Acc])};
+rewind([],T,R)                         -> {T,R};
+rewind([{F}|Acc],T, [{arrow,{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R])
+              when F == lambda; F== pi -> rewind(Acc,T,[{F,{{arg,L},{A,X},{B,Y}}}|R]).
