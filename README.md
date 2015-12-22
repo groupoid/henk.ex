@@ -84,28 +84,33 @@ Om Intermediate Language
                                     {const,star},
                                     {lambda,{{arg,f},...
 
-> om:type("List/@").
-{lambda,{{arg,a},
-         {const,star},
-         {pi,{{arg,'List'},
-              {const,star},
-              {pi,{{arg,'Cons'},
-                   {pi,{{arg,head},
-                        {var,{a,0}},
-                        {pi,{{arg,tail},{var,{'List',0}},{var,{'List',0}}}}}},
-                   {pi,{{arg,'Nil'},{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+> om:show("priv/List/@").
 
+=INFO REPORT==== 22-Dec-2015::10:01:10 ===
+"priv/List/@"
+  λ (a: *)
+→ ∀ (List: *)
+→ ∀ (Cons:
+    ∀ (head: a)
+  → ∀ (tail: List)
+  → List)
+→ ∀ (Nil: List)
+→ List
 
-> om:a("#List/@").
-{lambda,{{arg,a},
-         {const,star},
-         {pi,{{arg,'List'},
-              {const,star},
-              {pi,{{arg,'Cons'},
-                   {pi,{{arg,head},
-                        {var,{a,0}},
-                        {pi,{{arg,tail},{var,{'List',0}},{var,{'List',0}}}}}},
-                   {pi,{{arg,'Nil'},{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+{[],
+ [{lambda,{{arg,a},
+           {const,star},
+           {pi,{{arg,'List'},
+                {const,star},
+                {pi,{{arg,'Cons'},
+                     {pi,{{arg,head},
+                          {var,{a,0}},
+                          {pi,{{arg,tail},
+                               {var,{'List',0}},
+                               {var,{'List',0}}}}}},
+                     {pi,{{arg,'Nil'},
+                          {var,{'List',0}},
+                          {var,{'List',0}}}}}}}}}}]}
 
 > om:parse(<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>).
 {[],
