@@ -2,7 +2,7 @@
 -description('Om Tokenizer').
 -compile(export_all).
 -define(is_space(C), C==$\r; C==$\s; C==$\t).
--define(is_alpha(C), C>=$a,  C=<$z;  C>=$A,  C=<$Z;  C>=$0,  C=<$9;  C==$@;  C==$#;  C==$_; C==$/).
+-define(is_alpha(C), C>=$a,  C=<$z;  C>=$A,  C=<$Z;  C>=$0,  C=<$9;  C==$@;  C==$#;  C==$_; C==$/; C==$.).
 -define(is_termi(C), C==$!;  C==$$;  C==$%;  C==$&;  C==$(;  C==$:;  C==$~;  C==$+;  C==$|; C==$-;
                      C==$*;  C==$.;  C==$);  C==$<;  C==$>;  C==$=;  C==$^).
 

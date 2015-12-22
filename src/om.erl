@@ -5,13 +5,35 @@
 -export([init/1, start/2, stop/1]).
 -compile(export_all).
 
-a(X)        -> om_parse:expr(flat([om:str(X)]),[]).
+% > om:a("#List/map") == om:type("List/map").
+% true
+% > om:a("\\(x:*)->\\(y:#List/map)->y").
+% {lambda,{{arg,x},
+%          {const,star},
+%          {lambda,{{arg,y},
+%                   {lambda,{{arg,a},
+%                            {const,star},
+%                            {lambda,{{arg,b},
+%                                     {const,star},
+%                                     {lambda,{{arg,f},...
+% > om:type("List/@").
+% {lambda,{{arg,a},
+%         {const,star},
+%         {pi,{{arg,'List'},
+%              {const,star},
+%              {pi,{{arg,'Cons'},
+%                   {pi,{{arg,head},
+%                        {var,{a,0}},
+%                        {pi,{{arg,tail},{var,{'List',0}},{var,{'List',0}}}}}},
+%                   {pi,{{arg,'Nil'},{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+
+a(X)        -> {_,[R]}=om_parse:expr(flat([om:str(X)]),[]),R.
 main(A)     -> mad:main(A).
 start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 init([])    -> scan(), {ok, {{one_for_one, 5, 10}, []}}.
-type(F)     -> parse(lists:concat(["priv/",F])).
+type(F)     -> {_,[X]}=parse(lists:concat(["priv/",F])),X.
 parse(F)    -> om_parse:expr(read(F),[]).
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).

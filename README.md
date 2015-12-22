@@ -71,10 +71,44 @@ Om Intermediate Language
 ```
 
 ```erlang
+ > om:a("#List/map") == om:type("List/map").
+ true
 
-   > om:parse(<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>).
+> om:a("\\(x:*)->\\(y:#List/map)->y").
+{lambda,{{arg,x},
+         {const,star},
+         {lambda,{{arg,y},
+                  {lambda,{{arg,a},
+                           {const,star},
+                           {lambda,{{arg,b},
+                                    {const,star},
+                                    {lambda,{{arg,f},...
 
-   {[],
+> om:type("List/@").
+{lambda,{{arg,a},
+         {const,star},
+         {pi,{{arg,'List'},
+              {const,star},
+              {pi,{{arg,'Cons'},
+                   {pi,{{arg,head},
+                        {var,{a,0}},
+                        {pi,{{arg,tail},{var,{'List',0}},{var,{'List',0}}}}}},
+                   {pi,{{arg,'Nil'},{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+
+
+> om:a("#List/@").
+{lambda,{{arg,a},
+         {const,star},
+         {pi,{{arg,'List'},
+              {const,star},
+              {pi,{{arg,'Cons'},
+                   {pi,{{arg,head},
+                        {var,{a,0}},
+                        {pi,{{arg,tail},{var,{'List',0}},{var,{'List',0}}}}}},
+                   {pi,{{arg,'Nil'},{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+
+> om:parse(<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>).
+{[],
  [{pi,
       {{arg,"a"},
        {const,star},
