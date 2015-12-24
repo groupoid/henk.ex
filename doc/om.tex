@@ -21,7 +21,7 @@
 \vspace{3cm}
 
     \vspace{3cm}   {\Large \bf Categorical semantic of general purpose functional language \\ \vspace{0.2cm}
-                               that compiles to Om\\ }\par
+                               that compiles to pure type system minimal core\\ }\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
     \vspace{4cm}   {\Large December 2015}
@@ -32,29 +32,32 @@
 \vspace{2cm}
 \tableofcontents
 \newpage
-\section{Вступ}
+\section{Introduction}
 
 \vspace{1cm}
 
 %\vspace{0.5cm}
 
-\subsection{Functional Language Compiler Pipeline}
+\subsection{Verifiable Functional Compiler}
 
    \paragraph{}
-   This article describes the frontend language along with its categorical semantic and Categorical Abstract Machine,
-   but that compiles not to CAM, but to a non-recursive subset of dependent type theory from which you can extract LLVM code,
-   untyped lambda code with erased type information, or even $System F_\omega$ programs.
+   This article describes the frontend language {\bf Exe} along with its categorical semantic
+   that compiles to a pure type system minimal core {\bf Om} --- the
+   non-recursive subset of dependent type theory from which you can extract: LLVM code,
+   untyped lambda code with erased type information, or even $System\ F_\omega$ programs.
+   As a top-level task we expect to produce lean verifiable functional compiler pipeline,
+   but as an milestone task we just produce concise working prototype in Erlang language.
 
-\subsubsection{General Purpose Functional Language Exe}
+\subsection{General Purpose Functional Language Exe}
 
    \paragraph{}
-   General purpose function language with functors (lambdas on types), recursive algebraic types,
-   higher order functions and embedded process calculus with corecursion. This language will be called
-   Exe and dedicated to be high level general purpose functional programming language frontend to small core
-   of dependent type system without recursion called Exe. This language indended to be useful
-   enough to encode KVS, N2O and BPE applications.
+   General purpose function language with functors, lambdas on types, recursive algebraic types,
+   higher order functions and embedded process calculus with corecursion, free monad for effects encoding.
+   This language will be called Exe and dedicated to be high level general purpose functional
+   programming language frontend to small core of dependent type system without recursion called Om.
+   This language indended to be useful enough to encode KVS, N2O and BPE applications.
 
-\subsubsection{Intermediate Language Om}
+\subsection{Intermediate Language Om}
 
    \paragraph{}
    An intermediate Om language is base on Henk\cite{henk} languages described first
@@ -66,17 +69,17 @@
    verifiable peace of code that can be distributed over the networks and compiled at target with
    safe linkage.
 
-\subsubsection{Target Erlang VM and LLVM platforms}
+\subsection{Target Erlang VM and LLVM platforms}
 
    \paragraph{}
    This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
    Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
 
 \newpage
-\subsection{Basic Theories}
+\section{General Purpose Language}
 \vspace{0.3cm}
 
-   \subsubsection{Category Theory}
+   \subsection{Category Theory, Programs and Functions}
    Category theory is widely used as an instrument for mathematicians for software analisys.
    Category theory could be treated as an abstract algebra of functions. Let's define an Category
    formally: {\bf Category} consists of two lists: the one is morphisms (arrows) and the second is
@@ -134,7 +137,8 @@
 
 \paragraph{}
 Composition shows an ability to connect the area of values of the previous evaluation (codoman)
-and are of defenition the next evaluation (domain). Composition is fundamental property of morphisms.
+and are of defenition the next evaluation (domain). Composition is fundamental property of morphisms
+that allows us to chain evaluations.
 
 \paragraph{}
 \begin{tabular}{lll}
@@ -148,7 +152,7 @@ $7.$ & $id \circ f = f$\\
 \end{tabular}
 
 \newpage
-\subsubsection*{Algebraic Datatypes}
+\subsection{Algebraic Types and Cartesian Categories}
 
 After composition operation of construction of new objects with morphisms we introduce
 operation of construction cartesian product of two objects $A$ and $B$ of a given
@@ -157,7 +161,7 @@ for full definition of cartesian product of $A \times B$.
 
 \paragraph{}
 This is an internal language of cartesian category, in which for all two selected objects there is an object
-of cartesian product (coproduct) of two objects along with its $\bot$ terminal (or $\top$ coterminal) type.
+of cartesian product (sum) of two objects along with its $\bot$ terminal (or $\top$ coterminal) type.
 Exe languages is always equiped with product and sum types.
 
 \paragraph{}
@@ -232,7 +236,7 @@ $\langle \pi_1, \pi_2 \rangle = id$\\
 \end{center}
 
 \newpage
-   \subsubsection{Exponential}
+   \subsection{Exponential, $\lambda$-calculus and Cartesian Closed Categories}
   Being an internal language of cartesian closed category, lambda calculus except variables and constants
   provides two operations of abstraction and applications which defines complete evaluation language
   with higher order functions, recursion and corecursion, etc.
@@ -284,11 +288,11 @@ $curry\ apply = id$\\
 }
 \endgroup
 
-\newpage
-   \subsubsection{Functors}
-  
+   \subsection{Functors}
 
-   \subsubsection{Recursive Datatypes}
+\newpage
+
+   \subsection{Recursive Types}
 
   As was shown by Wadler in Recursive Types for Free! we could deal with recusrive equations having
   three axioms: one $fix: (A \rightarrow A) \rightarrow A$ fixedpoint axiom,
@@ -339,7 +343,7 @@ $curry\ apply = id$\\
    such terms could not be normalized.
 
 \newpage
-   \subsubsection{Process Calculus}
+   \subsection{Process Calculus}
    Теорія $\pi$-числення процесів Роберта Мілнера є основним формалізмом обчислювальної
    теорії розподілених систем та її імплементації. З часів виникнення CSP числення розробленого Хоаром,
    Мілнеру вдалося значно розширити та адаптувати теорію до сучасних
@@ -349,7 +353,7 @@ $curry\ apply = id$\\
    як телекомунікаційну систему, тому у розробці додатків можна покладатися у тому
    числі і на такі моделі як $\pi$-числення.
 
-  \subsubsection*{Процеси і протоколи}
+  \subsection*{Process and Protocols}
   Також ми анонсуємо процес як фундаменльний тип даних, подібний до функції але який здатний
   тримати певний стан у вигляді типа коротежа та є морфізмом-одиницею типу свого стану.
 
@@ -374,8 +378,7 @@ $curry\ apply = id$\\
 
 \paragraph{}
 
-
-  \subsubsection*{Алгебра процесів}
+  \subsection*{Process Algebra}
 
   Алгебра процесів визначає базові операції мультиплексування двох чи декількох
   протоколів в рамках одного процесу (добуток), а також паралельного та повністю
@@ -389,22 +392,18 @@ $\otimes$  &:& $\pi \mid \pi$\\
 \end{tabular}
 \end{center}
 
-  \subsubsection*{Типи процесів}
-
-\begin{center}
-\begin{tabular}{lll}
-         $action$ &:& ${proc}_{Proc}\  (BPE\ |\ \Sigma) \times process \rightarrow process$ \\
-          $event$ &:& ${proc}_{App}\   (N2O\ |\ \Sigma) \times cx \rightarrow cx$ \\
-      $operation$ &:& ${proc}_{Store}\ (KVS\ |\ \Sigma) \times container \rightarrow container$ \\
-\end{tabular}
-\end{center}
+%  \subsubsection*{Типи процесів}
+%
+%\begin{center}
+%\begin{tabular}{lll}
+%         $action$ &:& ${proc}_{Proc}\  (BPE\ |\ \Sigma) \times process \rightarrow process$ \\
+%          $event$ &:& ${proc}_{App}\   (N2O\ |\ \Sigma) \times cx \rightarrow cx$ \\
+%      $operation$ &:& ${proc}_{Store}\ (KVS\ |\ \Sigma) \times container \rightarrow container$ \\
+%\end{tabular}
+%\end{center}
 
 \newpage
-   \subsubsection{Інтуітіоністична теорія типів Мартіна Льофа}
-   Системи з залежними типами як верифікаційні математичні формальні моделі
-   для доведення корректності. Система $\Sigma$ та $\Pi$ типів, як кванторів
-   існування та узагальнення. Системи Mizar, Coq, Agda, Idris, F*, Lean. Ми будемо
-   використовувати автоматизовану систему теорем Lean від Microsoft Research.
+   \subsection{Intuitionistic Type Theory}
 
    \paragraph{}
    Розбудовуючи певний фреймворк чи систему конструктивними методами
@@ -424,7 +423,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
    Крім того такий спосіб кодування ієрархій повністю відповідає семантиці Erlang,
    де немає типів класів, а дані передаються запаковані в кортежі-структури.
 
-  \subsubsection{Logic and Quantification}
+  \subsection{Logic and Quantification}
 
 Далі йдуть квантори $\forall$ та $\exists$ які теж виражаються як конструкції типів:
 
@@ -493,8 +492,43 @@ $\otimes$  &:& $\pi \mid \pi$\\
 
 \newpage
 
-  \subsection{Intermediate Core Om Language}
+  \section{Intermediate Language}
+\vspace{1cm}
 
+   \subsection{Om Language Definition}
+\vspace{0.5cm}
+   Om resemble both the Henk theory of pure type system and $\lambda C$ calculus of constructions
+   and Morte Core Specification
+
+\begin{lstlisting}
+    EXPR :=                     EXPR             EXPR 
+          | "\"   "(" LABEL ":" EXPR ")" "arrow" EXPR 
+          | "\/"  "(" LABEL ":" EXPR ")" "arrow" EXPR 
+          |                     EXPR     "arrow" EXPR 
+          |           LABEL                           
+          | "*"                                       
+          | "[]"                                      
+          |       "("           EXPR ")"              
+\end{lstlisting}
+
+During forward pass we stack applications (except typevars), then
+on reaching close paren ")" we perform backward pass and stack arrows,
+until neaarest unstacked open paren "(" appeared (then we just return
+control to the forward pass).
+
+\paragraph{}
+We need to preserve applies to typevars as they should
+be processes lately on rewind pass, so we have just typevars bypassing rule.
+On the rewind pass we stack lambdas by matching arrow/apply signatures
+where typevar(x) is an introduction of variable "x" to the Gamma context.
+
+\begin{center}
+                   $apply: (A \rightarrow B) \times A \rightarrow B$ \\
+                  $lambda: arrow\ (app\ (typevar\ x)\ ,\ A)\ B$ \\
+\end{center}
+
+
+   \subsection{Abstract Syntax Tree}
 
 \begin{center}
 \begin{tabular}{lcl}
@@ -506,35 +540,37 @@ $\otimes$  &:& $\pi \mid \pi$\\
 \end{tabular}
 \end{center}
 
-  \subsection{Encoding Product, Unit and Maybe Types}
+\newpage
+
+  \subsection{Encoding Basic Type Constructors}
+\vspace{1cm}
+\paragraph{}
+   We usually define inductive type in $\lambda C$ theorem provers by specifying
+   types as sum of lambda type constructors with return type as a definition type
 
 \begin{lstlisting}
-   type Product (A: *) (B: *) : * = Make (a: A) (b: B)
-   type Option  (A: *)        : * = None               | Some (value: A)
-   type List    (A: *)        : * = Nil                | Cons (head: A)  (tail: List)
+   type List (A: *) : * = Nil: () -> List A
+                        | Cons: A -> List A -> List A
+\end{lstlisting}
+
+   However we can omit return type from encoding but specify parameters of
+   constructors as named lambdas in Om tree:
+
+\begin{lstlisting}
+   type Product (A: *) (B: *) : * =        Make (a: A)      (b: B)
+   type Sum (A: *) (B: *)     : * =        Sum  (a: A)      (b: B)
+   type Option  (A: *)        : * = None | Some (value: A)
+   type List    (A: *)        : * = Nil  | Cons (head: A)   (tail: List)
    type Unit                  : * = Make
 \end{lstlisting}
 
-\newpage
-  \subsection{Encoding Inductive Types}
+  \subsection{Samples of Exe programs}
 
 \begin{lstlisting}
 
   $ cat List/(++)
-  let (++) (a : *) (as1 : #List a) (as2 : #List a) : #List a =
-       \ (List : *)
-    -> \ (Cons : a -> List -> List)
-    -> \ (Nil : List)
-    -> as1 List Cons (as2 List Cons Nil)
-  in (++)
-
-  $ cat List/head
-  let head (a : *) (xs : #List a) : #Maybe a =
-    xs
-    (#Maybe a)
-    (\(x : a) -> \(_ : #Maybe a) -> #Maybe/Just a x)
-    (#Maybe/Nothing a)
-  in head
+  '++'[a:*](as1: #List a, as2: #List a): #List a ->
+    as1 List Cons (as2 List Cons Nil)
 
 \end{lstlisting}
 
@@ -561,7 +597,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
 \bibitem{andjelko}   S.Andjelkovic \textit{A family of universes for generic programming} 2011
 \bibitem{alacarte}   W.Swierstra \textit{Data types a` la carte} 2011
 \bibitem{catlogic}   B.Jacobs \textit{Categorical Logic and Type Theory} 1999
-\bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation} 
+% \bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation} 
 \bibitem{kaes}       S.Kaes \textit{http://tuprints.ulb.tu-darmstadt.de/epda/000544/diss.pdf} 2005
 
 
