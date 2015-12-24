@@ -239,7 +239,7 @@ $\langle \pi_1, \pi_2 \rangle = id$\\
 
    \paragraph{}
    To explain functions from the categorical point of vew we need to define categorica exponential
-   $f: A^B$, which are analogue to functions $f: A \rightarrow B$ in category of {\bf Programs} or powerset in category of {\bf Sets}.
+   $f: A^B$, which are analogue to functions $f: A \rightarrow B$.
    As we already defined the products and terminals we could define an exponentials with three
    axioms of function construction, one eliminator of application with apply a function to its argument
    and axiom of currying the function of two arguments to function of one argument.
@@ -285,16 +285,30 @@ $curry\ apply = id$\\
 \endgroup
 
 \newpage
+   \subsubsection{Functors}
+  
+
    \subsubsection{Recursive Datatypes}
 
+  As was shown by Wadler in Recursive Types for Free! we could deal with recusrive equations having
+  three axioms: one $fix: (A \rightarrow A) \rightarrow A$ fixedpoint axiom,
+  and axioms $in: F\ T \rightarrow T$ and $out: T \rightarrow F\ T$ of recursion direction. We need to
+  define fixed point as axiom because we can't produce recursive axioms. This axioms
+  also needs functor axiom defined earlier.
+
+  \paragraph{}
+  There is two types of recursion: one is least fixed point (as $rec\ A = 1 + (A,rec)$ or $rec\ A = A + (rec,rec)$),
+  in other words the recursion with a base (terminated with a bounded value), lists are trees are
+  examples of such recursive structures (so we call induction recursive sums); and the second
+  is greatest fixed point or recursion withour base (as $rec\ A = (A,A)$) --- such kind of
+  recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.
+
+  \paragraph{}
    As we know there are several ways to appear for variable in recursive algebraic type.
    Least fixpoint are known as an recursive expressions that have a base of recursion
-   like sums with terminal components (constants or fully specified concrete types). Dual to least fixpoints
-   there are greatest fixpoints that doesn't have base of recursion and thus defining corecursive types.
    Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
    as an non-recursive definitions of folds that include in indentity signature all the
    constructor components of inductive or coinductive type.
-
 
 \begingroup
 \parbox[t][][l]{0.40\textwidth}{
@@ -391,6 +405,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
    для доведення корректності. Система $\Sigma$ та $\Pi$ типів, як кванторів
    існування та узагальнення. Системи Mizar, Coq, Agda, Idris, F*, Lean. Ми будемо
    використовувати автоматизовану систему теорем Lean від Microsoft Research.
+
    \paragraph{}
    Розбудовуючи певний фреймворк чи систему конструктивними методами
    так чи інакше доведеться зробити певний вибір у мові та способі кодування.
@@ -480,6 +495,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
 
   \subsection{Intermediate Core Om Language}
 
+
 \begin{center}
 \begin{tabular}{lcl}
       $E$ & :=& $K$ \\
@@ -494,7 +510,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
 
 \begin{lstlisting}
    type Product (A: *) (B: *) : * = Make (a: A) (b: B)
-   type Maybe   (A: *)        : * = Nothing            | Just (value: A)
+   type Option  (A: *)        : * = None               | Some (value: A)
    type List    (A: *)        : * = Nil                | Cons (head: A)  (tail: List)
    type Unit                  : * = Make
 \end{lstlisting}
@@ -546,6 +562,7 @@ $\otimes$  &:& $\pi \mid \pi$\\
 \bibitem{alacarte}   W.Swierstra \textit{Data types a` la carte} 2011
 \bibitem{catlogic}   B.Jacobs \textit{Categorical Logic and Type Theory} 1999
 \bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation} 
+\bibitem{kaes}       S.Kaes \textit{http://tuprints.ulb.tu-darmstadt.de/epda/000544/diss.pdf} 2005
 
 
 \end{thebibliography}
