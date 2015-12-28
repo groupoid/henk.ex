@@ -20,8 +20,8 @@
 
 \vspace{3cm}
 
-    \vspace{3cm}   {\Large \bf Categorical semantic of general purpose functional language \\ \vspace{0.2cm}
-                               that compiles to pure type system minimal core\\ }\par
+    \vspace{3cm}   {\Large \bf Compilation of general purpose functional language\\ \vspace{0.2cm}
+                               to minimal pure type system core\\ }\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
     \vspace{4cm}   {\Large December 2015}
@@ -186,7 +186,7 @@ Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = 
 
 \begin{prooftree}
 \AxiomC{}
-\UnaryInfC{$\Gamma \vdash\ \bot$ }
+\UnaryInfC{$\Gamma \vdash\ \top$ }
 \end{prooftree}
 
 }
@@ -195,7 +195,7 @@ Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = 
 
 \begin{prooftree}
 \AxiomC{}
-\UnaryInfC{$\Gamma \vdash\ \top$ }
+\UnaryInfC{$\Gamma \vdash\ \bot$ }
 \end{prooftree}
 
 \begin{prooftree}
@@ -213,9 +213,16 @@ Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = 
 }
 \endgroup
 
-\paragraph{}
-   Also we include here an axiom of morphism product which are given durin definition of product commutative diagram.
-   This axiom is needed for applicative programming in categorical abstract machine.
+   \paragraph{}
+
+   The $\bot$ type in Haskell is used as {\bf undefined} type (empty sum component presented in all types), that
+   is why Hask category is not cartesian closed but CPO\cite{cpo}. The $\bot$ type has no values.
+   The $\top$ type is known as unit type or zero tuple $()$ often
+   used as an default argument for function with zero arguments.
+   Also we include here an axiom of morphism product which is given during full definition
+   of product using commutative diagram. This axiom is needed for applicative
+   programming in categorical abstract machine. Also consider co-version of this
+   axiom for $[f,g]: B+C \rightarrow A$ morphism sums.
 
 \begin{prooftree}
 \AxiomC{$\Gamma \vdash\ f:A \rightarrow B$ }
@@ -237,9 +244,9 @@ $\langle \pi_1, \pi_2 \rangle = id$\\
 
 \newpage
    \subsection{Exponential, $\lambda$-calculus and Cartesian Closed Categories}
-  Being an internal language of cartesian closed category, lambda calculus except variables and constants
-  provides two operations of abstraction and applications which defines complete evaluation language
-  with higher order functions, recursion and corecursion, etc.
+   Being an internal language of cartesian closed category, lambda calculus except variables and constants
+   provides two operations of abstraction and applications which defines complete evaluation language
+   with higher order functions, recursion and corecursion, etc.
 
    \paragraph{}
    To explain functions from the categorical point of vew we need to define categorica exponential
@@ -270,7 +277,6 @@ $\langle \pi_1, \pi_2 \rangle = id$\\
 }
 \hspace{0.1cm}
 \parbox[t][][r]{0.60\textwidth}{
-
 
 \begin{center}
 $apply \circ \langle (curry\ f) \circ \pi_1 , \pi_2 \rangle = f$\\
@@ -344,27 +350,23 @@ $curry\ apply = id$\\
 
 \newpage
    \subsection{Process Calculus}
-   Теорія $\pi$-числення процесів Роберта Мілнера є основним формалізмом обчислювальної
-   теорії розподілених систем та її імплементації. З часів виникнення CSP числення розробленого Хоаром,
-   Мілнеру вдалося значно розширити та адаптувати теорію до сучасних
-   телекомунікаційних вимог, як наприклад хендовери в мобільних мережах.
-   Основні теорми в моделі $\pi$-числення стосуються непротиречивості та неблокованості
-   у синхронному виконанні мобільних процесів. Так як сучасний Web можно розглядати
-   як телекомунікаційну систему, тому у розробці додатків можна покладатися у тому
-   числі і на такі моделі як $\pi$-числення.
+   Thr $\pi$-calculus of processes by Robert Milner is basic formalism for distributed
+   computational theory and its implementations. From origin times of CSP developed by Hoare,
+   Milner significanly evolved the theory and adopted it to contemporary telecommunication requirements,
+   such as hangovers in mobile networks.
 
   \subsection*{Process and Protocols}
-  Також ми анонсуємо процес як фундаменльний тип даних, подібний до функції але який здатний
-  тримати певний стан у вигляді типа коротежа та є морфізмом-одиницею типу свого стану.
+  We announce process and a fundamental function type of a special signature with protocol $\Sigma$ and
+  state $X$.
 
 \begin{prooftree}
 \AxiomC{$\Gamma\ \vdash E, \Sigma, X$ }
 \AxiomC{$\Gamma\ \vdash action : \Sigma \times X \rightarrow \Sigma \times X$ }
-\BinaryInfC{$\Gamma \vdash {spawn}\ action : \pi_\Sigma $}
+\BinaryInfC{$\Gamma \vdash {spawn}\ action : \pi_(\Sigma,X) $}
 \end{prooftree}
 
 \begin{prooftree}
-\AxiomC{$\Gamma\ \vdash pid : \pi_\Sigma$ }
+\AxiomC{$\Gamma\ \vdash pid : \pi_(\Sigma,X)$ }
 \AxiomC{$\Gamma\ \vdash msg : \Sigma$ }
 \BinaryInfC{$\Gamma \vdash join\ msg\ pid : \Sigma \times \pi_\Sigma \xrightarrow{\bullet} \Sigma$;
             $\Gamma \vdash send\ msg\ pid : \Sigma \times \pi_\Sigma \rightarrow \Sigma$}
@@ -597,9 +599,9 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \bibitem{andjelko}   S.Andjelkovic \textit{A family of universes for generic programming} 2011
 \bibitem{alacarte}   W.Swierstra \textit{Data types a` la carte} 2011
 \bibitem{catlogic}   B.Jacobs \textit{Categorical Logic and Type Theory} 1999
-% \bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation} 
+% \bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation}
 \bibitem{kaes}       S.Kaes \textit{http://tuprints.ulb.tu-darmstadt.de/epda/000544/diss.pdf} 2005
-
+\bibitem{cpo}        NA.Danielsson,J.Hughes,J.Gibbons \textit{Fast and Loose Reasoning is Morally Correct} 2006
 
 \end{thebibliography}
 

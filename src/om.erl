@@ -5,6 +5,8 @@
 -export([init/1, start/2, stop/1]).
 -compile(export_all).
 
+% provided functions
+
 a(X)        -> {_,[R]}=om_parse:expr(flat([om:str(X)]),[]),R.
 main(A)     -> mad:main(A).
 start()     -> start(normal,[]).
@@ -15,12 +17,15 @@ type(F)     -> {_,[X]}=parse(lists:concat(["priv/",F])),X.
 parse(F)    -> om_parse:expr(read(F),[]).
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).
-file(F)     -> {ok,Bin} = file:read_file(F), Bin.
+file(F)     -> {ok,Bin} = read_file(F), Bin.
 scan()      -> [ show(F) || F <- filelib:wildcard("priv/**/*"), filelib:is_dir(F) /= true ], ok.
-show(F)     -> error_logger:info_msg("~130p~n~ts~n~130tp~n",[F,file(F),parse(F)]).
+show(F)     -> error("~130p~n~ts~n~130tp~n",[F,file(F),parse(F)]).
 
-% om parser depends on three functions:
+% relying function
 
-rev(X)      -> lists:reverse(X).
-flat(X)     -> lists:flatten(X).
-tokens(X,Y) -> string:tokens(X,Y).
+rev(X)       -> lists:reverse(X).
+flat(X)      -> lists:flatten(X).
+tokens(X,Y)  -> string:tokens(X,Y).
+print(S,A)   -> io_lib:format(S,A).
+error(S,A)   -> error_logger:info_msg(S,A).
+read_file(F) -> file:read_file(F).
