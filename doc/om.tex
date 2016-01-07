@@ -24,7 +24,7 @@
                                to minimal pure type system core\\ }\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
-    \vspace{4cm}   {\Large December 2015}
+    \vspace{4cm}   {\Large Kyiv 2016}
 
 \end{center}
 
@@ -216,7 +216,7 @@ Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = 
    \paragraph{}
 
    The $\bot$ type in Haskell is used as {\bf undefined} type (empty sum component presented in all types), that
-   is why Hask category is not cartesian closed but CPO\cite{cpo}. The $\bot$ type has no values.
+   is why Hask category is not based on cartesian closed but CPO\cite{cpo}. The $\bot$ type has no values.
    The $\top$ type is known as unit type or zero tuple $()$ often
    used as an default argument for function with zero arguments.
    Also we include here an axiom of morphism product which is given during full definition
@@ -287,23 +287,47 @@ $curry\ apply = id$\\
 \end{center}
 
 \begin{center}
-Об’єкти : $\bot\ |\ \rightarrow\ |\ \times$\\
-Морфізми : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\ curry$
+Objects : $\bot\ |\ \rightarrow\ |\ \times$\\
+Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\ curry$
 \end{center}
 
 }
 \endgroup
 
-   \subsection{Functors}
+  \subsection{Functors}
+
+  Functor comes as a notion of morphisms in categories whose objects are categories.
+  Functors should preserve compositions of arrows and identities, otherwise it would
+  be impossible to deal with categories. One level up is notion of morphism between categories whose
+  objects are Functors, such morphisms are called natural transformations. Here we need
+  only functor definition which is needed as general type declarations.
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash f\ :\ A \rightarrow B$}
+\UnaryInfC{$\Gamma \vdash F\ f\ :\ (A \rightarrow B) \rightarrow (F\ a \rightarrow F\ b)$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash id_A\ :A \rightarrow A$}
+\UnaryInfC{$\Gamma \vdash F\ id_A\ =\ id_{F A}\ :\ F\ A \rightarrow F\ A$}
+\end{prooftree}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash f\ :B \rightarrow C,\ g : A \rightarrow B$}
+\UnaryInfC{$\Gamma \vdash F\ f \circ F\ g\ =\ F (f \circ g)\ :\ F\ A \rightarrow F\ C$}
+\end{prooftree}
+
+   We start thinking of functors on dealing with typed theories, because functors usually
+   could be seen as higher order type con
 
 \newpage
 
    \subsection{Recursive Types}
 
-  As was shown by Wadler in Recursive Types for Free! we could deal with recusrive equations having
+  As was shown by Wadler\cite{recursive} we could deal with recusrive equations having
   three axioms: one $fix: (A \rightarrow A) \rightarrow A$ fixedpoint axiom,
   and axioms $in: F\ T \rightarrow T$ and $out: T \rightarrow F\ T$ of recursion direction. We need to
-  define fixed point as axiom because we can't produce recursive axioms. This axioms
+  define fixed point as axiom because we can't define recursive axioms. This axioms
   also needs functor axiom defined earlier.
 
   \paragraph{}
@@ -314,11 +338,11 @@ $curry\ apply = id$\\
   recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.
 
   \paragraph{}
-   As we know there are several ways to appear for variable in recursive algebraic type.
-   Least fixpoint are known as an recursive expressions that have a base of recursion
-   Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
-   as an non-recursive definitions of folds that include in indentity signature all the
-   constructor components of inductive or coinductive type.
+  As we know there are several ways to appear for variable in recursive algebraic type.
+  Least fixpoint are known as an recursive expressions that have a base of recursion
+  Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
+  as an non-recursive definitions of folds that include in indentity signature all the
+  constructor components of (co)inductive type.
 
 \begingroup
 \parbox[t][][l]{0.40\textwidth}{
@@ -328,14 +352,15 @@ $curry\ apply = id$\\
 \UnaryInfC{$\Gamma \vdash in_{\mu F}\ M : \mu\ F$}
 \end{prooftree}
 
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
-
 \begin{prooftree}
 \AxiomC{$\Gamma  \vdash M : \mu F$}
 \UnaryInfC{$\Gamma \vdash out_{\mu F}\ M : F\ (\mu\ F)$}
 \end{prooftree}
+
+}
+\hspace{0.1cm}
+\parbox[t][][r]{0.60\textwidth}{
+
 
 \begin{prooftree}
 \AxiomC{$\Gamma  \vdash M : A \rightarrow A$}
@@ -599,7 +624,7 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \bibitem{andjelko}   S.Andjelkovic \textit{A family of universes for generic programming} 2011
 \bibitem{alacarte}   W.Swierstra \textit{Data types a` la carte} 2011
 \bibitem{catlogic}   B.Jacobs \textit{Categorical Logic and Type Theory} 1999
-% \bibitem{pointfree}  A.Cuhna,J,Sousa Pinto, J.Proenca \textit{A Framework for Point-Free Program Transformation}
+\bibitem{pointfree}  A.Cuhna,J.Pinto,J.Proenca \textit{A Framework for Point-Free Program Transformation}
 \bibitem{kaes}       S.Kaes \textit{http://tuprints.ulb.tu-darmstadt.de/epda/000544/diss.pdf} 2005
 \bibitem{cpo}        NA.Danielsson,J.Hughes,J.Gibbons \textit{Fast and Loose Reasoning is Morally Correct} 2006
 
