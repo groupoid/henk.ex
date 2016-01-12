@@ -13,10 +13,10 @@ succ () -> fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat,[Succ,Zero])
 
 list () -> [{X,?MODULE:X()}||X<-[cons,nil]].
 nil  () ->                          fun (Cons) -> fun (Nil) -> Nil end end.
-cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> [A|[]] end end end end.
+cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(List,[Cons,Nil])]) end end end end.
 
 church (0) -> zero();
-church (I) -> fun (Succ) -> fun(Zero) -> ap(F,[ap(church(I-1),[Succ,Zero])]) end end.
+church (I) -> fun (Succ) -> fun(Zero) -> ap(Succ,[ap(church(I-1),[Succ,Zero])]) end end.
 
 unchurch (N) -> ap(N,[inc(),0]).
 
