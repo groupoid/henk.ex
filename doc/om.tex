@@ -392,9 +392,9 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
 \begin{tabular}{lcl}
 \begin{tikzcd}
   F\ C \arrow{d}[left]{F\ f} \arrow{r}{\varphi} & C \arrow{d}{f} \\
-  C \arrow{r}{\psi} & D \end{tikzcd} & & \begin{tikzcd}
+  F\ D \arrow{r}{\psi} & D \end{tikzcd} & & \begin{tikzcd}
   C \arrow{d}[left]{f} \arrow{r}{\varphi} & F\ C \arrow{d}{F\ f} \\
-  D \arrow{r}{\psi} & C \end{tikzcd} \\
+  D \arrow{r}{\psi} & F\ D \end{tikzcd} \\
   \ & \  &\  \\
   $f \circ \varphi = \psi \circ F\ f$ & & $\psi \circ f =  F\ f \circ \varphi$ \\
 \end{tabular}
@@ -403,19 +403,22 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   \subsection{Initial Algebras}
 
   A F-algebra $(\mu F, in)$ is the initial F-algebra if for any F-algebra $(C, \varphi)$
-  there exists a unique arrow $\varphi : \mu F \rightarrow C$ where $f = \llparenthesis \varphi \rrparenthesis$
-  and is called catamorphism.
+  there exists a unique arrow $\llparenthesis \varphi \rrparenthesis : \mu F \rightarrow C$ where $f = \llparenthesis \varphi \rrparenthesis$
+  and is called catamorphism. Similar a F-coalgebra $(\nu F, out)$ is the terminal
+  F-coalgebra if for any F-coalgebra $(C, \varphi)$ there exists unique arrow
+  $\llbracket \varphi \rrbracket : C \rightarrow \nu F$ where $f = 
+  \llbracket \varphi \rrbracket$
 
 \begin{center}
 \begin{tabular}{lcl}
 \begin{tikzcd}
   F\ \mu F \arrow{d}[left]{F\ \llparenthesis \varphi \rrparenthesis} \arrow{r}{in} & \mu F \arrow{d}{\llparenthesis \varphi \rrparenthesis} \\
   F C \arrow{r}{\varphi} & C \end{tikzcd} & & \begin{tikzcd}
-  C \arrow{d}[left]{[(\varphi )]} \arrow{r}{\phi} & F\ C\arrow{d}{F\ \llparenthesis \varphi \rrparenthesis} \\
+  C \arrow{d}[left]{ \llbracket \varphi \rrbracket} \arrow{r}{\phi} & F\ C\arrow{d}{F\ \llbracket \varphi \rrbracket} \\
   \nu F \arrow{r}{out} & F \nu F\end{tikzcd} \\
   \ & \  &\  \\
-  $f \circ in = \varphi \circ F\ f \equiv f = \rparen\rbrack \varphi \rrparenthesis$& &
-  $out \circ f = F\ f \circ \varphi \equiv f = \lBrack \varphi \rBrack$ \\
+  $f \circ in = \varphi \circ F\ f \equiv f = \llparenthesis \varphi \rrparenthesis$& &
+  $out \circ f = F\ f \circ \varphi \equiv f = \llbracket \varphi \rrbracket$ \\
 \end{tabular}
 \end{center}
 
