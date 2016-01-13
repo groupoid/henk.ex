@@ -64,7 +64,7 @@
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
    It is based only on $\pi$, $\lambda$ and $apply$ constructions, one axiom and four deduction rules.
-   The design of Exe language resemble Henk and Morte both design and implementation.
+   The design of Om language resemble Henk and Morte both design and implementation.
    This language indended to be small, conside, easy provable and clean and produce
    verifiable peace of code that can be distributed over the networks and compiled at target with
    safe linkage.
@@ -136,8 +136,8 @@
 \endgroup
 
 \paragraph{}
-Composition shows an ability to connect the area of values of the previous evaluation (codoman)
-and are of defenition the next evaluation (domain). Composition is fundamental property of morphisms
+Composition shows an ability to connect the result space of the previous evaluation (codomain)
+and the arguments space of the next evaluation (domain). Composition is fundamental property of morphisms
 that allows us to chain evaluations.
 
 \paragraph{}
@@ -372,6 +372,52 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
 
    Not that there is a class of recursive types such when fixpoint is defined in codomain of morphism,
    such terms could not be normalized.
+
+\vspace{1cm}
+
+
+
+\newpage
+   \subsection{Algebras}
+
+   F-Algebras gives us a categorical understanding recursive types.
+   Let $F : C \rightarrow C$ be an endofunctor on category $C$.
+   An F-algebra is a pair $(C, \phi)$, where C is an object and $\phi\ : F\ C \rightarrow C$
+   an arrow in the category C. The object C is the carrier and the functor
+   F is the signature of the algebra. Reversing arrows gives us F-Coalgebra.
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular}{lcl}
+\begin{tikzcd}
+  F\ C \arrow{d}[left]{F\ f} \arrow{r}{\varphi} & C \arrow{d}{f} \\
+  C \arrow{r}{\psi} & D \end{tikzcd} & & \begin{tikzcd}
+  C \arrow{d}[left]{f} \arrow{r}{\varphi} & F\ C \arrow{d}{F\ f} \\
+  D \arrow{r}{\psi} & C \end{tikzcd} \\
+  \ & \  &\  \\
+  $f \circ \varphi = \psi \circ F\ f$ & & $\psi \circ f =  F\ f \circ \varphi$ \\
+\end{tabular}
+\end{center}
+
+  \subsection{Initial Algebras}
+
+  A F-algebra $(\mu F, in)$ is the initial F-algebra if for any F-algebra $(C, \varphi)$
+  there exists a unique arrow $\varphi : \mu F \rightarrow C$ where $f = \llparenthesis \varphi \rrparenthesis$
+  and is called catamorphism.
+
+\begin{center}
+\begin{tabular}{lcl}
+\begin{tikzcd}
+  F\ \mu F \arrow{d}[left]{F\ \llparenthesis \varphi \rrparenthesis} \arrow{r}{in} & \mu F \arrow{d}{\llparenthesis \varphi \rrparenthesis} \\
+  F C \arrow{r}{\varphi} & C \end{tikzcd} & & \begin{tikzcd}
+  C \arrow{d}[left]{[(\varphi )]} \arrow{r}{\phi} & F\ C\arrow{d}{F\ \llparenthesis \varphi \rrparenthesis} \\
+  \nu F \arrow{r}{out} & F \nu F\end{tikzcd} \\
+  \ & \  &\  \\
+  $f \circ in = \varphi \circ F\ f \equiv f = \rparen\rbrack \varphi \rrparenthesis$& &
+  $out \circ f = F\ f \circ \varphi \equiv f = \lBrack \varphi \rBrack$ \\
+\end{tabular}
+\end{center}
 
 \newpage
    \subsection{Process Calculus}
