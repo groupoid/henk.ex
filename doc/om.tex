@@ -413,10 +413,10 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
    \subsection{Inductive Types}
 
   \paragraph{}
-  There is two types of recursion: one is least fixed point (as $rec\ A = 1 + (A,rec)$ or $rec\ A = A + (rec,rec)$),
+  There is two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$ or $F_A\ X = A + X\times X$),
   in other words the recursion with a base (terminated with a bounded value), lists are trees are
   examples of such recursive structures (so we call induction recursive sums); and the second
-  is greatest fixed point or recursion withour base (as $rec\ A = (A,A)$) --- such kind of
+  is greatest fixed point or recursion withour base (as $F_A\ X = A\times X $) --- such kind of
   recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.
 
   \paragraph{}
@@ -425,6 +425,40 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
   as an non-recursive definitions of folds that include in indentity signature all the
   constructor components of (co)inductive type.
+
+  \subsection{Nat}
+
+
+  \subsection{Lists}
+  The data type of lists over a given set A can be represented as the initial algebra
+  $(\mu L_A, in)$ of the functor $L_A(X) = 1 + (A \times X)$. Denote $\mu L_A = List(A)$.
+  The constructor functions $nil: 1 \rightarrow List(A)$ and
+  $cons: A \times List(A) \rightarrow List(A)$ are defined by
+  $nil = in \circ inl$ and $cons = in \circ inr$, so $in = [nil,cons]$.
+  Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
+  the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
+  is the unique solution of the equation system:\\
+
+$$
+\begin{cases}
+  f \circ nil  = c \\
+  f \circ cons = h \circ (id \times f)
+\end{cases}
+$$
+\vspace{0.4cm}
+
+  where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
+  $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
+  as catamorphism. Using this encdoding the base library of List will have following form:
+
+$$
+\begin{cases}
+ foldr = \llparenthesis [ f \circ nil , h] \rrparenthesis, f \circ cons = h \circ (id \times f)\\
+ length = \llparenthesis [ zero, \lambda (a,n) \rightarrow succ (n) ] \rrparenthesis \\
+ concat = \lambda (xs,ys) \rightarrow \llparenthesis [ \lambda (x) \rightarrow ys, cons ] \rrparenthesis (xs) \\
+ map = \lambda (f) \rightarrow \llparenthesis [ nil, cons \circ (f \times id)] \rrparenthesis
+\end{cases}
+$$
 
 \vspace{1cm}
 
