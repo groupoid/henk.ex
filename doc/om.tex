@@ -60,7 +60,7 @@
 \subsection{Intermediate Language Om}
 
    \paragraph{}
-   An intermediate Om language is base on Henk\cite{henk} languages described first
+   An intermediate Om language is based on Henk\cite{henk} languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
    It is based only on $\pi$, $\lambda$ and $apply$ constructions, one axiom and four deduction rules.
@@ -692,7 +692,7 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 
 \newpage
 
-  \subsection{Prelude}
+  \subsection{Exe Prelude}
 \vspace{1cm}
 \paragraph{}
 
@@ -745,7 +745,7 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \end{lstlisting}
 
 \newpage
-\subsection*{Normal Depended Forms}
+\subsection*{Om Normal Depended Forms}
 \vspace{1cm}
 \subsubsection*{Lists/Map}
 {\fontfamily{pcr}\selectfont
@@ -767,7 +767,6 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (a : *) $\rightarrow$ $\forall$ (Vector : ($\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ * $\rightarrow$ *) $\rightarrow$ $\forall$ (Cons : $\forall$ (m : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\forall$ (b : *) $\rightarrow$ b $\rightarrow$ Vector m b $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Succ (m Nat Succ Zero)) b) $\rightarrow$ $\forall$ (Nil : $\forall$ (b : *) $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Zero) b) $\rightarrow$ Vector n a
 }
 
-\newpage
 \begin{thebibliography}{9}
 
 \bibitem{henk}       Erik Meijer, Symon Peyton Jones \textit{Henk: a typed intermediate language} 1984
