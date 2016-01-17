@@ -462,32 +462,37 @@ $$
 $$
 
 \vspace{0.2cm}
-\subsection{Inductive Encoding}
+\subsection{Inductive Encoding and List Module}
 \vspace{0.4cm}
+\lstset{morekeywords={record,inductive}}
+
+\begin{lstlisting}[mathescape=true]
+        inductive list: (A: *) $\rightarrow$ * :=
+                  (nil: list A)
+                  (cons: A $\rightarrow$ list A $\rightarrow$ list A)
+\end{lstlisting}
 $$
 \begin{cases}
 list = \lambda\ ctor \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow ctor\\
-cons = \lambda\ x\ \rightarrow \lambda\ xs \rightarrow \lambda\ cons \rightarrow\ \lambda nil \rightarrow cons\ x\ (xs\ list\ cons\ nil)\\
-nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda nil \rightarrow nil\\
+cons = \lambda\ x\ \rightarrow \lambda\ xs \rightarrow \lambda\ list \rightarrow \lambda\ cons \rightarrow\ \lambda\ nil \rightarrow cons\ x\ (xs\ list\ cons\ nil)\\
+nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow nil\\
 \end{cases}
 $$
-
+\\
+\begin{lstlisting}[mathescape=true]
+           record lists: (A B: *) :=
+                  (len: list A $\rightarrow$ integer)
+                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
+                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
+\end{lstlisting}
 $$
 \begin{cases}
-len : [A] \rightarrow Int \\
-(++) : [A] \rightarrow [A] \rightarrow [A] \\
-map : (A \rightarrow B) \rightarrow ([A] \rightarrow [B]) \\
-filter : (A \rightarrow Bool) \rightarrow ([A] \rightarrow [A]) \\
-\end{cases}
-$$
-
-$$
-\begin{cases}
-len = foldr\ (\lambda\ x\ n \rightarrow succ\ n)\ 0 \\
-(++) = \lambda\ ys \rightarrow foldr\ cons\ ys \\
-map = \lambda\ f \rightarrow foldr\ (\lambda x\ xs \rightarrow cons\ (f\ x)\ xs)\ nil \\
-filter = \lambda\ p \rightarrow foldr\ (\lambda x\ xs \rightarrow if\ p\ x\ then\ cons\ x\ xs\ else\ xs)\ nil \\
-foldl = \lambda\ f\ v\ xs = foldr\ (\lambda\ xg\rightarrow\ (\lambda \rightarrow g\ (f\ a\ x)))\ id\ xs\ v \\
+len = foldr\ (\lambda\ x\ n \rightarrow succ\ n)\ 0\\
+(++) = \lambda\ ys \rightarrow foldr\ cons\ ys\\
+map = \lambda\ f \rightarrow foldr\ (\lambda x\ xs \rightarrow cons\ (f\ x)\ xs)\ nil\\
+filter = \lambda\ p \rightarrow foldr\ (\lambda x\ xs \rightarrow if\ p\ x\ then\ cons\ x\ xs\ else\ xs)\ nil\\
+foldl = \lambda\ f\ v\ xs = foldr\ (\lambda\ xg\rightarrow\ (\lambda \rightarrow g\ (f\ a\ x)))\ id\ xs\ v\\
 \end{cases}
 $$
 
