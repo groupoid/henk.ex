@@ -540,10 +540,6 @@ $$
 
 %   \subsection*{Process Algebra}
 
-%  Алгебра процесів визначає базові операції мультиплексування двох чи декількох
-%  протоколів в рамках одного процесу (добуток), а також паралельного та повністю
-%  ізольованого запуску включно зі стеком та областю памяті (сума) на
-%  віртуальній машині.
 
 % \begin{center}
 % \begin{tabular}{lcl}
@@ -556,26 +552,25 @@ $$
    \subsection{Intuitionistic Type Theory}
 
    \paragraph{}
-   Розбудовуючи певний фреймворк чи систему конструктивними методами
-   так чи інакше доведеться зробити певний вибір у мові та способі кодування.
-   Так при розробці теорії абстрактної алгебри в Coq були використані
-   поліморфні індуктивні структури\cite{coqalg}. Однак Agda та Idris використувують
-   для побудови алгебраїчної теорії типи класів, а у Idris взагалі відсутні
-   поліморфірні індуктивні структури та коіндуктивні структури. В Lean
-   теж відсутні коіндуктивні структури проте повністю реалізована теорія
-   HoTT на нерекурсивних поліморфних структурах що обєднує основні чотири
-   класи математичних теорій: логіка, топологія, теорія множин, теорія типів.
-   Як було показано Стефаном Касом\cite{kaes}, одна з
-   стратегій імплементації типів класів --- це використання поліморфних структур.
-   Хоча в Lean також підтримуються типи класів нами була вибрана стратегія
-   імплементації нашої теорії з використаннями нерекурсивних індуктивних структур,
-   що дозволить нам оперувати з персистентними структурами на низькому рівні.
-   Крім того такий спосіб кодування ієрархій повністю відповідає семантиці Erlang,
-   де немає типів класів, а дані передаються запаковані в кортежі-структури.
+   Using Build Yourself Type Teory approach sooner or later
+   you should decide the pallete of inductive structures. Such in Coq
+   abstract algebra framework was built upon polymorphic records\cite{coqalg} rather
+   that type classes engine like it is used in Agda and Idris. However
+   Idris still lack of polymorphic records and coinductive types. Lean also
+   lack of coinductive structures but has powerful non-recursive polymorphic records
+   which are user in Lean HoTT library.
+
+   \paragraph{}
+   As was show by Spephan Kaes\cite{kaes}, one of strategy of type clasess engine
+   implementataion is using polymorphic structures which allows us do deal with
+   persistent structures on a low theoretical level. Moreover this style of coding
+   is completly compatible with Erlang records which are used to model KVS and N2O hierarchies.
 
   \subsection{Logic and Quantification}
 
-Далі йдуть квантори $\forall$ та $\exists$ які теж виражаються як конструкції типів:
+  Depended product is generalisation of exponential or function definition, when domain of morphism is depended on codomain.
+  Depended sum is generalisation of cartesian product when one element depends on anotehr.
+  Depended product is noted as $\forall$ and depended sum is noted as $\exists$:
 
 \begingroup
 \parbox[t][][l]{0.40\textwidth}{
@@ -632,11 +627,11 @@ $$
 
 \begin{center}
 \begin{tabular}{lll}
-  рефлексивність &:& $Id_A(a,a)$ \\
-  підстановка    &:& $Id_A(a,a') \rightarrow B(x=a) \rightarrow B(x=a')$ \\
-  симетричність  &:& $Id_A(a,b) \rightarrow Id_A(b,a)$  \\
-  транзитивність &:& $Id_A(a,b) \rightarrow Id_A(b,c) \rightarrow Id_A(a,c)$ \\
-  конгруентність &:& $(f: A \rightarrow B) \rightarrow Id_A(x,x') \rightarrow Id_B(f(x),f(x'))$ \\
+  reflexivity     &:& $Id_A(a,a)$ \\
+  substitution    &:& $Id_A(a,a') \rightarrow B(x=a) \rightarrow B(x=a')$ \\
+  symmetry        &:& $Id_A(a,b) \rightarrow Id_A(b,a)$  \\
+  transitivity    &:& $Id_A(a,b) \rightarrow Id_A(b,c) \rightarrow Id_A(a,c)$ \\
+  congruence      &:& $(f: A \rightarrow B) \rightarrow Id_A(x,x') \rightarrow Id_B(f(x),f(x'))$ \\
 \end{tabular}
 \end{center}
 
@@ -780,8 +775,6 @@ $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightar
 % \bibitem{baer}       A.Baer \textit{Programming with Algebraic Effects and Handlers} 2012
 \bibitem{curien1}    Pierre-Louis Curien \textit{Category theory: a programming language-oriented introduction}
 % \bibitem{lawvere}    William Lawvere. \textit{Conceptual Mathematics} 1997.
-% \bibitem{mclane}     Сандерс Мак Лейн. \textit{Категории для работающего математика.} 2004.
-% \bibitem{bakur}      И.Бакур, А.Деляну. \textit{Введение в теорию категори и функторов.} 1972.
 % \bibitem{comm}       Robin Milner. \textit{A Calculus of Communicating Systems.} 1986.
 % \bibitem{commpi}     Robin Milner. \textit{Communicating and Mobile Systems: The $\pi$-calculus.} 1999.
 % \bibitem{polypi}     Robin Milner. \textit{The Polyadic $\pi$-Calculus: A Tutorial.} 1993.
@@ -799,34 +792,34 @@ $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightar
 \end{thebibliography}
 \newpage
 
+%
+%\begin{lstlisting}[mathescape=true]
+%> om:show("priv/List/@").
+%
+%=INFO REPORT==== 22-Dec-2015::10:01:10 ===
+%"priv/List/@"
+%  $\lambda$ (a: *)
+%$\rightarrow$ $\forall$ (List: *)
+%$\rightarrow$ $\forall$ (Cons:
+%    $\forall$ (head: a)
+%  $\rightarrow$ $\forall$ (tail: List)
+%  $\rightarrow$ List)
+%$\rightarrow$ $\forall$ (Nil: List)
+%$\rightarrow$ List
 
-\begin{lstlisting}[mathescape=true]
-> om:show("priv/List/@").
-
-=INFO REPORT==== 22-Dec-2015::10:01:10 ===
-"priv/List/@"
-  $\lambda$ (a: *)
-$\rightarrow$ $\forall$ (List: *)
-$\rightarrow$ $\forall$ (Cons:
-    $\forall$ (head: a)
-  $\rightarrow$ $\forall$ (tail: List)
-  $\rightarrow$ List)
-$\rightarrow$ $\forall$ (Nil: List)
-$\rightarrow$ List
-
-{[],
- [{lambda,{{arg,a},
-           {const,star},
-           {pi,{{arg,'List'},
-                {const,star},
-                {pi,{{arg,'Cons'},
-                     {pi,{{arg,head},
-                          {var,{a,0}},
-                          {pi,{{arg,tail},
-                               {var,{'List',0}},
-                               {var,{'List',0}}}}}},
-                     {pi,{{arg,'Nil'},
-                          {var,{'List',0}},
-                          {var,{'List',0}}}}}}}}}}]}
-\end{lstlisting}
+%{[],
+% [{lambda,{{arg,a},
+%           {const,star},
+%           {pi,{{arg,'List'},
+%                {const,star},
+%                {pi,{{arg,'Cons'},
+%                     {pi,{{arg,head},
+%                          {var,{a,0}},
+%                          {pi,{{arg,tail},
+%                               {var,{'List',0}},
+%                               {var,{'List',0}}}}}},
+%                     {pi,{{arg,'Nil'},
+%                          {var,{'List',0}},
+%                          {var,{'List',0}}}}}}}}}}]}
+%\end{lstlisting}
 \end{document}
