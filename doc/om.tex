@@ -20,9 +20,8 @@
 
 \vspace{3cm}
 
-    \vspace{3cm}   {\Large \bf Theoretical Foundation of \\ \vspace{0.2cm}
-                                Functional Language with Inductive Constructions\\ \vspace{0.2cm}
-                                that compiles to Pure Type System\\}\par
+    \vspace{3cm}   {\Large \bf Normal Form Representation of Dependent Inductive Types\\ \vspace{0.2cm}
+                                in terms of Pure Type System\\}\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
     \vspace{4cm}   {\Large Kyiv 2016}
@@ -426,7 +425,10 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   as an non-recursive definitions of folds that include in indentity signature all the
   constructor components of (co)inductive type.
 
-  \subsection{Nat}
+  \subsection{Peano Numbers}
+  Pointer Unary System is a category C with terminal object
+  and a carrier X having morphism $[zero: 1_C \rightarrow X,succ: X \rightarrow X]$.
+  The initial object of C is called Natural Number Objects and models Peano axiom set.
 
 \newpage
   \subsection{Lists}
@@ -464,7 +466,7 @@ $$
 \vspace{0.2cm}
 \subsection{Inductive Encoding and List Module}
 \vspace{0.4cm}
-\lstset{morekeywords={record,inductive}}
+\lstset{morekeywords={record,inductive,extends}}
 
 \begin{lstlisting}[mathescape=true]
         inductive list: (A: *) $\rightarrow$ * :=
@@ -495,6 +497,7 @@ filter = \lambda\ p \rightarrow foldr\ (\lambda x\ xs \rightarrow if\ p\ x\ then
 foldl = \lambda\ f\ v\ xs = foldr\ (\lambda\ xg\rightarrow\ (\lambda \rightarrow g\ (f\ a\ x)))\ id\ xs\ v\\
 \end{cases}
 $$
+
 
 \newpage
    \subsection{Process Calculus}
@@ -703,30 +706,76 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \vspace{1cm}
 \paragraph{}
 
-\begin{lstlisting}
-   inductive unit: * :=
-        (make: () -> unit)
+\begin{lstlisting}[mathescape=true]
+        inductive unit: * :=
+                  (make: () $\rightarrow$ unit)
 
-   inductive option: (A:*) -> * :=
-        (none: () -> option A)
-        (some: A -> option A)
+        inductive option: (A:*) $\rightarrow$ * :=
+                  (none: () $\rightarrow$ option A)
+                  (some: A $\rightarrow$ option A)
 
-   inductive product: (A:*) -> (B:*) -> * :=
-        (make: (a:A) -> (b:B) -> prod A B)
+        inductive product: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
+                  (make: (a:A) $\rightarrow$ (b:B) $\rightarrow$ prod A B)
 
-   inductive sum: (A:*) -> (B:*) -> * :=
-        (make: (a:A) -> (b:B) -> sum A B)
+        inductive sum: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
+                  (make: (a:A) $\rightarrow$ (b:B) -> sum A B)
 
-   inductive list: (A:*) -> * :=
-        (nil: () -> list A)
-        (cons: A -> list A -> list A)
+        inductive list: (A:*) $\rightarrow$ * :=
+                  (nil: () $\rightarrow$ list A)
+                  (cons: A $\rightarrow$ list A $\rightarrow$ list A)
 
-   inductive eq: (A:*) -> A -> A -> * :=
-        (refl: (x:A) -> eq A x x)
+        inductive eq: (A:*) $\rightarrow$ A $\rightarrow$ A $\rightarrow$ * :=
+                  (refl: (x:A) $\rightarrow$ eq A x x)
 
-   inductive exists: (A:*) -> (A -> *) -> * :=
-        (exists-intro: (P: A -> *) -> (x:A) -> P x -> exists A P)
+        inductive exists: (A:*) $\rightarrow$ (A $\rightarrow$ *) $\rightarrow$ * :=
+                  (exists-intro: (P: A $\rightarrow$ *) $\rightarrow$ (x:A) $\rightarrow$ P x $\rightarrow$ exists A P)
+
+           record pure (P: * $\rightarrow$ *) (A: *) :=
+                  (return: P A)
+
+           record functor (F: * $\rightarrow$ *) (A B: *) :=
+                  (fmap: (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
+
+           record applicative (F: * $\rightarrow$ Type) (A B: *)
+          extends pure F A,
+                  functor F A B :=
+                  (ap: F (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
+
+           record monad (F: * $\rightarrow$ *) (A B: Type)
+          extends pure F A,
+                  functor F A B :=
+                  (join: F (F A) $\rightarrow$ F B)
+
+           record lists: (A B: *) :=
+                  (len: list A $\rightarrow$ integer)
+                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
+                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
+
 \end{lstlisting}
+
+\newpage
+\subsection*{Normal Depended Forms}
+\vspace{1cm}
+\subsubsection*{Lists/Map}
+{\fontfamily{pcr}\selectfont
+\vspace{0.5cm}
+$\lambda$ (a: *) $\rightarrow$ $\lambda$ (b: *) $\rightarrow$ $\lambda$ (f: a $\rightarrow$ b) $\rightarrow$ $\lambda$ (xs: $\forall$ (List: *)
+$\rightarrow$ $\forall$ (Cons: $\forall$ (head: a) $\rightarrow$ $\forall$ (tail: List) $\rightarrow$ List) $\rightarrow$ $\forall$ (Nil: List) $\rightarrow$ List)
+$\rightarrow$ xs ($\forall$ (List: *) $\rightarrow$ $\forall$ (Cons: $\forall$ (head: b) $\rightarrow$ $\forall$ (tail: List) $\rightarrow$ List)
+$\rightarrow$ $\forall$ (Nil: List) $\rightarrow$ List) ($\lambda$ (head: a) $\rightarrow$ $\lambda$ (tail: $\forall$ (List: *) $\rightarrow$
+$\forall$ (Cons: $\forall$ (head: b) $\rightarrow$ $\forall$ (tail: List) $\rightarrow$ List) $\rightarrow$ $\forall$ (Nil: List)
+$\rightarrow$ List) $\rightarrow$ $\lambda$ (List: *) $\rightarrow$ $\lambda$ (Cons: $\forall$ (head: b) $\rightarrow$ $\forall$
+(tail: List) $\rightarrow$ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Cons (f head) (tail List Cons Nil))
+($\lambda$ (List: *) $\rightarrow$ $\lambda$ (Cons: $\forall$ (head: b) $\rightarrow$ $\forall$ (tail: List) $\rightarrow$
+List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
+}
+
+\subsubsection*{Vector}
+{\fontfamily{pcr}\selectfont
+\vspace{0.5cm}
+$\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (a : *) $\rightarrow$ $\forall$ (Vector : ($\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ * $\rightarrow$ *) $\rightarrow$ $\forall$ (Cons : $\forall$ (m : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\forall$ (b : *) $\rightarrow$ b $\rightarrow$ Vector m b $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Succ (m Nat Succ Zero)) b) $\rightarrow$ $\forall$ (Nil : $\forall$ (b : *) $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Zero) b) $\rightarrow$ Vector n a
+}
 
 \newpage
 \begin{thebibliography}{9}
