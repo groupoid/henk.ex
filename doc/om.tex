@@ -726,12 +726,12 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
            record functor (F: * $\rightarrow$ *) (A B: *) :=
                   (fmap: (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
 
-           record applicative (F: * $\rightarrow$ Type) (A B: *)
+           record applicative (F: * $\rightarrow$ *) (A B: *)
           extends pure F A,
                   functor F A B :=
                   (ap: F (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
 
-           record monad (F: * $\rightarrow$ *) (A B: Type)
+           record monad (F: * $\rightarrow$ *) (A B: *)
           extends pure F A,
                   functor F A B :=
                   (join: F (F A) $\rightarrow$ F B)
@@ -797,5 +797,36 @@ $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightar
 % \bibitem{cpo}        NA.Danielsson,J.Hughes,J.Gibbons \textit{Fast and Loose Reasoning is Morally Correct} 2006
 
 \end{thebibliography}
+\newpage
 
+
+\begin{lstlisting}[mathescape=true]
+> om:show("priv/List/@").
+
+=INFO REPORT==== 22-Dec-2015::10:01:10 ===
+"priv/List/@"
+  $\lambda$ (a: *)
+$\rightarrow$ $\forall$ (List: *)
+$\rightarrow$ $\forall$ (Cons:
+    $\forall$ (head: a)
+  $\rightarrow$ $\forall$ (tail: List)
+  $\rightarrow$ List)
+$\rightarrow$ $\forall$ (Nil: List)
+$\rightarrow$ List
+
+{[],
+ [{lambda,{{arg,a},
+           {const,star},
+           {pi,{{arg,'List'},
+                {const,star},
+                {pi,{{arg,'Cons'},
+                     {pi,{{arg,head},
+                          {var,{a,0}},
+                          {pi,{{arg,tail},
+                               {var,{'List',0}},
+                               {var,{'List',0}}}}}},
+                     {pi,{{arg,'Nil'},
+                          {var,{'List',0}},
+                          {var,{'List',0}}}}}}}}}}]}
+\end{lstlisting}
 \end{document}
