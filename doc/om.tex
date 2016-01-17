@@ -301,7 +301,7 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   \subsection{Functors, $\Lambda$-calculus}
 
   Functor comes as a notion of morphisms in categories whose objects are categories.
-  Functors should preserve compositions of arrows and identities, otherwise it would
+  Functors preserve compositions of arrows and identities, otherwise it would
   be impossible to deal with categories. One level up is notion of morphism between categories whose
   objects are Functors, such morphisms are called natural transformations. Here we need
   only functor definition which is needed as general type declarations.
@@ -428,7 +428,7 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
 
   \subsection{Nat}
 
-
+\newpage
   \subsection{Lists}
   The data type of lists over a given set A can be represented as the initial algebra
   $(\mu L_A, in)$ of the functor $L_A(X) = 1 + (A \times X)$. Denote $\mu L_A = List(A)$.
@@ -437,30 +437,59 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   $nil = in \circ inl$ and $cons = in \circ inr$, so $in = [nil,cons]$.
   Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
   the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
-  is the unique solution of the equation system:\\
-
+  is the unique solution of the equation system:
+\vspace{0.3cm}
 $$
 \begin{cases}
   f \circ nil  = c \\
   f \circ cons = h \circ (id \times f)
 \end{cases}
 $$
-\vspace{0.4cm}
 
+\paragraph{}
   where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
   $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
   as catamorphism. Using this encdoding the base library of List will have following form:
 
+\vspace{0.5cm}
 $$
 \begin{cases}
  foldr = \llparenthesis [ f \circ nil , h] \rrparenthesis, f \circ cons = h \circ (id \times f)\\
- length = \llparenthesis [ zero, \lambda (a,n) \rightarrow succ (n) ] \rrparenthesis \\
- concat = \lambda (xs,ys) \rightarrow \llparenthesis [ \lambda (x) \rightarrow ys, cons ] \rrparenthesis (xs) \\
- map = \lambda (f) \rightarrow \llparenthesis [ nil, cons \circ (f \times id)] \rrparenthesis
+ len = \llparenthesis [ zero, \lambda\ a\ n \rightarrow succ\ n ] \rrparenthesis \\
+ (++) = \lambda\ xs\ ys \rightarrow \llparenthesis [ \lambda (x) \rightarrow ys, cons ] \rrparenthesis (xs) \\
+ map = \lambda\ f \rightarrow \llparenthesis [ nil, cons \circ (f \times id)] \rrparenthesis
 \end{cases}
 $$
 
-\vspace{1cm}
+\vspace{0.2cm}
+\subsection{Inductive Encoding}
+\vspace{0.4cm}
+$$
+\begin{cases}
+list = \lambda\ ctor \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow ctor\\
+cons = \lambda\ x\ \rightarrow \lambda\ xs \rightarrow \lambda\ cons \rightarrow\ \lambda nil \rightarrow cons\ x\ (xs\ list\ cons\ nil)\\
+nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda nil \rightarrow nil\\
+\end{cases}
+$$
+
+$$
+\begin{cases}
+len : [A] \rightarrow Int \\
+(++) : [A] \rightarrow [A] \rightarrow [A] \\
+map : (A \rightarrow B) \rightarrow ([A] \rightarrow [B]) \\
+filter : (A \rightarrow Bool) \rightarrow ([A] \rightarrow [A]) \\
+\end{cases}
+$$
+
+$$
+\begin{cases}
+len = foldr\ (\lambda\ x\ n \rightarrow succ\ n)\ 0 \\
+(++) = \lambda\ ys \rightarrow foldr\ cons\ ys \\
+map = \lambda\ f \rightarrow foldr\ (\lambda x\ xs \rightarrow cons\ (f\ x)\ xs)\ nil \\
+filter = \lambda\ p \rightarrow foldr\ (\lambda x\ xs \rightarrow if\ p\ x\ then\ cons\ x\ xs\ else\ xs)\ nil \\
+foldl = \lambda\ f\ v\ xs = foldr\ (\lambda\ xg\rightarrow\ (\lambda \rightarrow g\ (f\ a\ x)))\ id\ xs\ v \\
+\end{cases}
+$$
 
 \newpage
    \subsection{Process Calculus}
@@ -665,36 +694,33 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 
 \newpage
 
-  \subsection{Encoding Basic Type Constructors}
+  \subsection{Prelude}
 \vspace{1cm}
 \paragraph{}
-   We usually define inductive type in $\lambda C$ theorem provers by specifying
-   types as sum of lambda type constructors with return type as a definition type
 
 \begin{lstlisting}
-   type List (A: *) : * = Nil: () -> List A
-                        | Cons: A -> List A -> List A
-\end{lstlisting}
+   inductive unit: * :=
+        (make: () -> unit)
 
-   However we can omit return type from encoding but specify parameters of
-   constructors as named lambdas in Om tree:
+   inductive option: (A:*) -> * :=
+        (none: () -> option A)
+        (some: A -> option A)
 
-\begin{lstlisting}
-   type Product (A: *) (B: *) : * =        Make (a: A)      (b: B)
-   type Sum (A: *) (B: *)     : * =        Sum  (a: A)      (b: B)
-   type Option  (A: *)        : * = None | Some (value: A)
-   type List    (A: *)        : * = Nil  | Cons (head: A)   (tail: List)
-   type Unit                  : * = Make
-\end{lstlisting}
+   inductive product: (A:*) -> (B:*) -> * :=
+        (make: (a:A) -> (b:B) -> prod A B)
 
-  \subsection{Samples of Exe programs}
+   inductive sum: (A:*) -> (B:*) -> * :=
+        (make: (a:A) -> (b:B) -> sum A B)
 
-\begin{lstlisting}
+   inductive list: (A:*) -> * :=
+        (nil: () -> list A)
+        (cons: A -> list A -> list A)
 
-  $ cat List/(++)
-  '++'[a:*](as1: #List a, as2: #List a): #List a ->
-    as1 List Cons (as2 List Cons Nil)
+   inductive eq: (A:*) -> A -> A -> * :=
+        (refl: (x:A) -> eq A x x)
 
+   inductive exists: (A:*) -> (A -> *) -> * :=
+        (exists-intro: (P: A -> *) -> (x:A) -> P x -> exists A P)
 \end{lstlisting}
 
 \newpage
@@ -706,6 +732,7 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \bibitem{lof}        Per Martin-Löf \textit{Intuitionistic Type Theory.} 1984
 \bibitem{awodey}     S.Awodey \textit{Category Theory} 2010
 \bibitem{debjer}     P.Dybjer \textit{Inductive Famalies} 1997
+\bibitem{pfenning}   F.Pfenning \textit{Inductively de ned types in the Calculus of Constructions} 1989
 \bibitem{vene}       V.Vene \textit{Categorical programming with (co)inductive types} 2000
 \bibitem{baer}       A.Baer \textit{Programming with Algebraic Effects and Handlers} 2012
 \bibitem{curien1}    PL. Curien \textit{Category theory: a programming language-oriented introduction} 2008
