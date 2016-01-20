@@ -416,7 +416,14 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   in other words the recursion with a base (terminated with a bounded value), lists are trees are
   examples of such recursive structures (so we call induction recursive sums); and the second
   is greatest fixed point or recursion withour base (as $F_A\ X = A\times X $) --- such kind of
-  recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.
+  recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
+\\
+  Natural Numbers: $\mu\ X \rightarrow 1 + X$ \\
+  List A: $\mu\ X \rightarrow 1 + A \times X$ \\
+  Lambda calculus: $\mu\ X \rightarrow 1 + X \times X + X$ \\
+  Stream: $\nu\ X \rightarrow A \times X$ \\
+  Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$ \\
+  Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$ \\
 
   \paragraph{}
   As we know there are several ways to appear for variable in recursive algebraic type.
@@ -466,7 +473,6 @@ $$
 \vspace{0.2cm}
 \subsection{Inductive Encoding and List Module}
 \vspace{0.4cm}
-\lstset{morekeywords={record,inductive,extends}}
 
 \begin{lstlisting}[mathescape=true]
         inductive list: (A: *) $\rightarrow$ * :=
@@ -692,27 +698,37 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
 \paragraph{}
 
 \begin{lstlisting}[mathescape=true]
-        inductive unit: * :=
+             enum unit: * :=
                   (make: () $\rightarrow$ unit)
 
-        inductive option: (A:*) $\rightarrow$ * :=
+             enum bool: * :=
+                  (true: () $\rightarrow$ bool)
+                  (false: () $\rightarrow$ bool)
+
+             enum option: (A:*) $\rightarrow$ * :=
                   (none: () $\rightarrow$ option A)
                   (some: A $\rightarrow$ option A)
 
-        inductive product: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
+             enum product: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
                   (make: (a:A) $\rightarrow$ (b:B) $\rightarrow$ prod A B)
 
-        inductive sum: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
+             enum sum: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
                   (make: (a:A) $\rightarrow$ (b:B) -> sum A B)
 
-        inductive list: (A:*) $\rightarrow$ * :=
+             enum list: (A:*) $\rightarrow$ * :=
                   (nil: () $\rightarrow$ list A)
                   (cons: A $\rightarrow$ list A $\rightarrow$ list A)
 
-        inductive eq: (A:*) $\rightarrow$ A $\rightarrow$ A $\rightarrow$ * :=
+           record lists: (A B: *) :=
+                  (len: list A $\rightarrow$ integer)
+                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
+                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
+
+             enum eq: (A:*) $\rightarrow$ A $\rightarrow$ A $\rightarrow$ * :=
                   (refl: (x:A) $\rightarrow$ eq A x x)
 
-        inductive exists: (A:*) $\rightarrow$ (A $\rightarrow$ *) $\rightarrow$ * :=
+             enum exists: (A:*) $\rightarrow$ (A $\rightarrow$ *) $\rightarrow$ * :=
                   (exists-intro: (P: A $\rightarrow$ *) $\rightarrow$ (x:A) $\rightarrow$ P x $\rightarrow$ exists A P)
 
            record pure (P: * $\rightarrow$ *) (A: *) :=
@@ -722,20 +738,14 @@ where typevar(x) is an introduction of variable "x" to the Gamma context.
                   (fmap: (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
 
            record applicative (F: * $\rightarrow$ *) (A B: *)
-          extends pure F A,
+           extend pure F A,
                   functor F A B :=
                   (ap: F (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
 
            record monad (F: * $\rightarrow$ *) (A B: *)
-          extends pure F A,
+           extend pure F A,
                   functor F A B :=
                   (join: F (F A) $\rightarrow$ F B)
-
-           record lists: (A B: *) :=
-                  (len: list A $\rightarrow$ integer)
-                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
-                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
-                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
 
 \end{lstlisting}
 
@@ -770,6 +780,7 @@ $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightar
 \bibitem{lof}        Per Martin-Löf \textit{Intuitionistic Type Theory} 1984
 % \bibitem{awodey}     S.Awodey \textit{Category Theory} 2010
 % \bibitem{debjer}     P.Dybjer \textit{Inductive Famalies} 1997
+\bibitem{basold}       H.Basold \textit{Dependent Inductive and Coinductive Types are Fibrational Dialgebras} 
 \bibitem{pfenning}   Frank Pfenning \textit{Inductively defined types in the Calculus of Constructions} 1989
 \bibitem{vene}       Varmo Vene \textit{Categorical programming with (co)inductive types} 2000
 % \bibitem{baer}       A.Baer \textit{Programming with Algebraic Effects and Handlers} 2012
