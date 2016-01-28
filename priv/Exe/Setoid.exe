@@ -1,0 +1,23 @@
+
+   -- в первом варианте equ реализован в виде индуктивного типа с одним конструктором
+
+     enum equ (e: *): * := (mk: e → e → equ e)
+   record setoid (e: *) := (refl:  equ.mk e e)
+                           (trans: equ.mk e1 e2 → equ.mk e2 e3 → equ.mk e1 e3)
+                           (sym:   equ.mk e1 e2 → equ.mk e2 e1)
+
+   -- второй вариант на рекордах без наследования, через аксесоры
+
+   record equ (e: *): * := (rel: e → e → Prop)
+   record setoid (e: *) := (refl:  equ.rel e e)
+                           (trans: equ.rel e1 e2 → equ.rel e2 e3 → equ.rel e1 e3)
+                           (sym:   equ.rel e1 e2 → equ.rel e2 e1)
+
+   -- насдедственный полиморфизм на рекордах
+
+   record equ (e: *): * := (rel: e → e → Prop)
+   record setoid (e: *) extend equ
+                        := (refl:  rel e e)
+                           (trans: rel e1 e2 → rel e2 e3 → rel e1 e3)
+                           (sym:   rel e1 e2 → rel e2 e1)
+

@@ -1,0 +1,36 @@
+
+  record kv            := (put:      Record)
+                          (delete:   Table → Key)
+                          (get:      Table → Key)
+                          (next_id:  Table → Key)
+                          (index:    Table → Key → Value)
+
+  record kvs extend kv := (append:   Iterator)
+                          (remove:   Iterator)
+                          (fold:     Table → Key → Value)
+
+  record db extend kvs := (start:    ok + error)
+                          (stop:     ok + error)
+                          (join:     Node)
+
+  record core extend kvs :=
+
+         (generation: Table → Key → () :=
+                      (case Key - (topleft Table Key) < application.get_env kvs generation 250000
+                          | true  -> ()
+                          | false -> core.rotate Table))
+
+         (init: Backend → Module → () :=
+                lists:fold (fun (t,a: *) →
+                      Backend.create_table x.name [{attributes,t.fields},{t.copy_type,[node()]],
+                      lists:fold (fun (key: *) → Backend.add_table_index t.name key) t.keys,
+                      t)
+                Module.metainfo().tables())
+
+         (containers: () → list :=
+                lists:flatten
+                lists:fold (fun (m: *) → )
+                           (lists:fold (fun (t: *) → (case x.container
+                                                         | true → pair t.name t.fields()
+                                                         | false → [])) m.metainfo().tables()) modules())
+

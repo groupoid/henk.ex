@@ -6,6 +6,7 @@ ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
 
 id   () -> fun (X) -> X end.
 inc  () -> fun (X) -> X + 1 end.
+kons () -> fun (A) -> fun (L) -> [A|L] end end.
 
 nat_ () -> [{X,?MODULE:X()}||X<-[nat,succ,zero]].
 nat  () -> fun (Nat) -> fun (Succ) -> fun (Zero) -> Nat end end end.
@@ -20,6 +21,13 @@ cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(Lis
 nat   (0) -> zero();
 nat   (I) -> fun (Succ) -> fun(Zero) -> ap(Succ,[ap(nat(I-1),[Succ,Zero])]) end end.
 unnat (N) -> ap(N,[inc(),0]).
-main  ()  -> io:format("Zero: ~p~n", [unnat(zero())]),
+
+list  ([])       -> nil();
+list  ([A|List]) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(list(List),[Cons,Nil])]) end end.
+unlist (L)       -> ap(L,[kons(),[]]).
+
+main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
+             io:format("Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
              io:format("Test Big Numeral: ~p~n",   [unnat(nat(100000))]),
-             io:format("Two: ~p~n",  [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
+             io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
+             io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
