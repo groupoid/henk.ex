@@ -1,0 +1,2 @@
+-- Prop-test
+(\(t : #Empty/Prop-type ) -> t) #Empty/Prop

@@ -1,0 +1,2 @@
+-- Point-test
+(\(t : #Unit/Point-type ) -> t) #Unit/Point 

@@ -1,0 +1,4 @@
+-- PropB-type
+forall(lim : #Empty/Type ) ->
+forall(prop : #Empty/PropA lim)  ->
+#Prop

@@ -1,0 +1,5 @@
+-- #DEP.AND.PR-L : #DEP AND A B -> A
+\ (A : #Prop ) ->
+\ (B : A -> #Prop ) ->
+\(pair : #DEP.AND A B) ->
+pair A (\(a : A)-> \(b : B a)-> a)

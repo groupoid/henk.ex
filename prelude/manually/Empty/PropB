@@ -1,0 +1,64 @@
+-- #Empty/PropB
+\(lim : #Empty/Type ) ->
+\(prop : #Empty/PropA lim)  ->
+    forall(XEmptyElType : #Type1 ) ->
+    forall(XEmptyElProp : XEmptyElType -> #Prop ) ->
+    forall(XEmptyEqu : 
+        forall(a : XEmptyElType)->forall(aok: XEmptyElProp a)->
+        forall(b : XEmptyElType)->forall(bok : XEmptyElProp b)-> #Prop )->
+    forall(XEmptyEquRefl : 
+        forall(a : XEmptyElType)->forall(aok: XEmptyElProp a)->
+        XEmptyEqu a aok a aok)->
+    forall(XEmptyEquTrans : 
+        forall(a : XEmptyElType)->forall(aok: XEmptyElProp a)->
+        forall(b : XEmptyElType)->forall(bok: XEmptyElProp b)->
+        forall(c : XEmptyElType)->forall(cok: XEmptyElProp c)->
+        XEmptyEqu a aok b bok -> XEmptyEqu b bok c cok -> XEmptyEqu a aok c cok) ->
+    forall(XEmptyEquSym : 
+        forall(a : XEmptyElType)->forall(aok: XEmptyElProp a)->
+        forall(b : XEmptyElType)->forall(bok: XEmptyElProp b)->
+        XEmptyEqu a aok b bok -> XEmptyEqu b bok a aok) ->
+    forall(YEmptyElType : #Type1 ) ->
+    forall(YEmptyElProp : YEmptyElType -> #Prop ) ->
+    forall(YEmptyEqu : 
+        forall(a : YEmptyElType)->forall(aok: YEmptyElProp a)->
+        forall(b : YEmptyElType)->forall(bok : YEmptyElProp b)-> #Prop )->
+    forall(YEmptyEquRefl : 
+        forall(a : YEmptyElType)->forall(aok: YEmptyElProp a)->
+        YEmptyEqu a aok a aok)->
+    forall(YEmptyEquTrans : 
+        forall(a : YEmptyElType)->forall(aok: YEmptyElProp a)->
+        forall(b : YEmptyElType)->forall(bok: YEmptyElProp b)->
+        forall(c : YEmptyElType)->forall(cok: YEmptyElProp c)->
+        YEmptyEqu a aok b bok -> YEmptyEqu b bok c cok -> YEmptyEqu a aok c cok) ->
+    forall(YEmptyEquSym : 
+        forall(a : YEmptyElType)->forall(aok: YEmptyElProp a)->
+        forall(b : YEmptyElType)->forall(bok: YEmptyElProp b)->
+        YEmptyEqu a aok b bok -> YEmptyEqu b bok a aok) ->
+    forall(onElType : XEmptyElType -> YEmptyElType)->
+    forall(onElProp : 
+        forall (el : XEmptyElType) -> 
+        XEmptyElProp el -> YEmptyElProp (onElType el))->
+    forall(onEqu : 
+        forall(elA : XEmptyElType)->forall(okA : XEmptyElProp elA)->
+        forall(elB : XEmptyElType)->forall(okB : XEmptyElProp elB)->
+        XEmptyEqu elA okA elB okB -> 
+        YEmptyEqu (onElType elA) (onElProp elA okA) (onElType elB) (onElProp elB okB)) ->
+    YEmptyEqu 
+        (onElType 
+            (lim 
+                XEmptyElType XEmptyElProp XEmptyEqu 
+                XEmptyEquRefl XEmptyEquTrans XEmptyEquSym)) 
+        (onElProp 
+            (lim 
+                XEmptyElType XEmptyElProp XEmptyEqu 
+                XEmptyEquRefl XEmptyEquTrans XEmptyEquSym) 
+            (prop  
+                XEmptyElType XEmptyElProp XEmptyEqu 
+                XEmptyEquRefl XEmptyEquTrans XEmptyEquSym))
+        (lim 
+            YEmptyElType YEmptyElProp YEmptyEqu 
+            YEmptyEquRefl YEmptyEquTrans YEmptyEquSym) 
+        (prop  
+            YEmptyElType YEmptyElProp YEmptyEqu 
+            YEmptyEquRefl YEmptyEquTrans YEmptyEquSym)
