@@ -1,4 +1,23 @@
 
+                           EXE Types
+                          ============
+
+                 Polynomial
+Polynomial       Non-dependent                            Non-Polynomial
+Non-Recursive    Recursive              Non-Recursive     Recursive
+Cartesian        Functorial             DepTypes          Dependent Types
+                 F-(Co)Algebras                           Fibrational F,G-Dialgebras 
+---------------- ---------------------- ----------------- ------------------------
+SUM              INDUCTIVE                                ENUM
+- Bool           - Nat                                    - Vector
+- Option         - List
+                 - IO
+
+PRODUCT          COINDUCTIVE            RECORD            RECORD
+- Pair           - Stream               - Functor         - InfGraph
+                 - Process              - Applicative
+                                        - Monad
+
 Imagine we want to tag value with types {Type,Value}.
 
 Erlang simple types
