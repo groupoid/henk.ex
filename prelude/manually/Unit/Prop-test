@@ -1,0 +1,2 @@
+-- Prop-test
+(\(t : #Unit/Prop-type ) -> t) #Unit/Prop

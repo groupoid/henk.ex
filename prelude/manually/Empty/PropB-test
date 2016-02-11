@@ -1,0 +1,2 @@
+-- PropB-test
+(\(t : #Empty/PropB-type ) -> t) #Empty/PropB

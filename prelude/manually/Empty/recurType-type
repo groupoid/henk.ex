@@ -1,0 +1,21 @@
+-- recurType-type
+forall(EmptyElType : #Type1 ) ->
+forall(EmptyElProp : EmptyElType -> #Prop ) ->
+forall(EmptyEqu : 
+    forall(a : EmptyElType)->forall(aok : EmptyElProp a)->
+    forall(b : EmptyElType)->forall(bok : EmptyElProp b)-> 
+    #Prop )->
+forall(EmptyEquRefl : 
+    forall(a : EmptyElType)->forall(aok: EmptyElProp a)->
+    EmptyEqu a aok a aok)->
+forall(EmptyEquTrans : 
+    forall(a : EmptyElType)->forall(aok: EmptyElProp a)->
+    forall(b : EmptyElType)->forall(bok: EmptyElProp b)->
+    forall(c : EmptyElType)->forall(cok: EmptyElProp c)->
+    EmptyEqu a aok b bok -> EmptyEqu b bok c cok -> EmptyEqu a aok c cok) ->
+forall(EmptyEquSym : 
+    forall(a : EmptyElType)->forall(aok: EmptyElProp a)->
+    forall(b : EmptyElType)->forall(bok: EmptyElProp b)->
+    EmptyEqu a aok b bok -> EmptyEqu b bok a aok) ->
+#Empty/Type ->
+EmptyElType

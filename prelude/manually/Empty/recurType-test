@@ -1,0 +1,2 @@
+-- recurType-test
+(\(t : #Empty/recurType-type ) -> t) #Empty/recurType

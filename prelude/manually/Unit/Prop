@@ -1,0 +1,3 @@
+-- #Unit/Prop : #Unit/Type -> #Prop
+\(lim : #Unit/Type ) ->
+#DEP.AND (#Unit/PropA lim) (#Unit/PropB lim)

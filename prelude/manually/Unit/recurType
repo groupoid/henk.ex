@@ -1,0 +1,23 @@
+-- recurType
+\(UnitElType : #Type1 ) ->
+\(UnitElProp : UnitElType -> #Prop ) ->
+\(UnitEqu : 
+    forall(a : UnitElType)->forall(aok : UnitElProp a)->
+    forall(b : UnitElType)->forall(bok : UnitElProp b)-> 
+    #Prop )->
+\(UnitEquRefl : 
+    forall(a : UnitElType)->forall(aok: UnitElProp a)->
+    UnitEqu a aok a aok)->
+\(UnitEquTrans : 
+    forall(a : UnitElType)->forall(aok: UnitElProp a)->
+    forall(b : UnitElType)->forall(bok: UnitElProp b)->
+    forall(c : UnitElType)->forall(cok: UnitElProp c)->
+    UnitEqu a aok b bok -> UnitEqu b bok c cok -> UnitEqu a aok c cok) ->
+\(UnitEquSym : 
+    forall(a : UnitElType)->forall(aok: UnitElProp a)->
+    forall(b : UnitElType)->forall(bok: UnitElProp b)->
+    UnitEqu a aok b bok -> UnitEqu b bok a aok) ->
+\(UnitPoint : UnitElType) ->
+\(UnitPointOk : UnitElProp UnitPoint)->
+\(lim : #Unit/Type ) ->
+lim UnitElType UnitElProp UnitEqu UnitEquRefl UnitEquTrans UnitEquSym UnitPoint UnitPointOk
