@@ -28,6 +28,8 @@ unlist (L)       -> ap(L,[kons(),[]]).
 
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
-             io:format("Test Big Numeral: ~p~n",   [unnat(nat(100000))]),
+             L = lists:seq(1,1000000),
+             io:format("Pack/Unpack 100 000 Inductive Nat: ~p~n",   [timer:tc(fun () ->unnat(nat(100000)) end)]),
+             io:format("Pack/Unpack 100 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () ->unlist(list(L)) end)),'_'}]),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
