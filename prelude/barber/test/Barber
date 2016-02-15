@@ -1,0 +1,2 @@
+-- #Barber: #Set
+(\(t: #Set )-> t) #Barber
