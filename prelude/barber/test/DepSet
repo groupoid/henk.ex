@@ -1,0 +1,2 @@
+-- #DepSet: \/(Arg: \/(elem: *)-> \/(open: elem -> #Set )-> *)-> #Set -> *
+(\(t: \/(Arg: \/(elem: *)-> \/(open: elem -> #Set )-> *)-> #Set -> *)-> t) #DepSet
