@@ -2,11 +2,12 @@
 -description('Om Tokenizer').
 -compile(export_all).
 -define(is_space(C), C==$\r; C==$\s; C==$\t).
--define(is_alpha(C), C>=$a,  C=<$z;  C>=$A,  C=<$Z;  C>=$0,  C=<$9;  C==$@;  C==$#;  C==$_; C==$/; C==$.).
--define(is_termi(C), C==$!;  C==$$;  C==$%;  C==$&;  C==$(;  C==$:;  C==$~;  C==$+;  C==$|; C==$-;
-                     C==$*;  C==$.;  C==$);  C==$<;  C==$>;  C==$=;  C==$^).
+-define(is_alpha(C), C>=$a,  C=<$z;  C>=$A,  C=<$Z;  C>=$0,  C=<$9;  C==$@;  C==$#;  C==$_; C==$/; C==$-; C==$+; C==$.).
+-define(is_termi(C), C==$!;  C==$$;  C==$%;  C==$&;  C==$(;  C==$:;  C==$~;  C==$+;  C==$-; C==$|; C==$,;
+                     C==$*;  C==$);  C==$<;  C==$>;  C==$=;  C==$^).
 
 tokens(<<>>,                    _, {_,C}, Acc)  -> om:rev(stack(C,Acc));
+tokens(<<"--"/utf8, R/binary>>, L, {F,C}, Acc) when F /= a andalso F /= t -> tokens(R,L,{c,[]},     stack(C,Acc));
 tokens(<<$\n,       R/binary>>, L, {_,C}, Acc)  -> tokens(R,L+1,{1,[]},   stack(C,Acc));
 tokens(<<$(,        R/binary>>, L, {t,C}, Acc)  -> tokens(R,L,{t,[$(]},   stack(C,Acc));
 tokens(<<$),        R/binary>>, L, {t,[X|C]}, Acc) when X /= $)        -> tokens(R,L,{t,[$)|C]}, Acc);
@@ -18,9 +19,11 @@ tokens(<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [arrow
 tokens(<<"→"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [arrow  | stack(C,  Acc)]);
 tokens(<<$\\,$/,    R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
 tokens(<<"∀"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
+tokens(<<"forall"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
 tokens(<<"Π"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
 tokens(<<$\\,       R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [lambda | stack(C,  Acc)]);
 tokens(<<"λ"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [lambda | stack(C,  Acc)]);
+tokens(<<X,         R/binary>>, L, {c,_}, Acc)  -> tokens(R,L,{c,[]},     Acc);
 tokens(<<X,         R/binary>>, L, {a,C}, Acc) when ?is_alpha(X) -> tokens(R,L,{a,[X|C]},            Acc);
 tokens(<<X,         R/binary>>, L, {_,C}, Acc) when ?is_alpha(X) -> tokens(R,L,{a,[X]},    stack([C],Acc));
 tokens(<<X,         R/binary>>, L, {t,C}, Acc) when ?is_termi(X) -> tokens(R,L,{t,[X|C]},            Acc);

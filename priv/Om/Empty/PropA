@@ -1,4 +1,3 @@
--- #Empty/PropA
 \(lim : #Empty/Type ) ->
     forall(EmptyElType : #Type1 ) ->
     forall(EmptyElProp : EmptyElType -> #Prop ) ->

@@ -1,2 +1,3 @@
 -- recurProp-test
+-- 1
 (\(t : #Empty/recurProp-type ) -> t) #Empty/recurProp

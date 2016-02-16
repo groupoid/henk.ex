@@ -53,7 +53,8 @@ rewind([],                T, R)         -> {T,R}.
 
 func(lambda) -> "λ";
 func(pi)     -> "∀";
-func(arrow)  -> "→";
+func(arrow)  -> %arrow; %
+                 "→";
 func(star)   -> "*";
 func(Sym)    -> Sym.
 

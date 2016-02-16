@@ -13,8 +13,9 @@ start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 init([])    -> scan(), {ok, {{one_for_one, 5, 10}, []}}.
-type(F)     -> {_,[X]}=parse(lists:concat(["priv/Om/",F])),X.
-parse(F)    -> om_parse:expr(read(F),[]).
+type(F)     -> Name = lists:concat(["priv/Om/",F]), {_,[X]}=parse(Name), X.
+type_(F)    -> Name = lists:concat(["priv/Om/",F]), io:format("~ts",[om:file(Name)]), {_,[X]}=parse(Name), X.
+parse(F)    -> try om_parse:expr(read(F),[]) catch E:R -> io:format("PARSE: ~tp:~tp~nin ~s~n",[E,R,erlang:get_stacktrace()]), {[],[[]]} end.
 str(F)      -> om_tok:tokens(unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)     -> om_tok:tokens(file(F),0,{1,[]},[]).
 file(F)     -> {ok,Bin} = read_file(F), Bin.
