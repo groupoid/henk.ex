@@ -1,0 +1,2 @@
+-- #SigmaIn: \/(a: #Set )-> \/(belem: *)-> \/(bopen: belem -> #Set )-> *
+(\(t: \/(a: #Set )-> \/(belem: *)-> \/(bopen: belem -> #Set )-> *)-> t) #SigmaIn

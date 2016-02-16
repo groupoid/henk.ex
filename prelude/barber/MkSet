@@ -1,0 +1,6 @@
+-- #MkSet: \/(elem: *)-> \/(open: elem-> #Set )-> #Set
+\(elem: *)-> 
+\(open: elem-> #Set )-> 
+\(Set: *)->
+\(MkSet: \/(xelem: *)-> \/(xopen: xelem-> Set)-> Set)->
+MkSet elem (\(e : elem)-> open e Set MkSet)

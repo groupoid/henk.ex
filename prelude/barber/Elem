@@ -1,0 +1,9 @@
+-- #Elem: #Set -> *
+\(set: #Set )->
+\/(Elem: #Set -> *)->
+\/(MkElem: 
+    \/(elem: *)-> 
+    \/(open: elem -> #Set )-> 
+    \/(e: elem)-> 
+    Elem (#MkSet elem open))->
+Elem set

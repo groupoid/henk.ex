@@ -1,0 +1,7 @@
+-- #SigmaIn: \/(a: #Set )-> \/(belem: *)-> \/(bopen: belem -> #Set )-> *
+\(a: #Set )->
+\(belem: *)->
+\(bopen: belem -> #Set )->
+\/(SigmaIn: *)->
+\/(MkSigmaIn: \/(e: belem)-> \/(ok: #EQU #Set a (bopen e))-> SigmaIn)->
+SigmaIn

@@ -1,0 +1,3 @@
+-- #SigmaBarber.pr1: #SigmaBarber -> #Set
+\(sb: #SigmaBarber )->
+sb #Set (\(set: #Set )-> \(ok: #-In set set)-> set)
