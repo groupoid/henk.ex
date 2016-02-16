@@ -35,6 +35,13 @@ using F-algebras please refer to Morte.Turtorial. Also Om doesn't support type i
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just check the given terms in its own language.
 
+Run Samples
+-----------
+
+* brew install erlang
+* wget https://github.com/synrc/mad/blob/master/mad
+* perform `mad dep com plan sh`
+
 
 Exe Langauge
 ------------
