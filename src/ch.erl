@@ -9,12 +9,12 @@ inc  () -> fun (X) -> X + 1 end.
 kons () -> fun (A) -> fun (L) -> [A|L] end end.
 
 nat_ () -> [{X,?MODULE:X()}||X<-[nat,succ,zero]].
-nat  () ->             [fun (Succ) -> fun (Zero) -> "succ" end end,"zero"].
+nat  () ->             [fun (Succ) -> fun (Zero) -> succ end end,zero].
 zero () ->              fun (Succ) -> fun (Zero) -> Zero end end.
 succ () -> fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
 
 list_() -> [{X,?MODULE:X()}||X<-[list,cons,nil]].
-list () ->                         [fun (Cons) -> fun (Nil) -> "cons" end end, "nil"].
+list () ->                         [fun (Cons) -> fun (Nil) -> cons end end, nil].
 nil  () ->                          fun (Cons) -> fun (Nil) -> Nil end end.
 cons () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(List,[Cons,Nil])]) end end end end.
 
