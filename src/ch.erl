@@ -1,7 +1,11 @@
 -module(ch).
 -compile(export_all).
 
+% Erlang has no partial apply, so we draw it
+
 ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
+
+% MANUAL COMPILATION and formatting for visual algorithm description.
 
 %  data nat: * :=
 %       (zero: () → nat)
