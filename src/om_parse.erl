@@ -2,17 +2,14 @@
 -description('Om Parser').
 -compile(export_all).
 
-%    Om/Henk/Morte Core Specification
-%
-%    EXPR :=                     EXPR             EXPR => {APP,[           I:EXPR, O:EXPR]}
-%          | "λ"   "(" LABEL ":" EXPR ")" "arrow" EXPR => {LAM,[{ARG:LABEL,I:EXPR, O;EXPR]}
-%          | "π"   "(" LABEL ":" EXPR ")" "arrow" EXPR => {PI, [{ATH:LABEL,I:EXPR, O;EXPR]}
-%          |                     EXPR     "arrow" EXPR => {PI, [{"_",      I:EXPR, O;EXPR]}
-%          |           LABEL                           => {VAR,LABEL}
-%          | "*"                                       => {Star}
-%          | "[]"                                      => {Box}
-%          |       "("           EXPR ")"              => EXPR
+%     Om Specification
 
+%     I := #identifier
+%     O := ∅ | ( O ) |
+%          □ | ∀ ( I : O ) → O |
+%          * | λ ( I : O ) → O |
+%          I | O → O | O O
+          
 % During forward pass we stack applications (except typevars), then
 % on reaching close paren ")" we perform backward pass and stack arrows,
 % until neaarest unstacked open paren "(" appeared (then we just return

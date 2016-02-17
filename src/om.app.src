@@ -1,6 +1,6 @@
 {application, om,
  [
-  {description, "Synrc OM Lambda Assembler"},
+  {description, "OM Assembler"},
   {vsn, "1.0"},
   {registered, []},
   {applications, [kernel, stdlib]},
