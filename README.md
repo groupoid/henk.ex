@@ -12,8 +12,8 @@ Abstract
 
 This library is created to provide backbone lambda assembler as target language for
 general purpose languages, possibly with dependent types. This work is based on lambda
-cube assembler Henk, and Morte implementation by Gabriel Gonzalez. Om is indended
-to be compatible version of Morte. Om is useful as an intermediate language for
+cube assembler Henk, and Morte implementation by Gabriel Gonzalez. Om is intended
+to be a compatible version of Morte. Om is useful as an intermediate language for
 high level front-end languages with <b>System F<sub>ω<sub></b>, <b>System F<sub>&lt;:</sub></b> or
 <b>CoC</b> type systems.
 
@@ -30,23 +30,23 @@ Om AST provides very little types, among them only constants, variables, applica
                       | App  (Expr a) (Expr a)
 ```
 
-As defined in Morte, Om doesn't support recursive types, to see how you can encode List
-using F-algebras please refer to Morte.Turtorial. Also Om doesn't support type infering,
+As defined in Morte, Om doesn't support recursive types. To see how you can encode List
+using F-algebras please refer to Morte.Turtorial. Also Om doesn't support type inference,
 so you should anotate aforehand all the Types in order to produce correct Om programs.
-Om just check the given terms in its own language.
+Om just checks the given terms in its own language.
 
 Run Samples
 -----------
 
-* brew install erlang
-* wget https://github.com/synrc/mad/blob/master/mad
-* perform `mad dep com plan sh`
+* `brew install erlang`
+* `wget https://github.com/synrc/mad/blob/master/mad`
+*  `mad dep com plan sh`
 
 
 Exe Langauge
 ------------
 
-   General purpose function language with lambdas on types, recursive algebraic types,
+   General purpose functional language with lambdas on types, recursive algebraic types,
    higher order functions and embedded process calculus with corecursion. This language will be called
    Exe and dedicated to be high level general purpose functional programming language frontend to small core
    of dependent type system without recursion called Exe. This language indended to be useful
@@ -56,15 +56,15 @@ Om Intermediate Language
 ------------------------
 
    An intermediate Om language is based on Henk languages described first
-   by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
+   by Erik Meyer and Simon Peyton Jones in 1997. Later on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
-   It has constatnts, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
-   one axiom and four deduction rules. The design of Om language resemble Henk and Morte both design
-   and implementation. This language indended to be small, concise, easy provable, clean and be able
+   It has constants, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
+   one axiom and four deduction rules. The design of Om language resembles Henk and Morte both in design
+   and in implementation. This language indended to be small, concise, easily provable, clean and be able
    to produce verifiable programs that can be distributed over the networks and compiled at target with
    safe linkage.
 
-   The Om Systax is follow:
+   The Om Systax is the following:
 
 ```
     EXPR :=                   EXPR             EXPR
