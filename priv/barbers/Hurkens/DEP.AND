@@ -1,6 +1,0 @@
--- #DEP.AND
-\(A: #Prop ) ->
-\(B: A -> #Prop ) ->
-\/(AND: #Prop ) ->
-\/(intro: \/(a: A)-> \/(b: B a)-> AND)->
-AND
