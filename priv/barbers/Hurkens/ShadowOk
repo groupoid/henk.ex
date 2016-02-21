@@ -1,4 +1,6 @@
 -- #ShadowOk: #Shadow -> #Prop
 
 \(sh: #Shadow )->
-#AND (#ShadowOkOk sh) (#ShadowOkLim sh)
+#AND 
+(#ShadowOkOk sh) 
+(#ShadowOkLim sh)
