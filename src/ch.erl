@@ -27,16 +27,16 @@ succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat
 %  data list: (A:*) → * :=
 %       (nil: () → list A)
 %       (cons: A → list A → list A)
-         
+
 list_  () ->                            [{X,?MODULE:X()} || X <- [list,cons,nil]].
-list   () ->                         [fun (Cons) -> fun (Nil) -> cons end end, nil].
-nil    () ->                          fun (Cons) -> fun (Nil) -> Nil end end.
-cons   () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(List,[Cons,Nil])]) end end end end.
+list   () ->                            [fun (Cons) -> fun (Nil) -> cons end end, nil].
+nil    () ->                             fun (Cons) -> fun (Nil) -> Nil end end.
+cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Head,ap(Tail,[Cons,Nil])]) end end end end.
 
              % mapping to erlang list
 
              list   ([])          -> nil();
-             list   ([A|List])    -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(list(List),[Cons,Nil])]) end end.
+             list   ([Head|Tail]) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Head,ap(list(Tail),[Cons,Nil])]) end end.
              kons   ()            -> fun (A) -> fun (L) -> [A|L] end end.
              unlist (L)           -> ap(L,[kons(),[]]).
 
@@ -44,8 +44,7 @@ cons   () -> fun (A) -> fun (List) -> fun (Cons) -> fun (Nil) -> ap(Cons,[A,ap(L
 
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
-             L = lists:seq(1,1000000),
-             io:format("Pack/Unpack 100 000 Inductive Nat: ~p~n",   [timer:tc(fun () ->unnat(nat(100000)) end)]),
-             io:format("Pack/Unpack 100 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () ->unlist(list(L)) end)),'_'}]),
+             io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () ->unnat(nat(1000000)) end)]),
+             io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () ->unlist(list(lists:seq(1,1000000))) end)),'_'}]),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).

@@ -6,39 +6,39 @@
 -define(is_termi(C), C==$!;  C==$$;  C==$%;  C==$&;  C==$(;  C==$:;  C==$~;  C==$+;  C==$-; C==$|; C==$,;
                      C==$*;  C==$);  C==$<;  C==$>;  C==$=;  C==$^).
 
-tokens(<<>>,                    _, {_,C}, Acc)  -> om:rev(stack(C,Acc));
-tokens(<<"--"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{c,[]},     stack(C,Acc));
-tokens(<<$\n,       R/binary>>, L, {_,C}, Acc)  -> tokens(R,L+1,{1,[]},   stack(C,Acc));
-tokens(<<X,         R/binary>>, L, {c,_}, Acc)  -> tokens(R,L,{c,[]},     Acc);
-tokens(<<$(,        R/binary>>, L, {t,C}, Acc)  -> tokens(R,L,{t,[$(]},   stack(C,Acc));
-tokens(<<$),        R/binary>>, L, {t,[X|C]}, Acc) when X /= $)        -> tokens(R,L,{t,[$)|C]}, Acc);
-tokens(<<$(,        R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{t,[]},     [open   | stack(C,  Acc)]);
-tokens(<<$),        R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{t,[]},     [close  | stack(C,  Acc)]);
-tokens(<<$:,        R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [colon  | stack(C,  Acc)]);
-tokens(<<$*,        R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [star   | stack(C,  Acc)]);
-tokens(<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [arrow  | stack(C,  Acc)]);
-tokens(<<"→"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [arrow  | stack(C,  Acc)]);
-tokens(<<$\\,$/,    R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
-tokens(<<"∀"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
-tokens(<<"forall"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
-tokens(<<"Π"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [pi     | stack(C,  Acc)]);
-tokens(<<$\\,       R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [lambda | stack(C,  Acc)]);
-tokens(<<"λ"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(R,L,{1,[]},     [lambda | stack(C,  Acc)]);
-tokens(<<X,         R/binary>>, L, {a,C}, Acc) when ?is_alpha(X) -> tokens(R,L,{a,[X|C]},            Acc);
-tokens(<<X,         R/binary>>, L, {_,C}, Acc) when ?is_alpha(X) -> tokens(R,L,{a,[X]},    stack([C],Acc));
-tokens(<<X,         R/binary>>, L, {t,C}, Acc) when ?is_termi(X) -> tokens(R,L,{t,[X|C]},            Acc);
-tokens(<<X,         R/binary>>, L, {_,C}, Acc) when ?is_termi(X) -> tokens(R,L,{t,[X]},    stack(C, [Acc]));
-tokens(<<X,         R/binary>>, L, {_,C}, Acc) when ?is_space(X) -> tokens(R,L,{s,[C]},              Acc).
+tokens(P,<<>>,                    _, {_,C}, Acc)  -> om:rev(stack(P,C,Acc));
+tokens(P,<<"--"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{c,[]},     stack(P,C,Acc));
+tokens(P,<<$\n,       R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L+1,{1,[]},   stack(P,C,Acc));
+tokens(P,<<X,         R/binary>>, L, {c,_}, Acc)  -> tokens(P,R,L,{c,[]},     Acc);
+tokens(P,<<$(,        R/binary>>, L, {t,C}, Acc)  -> tokens(P,R,L,{t,[$(]},   stack(P,C,Acc));
+tokens(P,<<$),        R/binary>>, L, {t,[X|C]}, Acc) when X /= $)        -> tokens(P,R,L,{t,[$)|C]}, Acc);
+tokens(P,<<$(,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{t,[]},     [open   | stack(P,C,  Acc)]);
+tokens(P,<<$),        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{t,[]},     [close  | stack(P,C,  Acc)]);
+tokens(P,<<$:,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [colon  | stack(P,C,  Acc)]);
+tokens(P,<<$*,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [star   | stack(P,C,  Acc)]);
+tokens(P,<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
+tokens(P,<<"→"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
+tokens(P,<<$\\,$/,    R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
+tokens(P,<<"∀"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
+tokens(P,<<"forall"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
+tokens(P,<<"Π"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
+tokens(P,<<$\\,       R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [lambda | stack(P,C,  Acc)]);
+tokens(P,<<"λ"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [lambda | stack(P,C,  Acc)]);
+tokens(P,<<X,         R/binary>>, L, {a,C}, Acc) when ?is_alpha(X) -> tokens(P,R,L,{a,[X|C]},            Acc);
+tokens(P,<<X,         R/binary>>, L, {_,C}, Acc) when ?is_alpha(X) -> tokens(P,R,L,{a,[X]},    stack(P,[C],Acc));
+tokens(P,<<X,         R/binary>>, L, {t,C}, Acc) when ?is_termi(X) -> tokens(P,R,L,{t,[X|C]},            Acc);
+tokens(P,<<X,         R/binary>>, L, {_,C}, Acc) when ?is_termi(X) -> tokens(P,R,L,{t,[X]},    stack(P,C, [Acc]));
+tokens(P,<<X,         R/binary>>, L, {_,C}, Acc) when ?is_space(X) -> tokens(P,R,L,{s,[C]},              Acc).
 
-stack(C,Ac) -> case om:rev(om:flat(C)) of [] -> Ac;
+stack(P,C,Ac) -> case om:rev(om:flat(C)) of [] -> Ac;
                                          "(" -> [open|Ac];
                                          ")" -> [close|Ac];
-                                      [$#|A] -> inet(A,Ac);
+                                      [$#|A] -> inet(P,A,Ac);
                      [X|A] when ?is_alpha(X) -> vars([X|A],Ac);
                      [X|A] when ?is_termi(X) -> name([X|A],Ac);
                                           X  -> atom(X,Ac) end.
 
-inet(X,Acc) -> [{remote,X}|Acc].
+inet(P,X,Acc) -> [{remote,{P,X}}|Acc].
 atom(X,Acc) -> [list_to_atom(X)|Acc].
 name(X,Acc) -> [{var,{X,0}}|Acc].
 ivar([N,I]) -> [N,I];

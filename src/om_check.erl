@@ -15,3 +15,10 @@ freeIn({var,{_,_}}=_V,{app,{In,Out}})                                 -> freeIn(
 freeIn({var,{X,N}}=_V,{var,{Y,O}})   -> X == Y;
 freeIn(_,_)                          -> false.
 
+%shift() ->
+
+test() -> lists:all(fun assert/1,lists:seq(1,10)).
+
+assert(1) -> freeIn({var,{head,0}},om:type("List/Cons")) == true;
+assert(_) -> true.
+

@@ -9,7 +9,7 @@
 %          □ | ∀ ( I : O ) → O |
 %          * | λ ( I : O ) → O |
 %          I | O → O | O O
-          
+
 % During forward pass we stack applications (except typevars), then
 % on reaching close paren ")" we perform backward pass and stack arrows,
 % until neaarest unstacked open paren "(" appeared (then we just return
@@ -24,19 +24,19 @@
 %                  lambda: arrow(app(typevar(x),A),B)
 %
 
-expr([{N,X}|T],[{typevar,Y}|Acc])   -> expr(T,[{N,X},{typevar,Y}|Acc]);
-expr([{N,X}|T],[{C,Y}|Acc])         -> expr(T,[{app,{{C,Y},{N,X}}}|Acc]);
-expr([],           Acc) -> rewind(Acc,[],[]);
-expr([close   |T], Acc) -> {T1,Acc1} = rewind(Acc,T,[]), expr(T1,Acc1);
-expr([open    |T], Acc) -> expr(T,[{open}|Acc]);
-expr([star    |T], Acc) -> expr(T,[{const,func(star)}|Acc]);
-expr([arrow   |T], Acc) -> expr(T,[{arrow}|Acc]);
-expr([lambda  |T], Acc) -> expr(T,[{lambda}|Acc]);
-expr([pi      |T], Acc) -> expr(T,[{pi}|Acc]);
-expr([colon   |T], Acc) -> expr(T,[{colon}|Acc]);
-expr([{var,L},colon|T],Acc) -> expr(T,[{typevar,L}|Acc]);
-expr([{remote,L}|T],   Acc) -> expr(T,[om:type(L)|Acc]);
-expr([{var,L}|T],      Acc) -> expr(T,[{var,L}|Acc]).
+expr(P,[{remote,{X,L}}|T],Acc) -> expr(P,T,[om:type(X,L)|Acc]);
+expr(P,[{N,X}|T],[{typevar,Y}|Acc])   -> expr(P,T,[{N,X},{typevar,Y}|Acc]);
+expr(P,[{N,X}|T],[{C,Y}|Acc])         -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr(P,[],           Acc) -> rewind(Acc,[],[]);
+expr(P,[close   |T], Acc) -> {T1,Acc1} = rewind(Acc,T,[]), expr(P,T1,Acc1);
+expr(P,[open    |T], Acc) -> expr(P,T,[{open}|Acc]);
+expr(P,[star    |T], Acc) -> expr(P,T,[{const,func(star)}|Acc]);
+expr(P,[arrow   |T], Acc) -> expr(P,T,[{arrow}|Acc]);
+expr(P,[lambda  |T], Acc) -> expr(P,T,[{lambda}|Acc]);
+expr(P,[pi      |T], Acc) -> expr(P,T,[{pi}|Acc]);
+expr(P,[colon   |T], Acc) -> expr(P,T,[{colon}|Acc]);
+expr(P,[{var,L},colon|T],Acc)  -> expr(P,T,[{typevar,L}|Acc]);
+expr(P,[{var,L}|T],      Acc)  -> expr(P,T,[{var,L}|Acc]).
 
 rewind([{F}|Acc],         T, [{"→",{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
                                         -> rewind(Acc,T,[{{func(F),L},{{A,X},{B,Y}}}|R]);
