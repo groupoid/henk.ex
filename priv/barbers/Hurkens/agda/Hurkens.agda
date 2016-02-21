@@ -1,9 +1,7 @@
 -- Hurkens' paradox [1].
-
 -- [1] A. Hurkens, A simplification of Girard's paradox.
 
-{-# OPTIONS --type-in-type
-  #-}
+{-# OPTIONS --type-in-type  #-}
 
 module Hurkens where
 

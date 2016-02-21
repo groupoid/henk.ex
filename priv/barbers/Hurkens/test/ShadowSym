@@ -1,0 +1,2 @@
+-- #ShadowSym: \/(s1: #Shadow )-> \/(s2: #Shadow )-> #ShadowEqu s1 s2 -> #ShadowEqu s2 s1
+(\(t: \/(s1: #Shadow )-> \/(s2: #Shadow )-> #ShadowEqu s1 s2 -> #ShadowEqu s2 s1)-> t) #ShadowSym
