@@ -1,0 +1,1 @@
+morte < $1 > $1.term 2> $1.type

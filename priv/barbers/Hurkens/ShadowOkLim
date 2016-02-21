@@ -1,7 +1,6 @@
 -- #ShadowOkLim: \/(sh: #Shadow )-> \/(shOk: #ShadowOkOk sh)-> #Prop
 
 \(sh: #Shadow )->
-\(shOk: #ShadowOkOk sh)->
 
 -- XShadow: #Setoid
 \/(XShadow: #Star )->
