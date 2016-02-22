@@ -1,0 +1,1 @@
+λ(A : *) → λ(B : *) → λ(a : A) → λ(b : B) → λ(AND : *) → λ(Intro : A → B → AND) → Intro a b
