@@ -15,7 +15,16 @@ freeIn({var,{_,_}}=_V,{app,{In,Out}})                                 -> freeIn(
 freeIn({var,{X,N}}=_V,{var,{Y,O}})   -> X == Y;
 freeIn(_,_)                          -> false.
 
-%shift() ->
+shift(D,Text,X) -> shift(D,Text,X,0).
+shift(D,Text,{{Fun,X},{A,B}},C) when Fun=="λ";Fun=="∀" -> {{Fun,X},{shift(D,Text,A,C),shift(D,Text,B,case X of Text->C+1; _->C end)}};
+shift(D,Text,{app,{F,A}},C) -> {app,{shift(D,Text,F,C),shift(D,Text,A,C)}};
+shift(D,Text,{var,{X,N}},C) -> {var,{X,case X of Text when N >= C -> N + D; _ -> N end}};
+shift(D,Text,X,C) -> X.
+
+subst(X,N,EP,{{Fun,XP},{A,B}}) when Fun=="λ";Fun=="∀" -> {{Fun,X},{subst(X,N,EP,A),subst(X,case X of XP -> N+1;_->N end,shift(1,XP,EP),B)}};
+subst(X,N,EP,{app,{F,A}}) -> {app,{subst(X,N,EP,F),subst(X,N,EP,A)}};
+subst(X,N,EP,{var,{XP,NP}}=E) -> case X of XP when N==NP -> EP; _-> E end;
+subst(X,N,EP,Else) -> Else.
 
 test() -> lists:all(fun assert/1,lists:seq(1,10)).
 
