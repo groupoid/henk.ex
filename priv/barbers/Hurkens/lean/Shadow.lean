@@ -17,6 +17,52 @@ section withEqu
     definition Equ.SymProp : Prop := ∀{e1 e2 : El}, Equ e1 e2 → Equ e2 e1
 end withEqu
 
+record IsoTupleBox :=
+    (AB : Star)
+    (BA : Star)
+    (ABOk : PredBox AB)
+    (BAOk : PredBox BA)
+    (AAOk : ∀(ab : AB), ∀(ba : BA), Prop)
+    (BBOk : ∀(ab : AB), ∀(ba : BA), Prop)
+check IsoTupleBox
+
+record IsoTuple (box : IsoTupleBox) :=
+    (isoAB : IsoTupleBox.AB box)
+    (isoBA : IsoTupleBox.BA box)
+    (isoABOk : IsoTupleBox.ABOk box isoAB)
+    (isoBAOk : IsoTupleBox.BAOk box isoBA)
+    (isoAAOk : IsoTupleBox.AAOk box isoAB isoBA)
+    (isoBBOk : IsoTupleBox.BBOk box isoAB isoBA)
+check IsoTuple
+
+record IsoTupleMap (box1 box2 : IsoTupleBox) :=
+    (onAB : IsoTupleBox.AB box1 → IsoTupleBox.AB box2)
+    (onBA : IsoTupleBox.BA box1 → IsoTupleBox.BA box2)
+    (onABOk : ∀(isoAB : IsoTupleBox.AB box1),
+        IsoTupleBox.ABOk box1 isoAB → IsoTupleBox.ABOk box2 (onAB isoAB))
+    (onBAOk : ∀(isoBA : IsoTupleBox.BA box1),
+        IsoTupleBox.BAOk box1 isoBA → IsoTupleBox.BAOk box2 (onBA isoBA))
+    (onAAOk : ∀(isoAB : IsoTupleBox.AB box1), ∀(isoBA : IsoTupleBox.BA box1),
+        IsoTupleBox.AAOk box1 isoAB isoBA → IsoTupleBox.AAOk box2 (onAB isoAB) (onBA isoBA))
+    (onBBOk : ∀(isoAB : IsoTupleBox.AB box1), ∀(isoBA : IsoTupleBox.BA box1),
+        IsoTupleBox.BBOk box1 isoAB isoBA → IsoTupleBox.BBOk box2 (onAB isoAB) (onBA isoBA))
+check IsoTupleMap
+
+record IsoGraph :=
+    (Ob : Box)
+    (Iso : ∀(X Y : Ob), IsoTupleBox)
+check IsoGraph
+
+record IsoGraphMap (G1 G2 : IsoGraph) :=
+    (onOb : IsoGraph.Ob G1 → IsoGraph.Ob G2)
+    (onIso : ∀(X Y : IsoGraph.Ob G1), IsoTupleMap (IsoGraph.Iso G1 X Y) (IsoGraph.Iso G2 (onOb X) (onOb Y)))
+check IsoGraphMap
+
+--------------------------------------------
+--
+-- Setoids
+--
+
 record SetoidBox :=
     (El : Star)
     (ElOk : PredBox El)
@@ -49,29 +95,6 @@ definition Setoid.HomSetoid (A B : SetoidBox) : SetoidBox :=
         (@Setoid.Hom.Trans A B)
         (@Setoid.Hom.Sym A B)
 
-record IsoTupleBox :=
-    (AB : Star)
-    (BA : Star)
-    (ABOk : PredBox AB)
-    (BAOk : PredBox BA)
-    (AAOk : ∀(ab : AB), ∀(ba : BA), Prop)
-    (BBOk : ∀(ab : AB), ∀(ba : BA), Prop)
-check IsoTupleBox
-
-record IsoTuple (box : IsoTupleBox) :=
-    (isoAB : IsoTupleBox.AB box)
-    (isoBA : IsoTupleBox.BA box)
-    (isoABOk : IsoTupleBox.ABOk box isoAB)
-    (isoBAOk : IsoTupleBox.BAOk box isoBA)
-    (isoAAOk : IsoTupleBox.AAOk box isoAB isoBA)
-    (isoBBOk : IsoTupleBox.BBOk box isoAB isoBA)
-check IsoTuple
-
-record IsoGraph :=
-    (Ob : Box)
-    (Iso : ∀(X Y : Ob), IsoTupleBox)
-check IsoGraph
-
 definition Setoid.IsoAB.El (A B : SetoidBox) : Star :=
     Setoid.Hom.El A B
 definition Setoid.IsoBA.El (A B : SetoidBox) : Star :=
@@ -95,6 +118,11 @@ definition Setoid.Iso (A B : SetoidBox) : IsoTupleBox :=
         (@Setoid.IsoBB.ElOk A B)
 definition Setoids : IsoGraph :=
     IsoGraph.mk SetoidBox Setoid.Iso
+
+--------------------------------------------
+--
+-- Setoids with selected point (algebras with one 0-ary operation)
+--
 
 record PointedSetoidBox extends SetoidBox :=
     (Point: El)
@@ -154,7 +182,15 @@ definition PointedSetoid.Iso (A B : PointedSetoidBox) : IsoTupleBox :=
 definition PointedSetoids : IsoGraph :=
     IsoGraph.mk PointedSetoidBox PointedSetoid.Iso
 
+--------------------------------------------
+
+definition ForgetPoint : IsoGraphMap PointedSetoids Setoids := sorry
+
+--------------------------------------------
+--
 -- setoid of polymorphic functions
+--
+
 definition Poly.Hom.El (Gr : IsoGraph) (S : SetoidBox) : Star :=
     ∀(A : IsoGraph.Ob Gr), SetoidBox.El S
 definition Poly.Hom.ElOkOk (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S) : Prop :=
@@ -250,14 +286,38 @@ definition Shadow.Mk.ElOk (Gr : IsoGraph) : Poly.Hom.ElOk Gr (ShadowSetoid Gr) (
 
 ------------------------------------------------------------------
 
-definition unpoint (S : SetoidBox)
-    : Poly.Hom.El Setoids S → Poly.Hom.El PointedSetoids S
+definition backPoly.El
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (S : SetoidBox)
+    : Poly.Hom.El Gr2 S → Poly.Hom.El Gr1 S
     := sorry
-definition unpointOk (S : SetoidBox) (Mk : Poly.Hom.El Setoids S)
-    : Poly.Hom.ElOk Setoids S Mk → Poly.Hom.ElOk PointedSetoids S (unpoint S Mk)
+definition backPoly.ElOk
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (S : SetoidBox) (Mk : Poly.Hom.El Gr2 S)
+    : Poly.Hom.ElOk Gr2 S Mk → Poly.Hom.ElOk Gr1 S (backPoly.El map S Mk)
     := sorry
 
-definition TheFibration.El : Shadow.El PointedSetoids → Shadow.El Setoids :=
-    λ(psh : Shadow.El PointedSetoids),
-    λ(S : SetoidBox), λ(Mk : Poly.Hom.El Setoids S), λ(MkOk : Poly.Hom.ElOk Setoids S Mk),
-        psh S (unpoint S Mk) (unpointOk S Mk MkOk)
+definition forwardShadow.El
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    : Shadow.El Gr1 → Shadow.El Gr2
+    :=
+        λ(psh : Shadow.El Gr1),
+        λ(S : SetoidBox), λ(Mk : Poly.Hom.El Gr2 S), λ(MkOk : Poly.Hom.ElOk Gr2 S Mk),
+            psh S (backPoly.El map S Mk) (backPoly.ElOk map S Mk MkOk)
+
+definition TheFibration.onEl
+    : Shadow.El PointedSetoids → Shadow.El Setoids
+    := forwardShadow.El ForgetPoint
+definition TheFibration.onElOk
+    : ∀(sh : Shadow.El PointedSetoids),
+        Shadow.ElOk PointedSetoids sh → Shadow.ElOk Setoids (TheFibration.onEl sh)
+    := sorry
+definition TheFibration.onEqu
+    : ∀(sh1 sh2 : Shadow.El PointedSetoids),
+        Shadow.Equ PointedSetoids sh1 sh2 → Shadow.Equ Setoids (TheFibration.onEl sh1) (TheFibration.onEl sh2)
+    := sorry
+-----
+
+-- TODO: Shadow in initial object
+-- TODO: isomorphism: Shadow.Mk & TheFiber are inverse
+-- TODO: Hurken's paradox
