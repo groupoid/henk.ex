@@ -60,3 +60,29 @@ definition Setoid.IsoAA.ElOk (A B : SetoidBox) (isoAB : Setoid.IsoAB.El A B) (is
     ∀(a : SetoidBox.El A), SetoidBox.Equ A a (isoBA (isoAB (a)))
 definition Setoid.IsoBB.ElOk (A B : SetoidBox) (isoAB : Setoid.IsoAB.El A B) (isoBA : Setoid.IsoBA.El A B) : Prop :=
     ∀(b : SetoidBox.El B), SetoidBox.Equ B b (isoAB (isoBA (b)))
+
+definition Poly.Hom.El (S : SetoidBox) : Star :=
+    ∀(A : SetoidBox), SetoidBox.El S
+definition Poly.Hom.ElOkOk (S : SetoidBox) (poly : Poly.Hom.El S) : Prop :=
+    ∀(A : SetoidBox), SetoidBox.ElOk S (poly A)
+definition Poly.Hom.ElOkIso (S : SetoidBox) (poly : Poly.Hom.El S) : Prop :=
+    ∀(A B : SetoidBox), ∀(isoAB : Setoid.IsoAB.El A B), ∀(isoBA : Setoid.IsoBA.El A B),
+    ∀(isoABOk : Setoid.IsoAB.ElOk A B isoAB), ∀(isoBAOk : Setoid.IsoBA.ElOk A B isoBA),
+    ∀(isoAAOk : Setoid.IsoAA.ElOk A B isoAB isoBA), ∀(isoBBOk : Setoid.IsoBB.ElOk A B isoAB isoBA),
+    SetoidBox.Equ S (poly A) (poly B)
+definition Poly.Hom.ElOk (S : SetoidBox) (poly : Poly.Hom.El S) : Prop :=
+    and (Poly.Hom.ElOkOk S poly) (Poly.Hom.ElOkIso S poly)
+
+definition Shadow.El : Star :=
+    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El S), ∀(MkOk : Poly.Hom.ElOk S Mk),
+        SetoidBox.El S
+definition Shadow.ElOkOk (sh : Shadow.El) : Prop :=
+    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El S), ∀(MkOk : Poly.Hom.ElOk S Mk),
+        SetoidBox.ElOk S (sh S Mk MkOk)
+definition Shadow.ElOkLim (sh : Shadow.El) : Prop :=
+    ∀(X : SetoidBox), ∀(XMk : Poly.Hom.El X), ∀(XMkOk : Poly.Hom.ElOk X XMk),
+    ∀(Y : SetoidBox), ∀(YMk : Poly.Hom.El Y), ∀(YMkOk : Poly.Hom.ElOk Y YMk),
+    ∀(mor : Setoid.Hom.El X Y), ∀(morOk : Setoid.Hom.ElOk X Y mor), ∀(A : SetoidBox),
+        SetoidBox.Equ Y (mor (XMk A)) (YMk A)
+definition Shadow.ElOk (sh : Shadow.El) : Prop :=
+    and (Shadow.ElOkOk sh) (Shadow.ElOkLim sh)
