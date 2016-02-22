@@ -20,14 +20,16 @@ high level front-end languages with <b>System F<sub>ω<sub></b>, <b>System F<sub
 Types
 -----
 
-Om AST provides very little types, among them only constants, variables, applications, lambda and pi types
+Om AST provides very little types, among them only constants, variables, applications, lambda and pi types.
+Here is description in Exe language.
 
 ```
-          data Expr a = Const Const
-                      | Var   Var
-                      | Lam   Text    (Expr a) (Expr a)
-                      | Pi    Text    (Expr a) (Expr a)
-                      | App  (Expr a) (Expr a)
+    data Om: * :=
+         (star: nat → Om)
+         (var: string → Om)
+         (app: Om → Om → Om)
+         (arrow: string → Om → Om)
+         (pi: string → Om →  Om)
 ```
 
 As defined in Morte, Om doesn't support recursive types. To see how you can encode List
@@ -67,14 +69,11 @@ Om Intermediate Language
    The Om Systax is the following:
 
 ```
-    EXPR :=                   EXPR             EXPR
-          | "λ" "(" LABEL ":" EXPR ")" "arrow" EXPR
-          | "∀" "(" LABEL ":" EXPR ")" "arrow" EXPR
-          |                   EXPR     "arrow" EXPR
-          |         LABEL
-          | "*"
-          | "[]"
-          |     "("           EXPR ")"
+     I := #identifier
+     O := ∅ | ( O ) |
+          □ | ∀ ( I : O ) → O |
+          * | λ ( I : O ) → O |
+          I | O → O | O O
 ```
 
 ```erlang
