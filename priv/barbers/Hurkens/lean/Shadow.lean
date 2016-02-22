@@ -111,6 +111,10 @@ definition Shadow.ElOkLim (sh : Shadow.El) : Prop :=
         SetoidBox.Equ Y (mor (sh X XMk XMkOk)) (sh Y YMk YMkOk)
 definition Shadow.ElOk (sh : Shadow.El) : Prop :=
     and (Shadow.ElOkOk sh) (Shadow.ElOkLim sh)
+definition Shadow.ElOk.getOk (sh : Shadow.El)
+    : Shadow.ElOk sh → Shadow.ElOkOk sh := and.left
+definition Shadow.ElOk.getLim (sh : Shadow.El)
+    : Shadow.ElOk sh → Shadow.ElOkLim sh := and.right
 definition Shadow.Equ : EquBox Shadow.El :=
     λ(shA shB),
     ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El S), ∀(MkOk : Poly.Hom.ElOk S Mk),
@@ -146,3 +150,12 @@ definition Shadow.Mk.ElOkOkLim (Arg : SetoidBox) : Shadow.ElOkLim (Shadow.Mk.El 
         morLim Arg
 definition Shadow.Mk.ElOkOk : Poly.Hom.ElOkOk ShadowSetoid Shadow.Mk.El :=
     λ Arg, and.intro (Shadow.Mk.ElOkOkOk Arg) (Shadow.Mk.ElOkOkLim Arg)
+definition Shadow.Mk.ElOkIso : Poly.Hom.ElOkIso ShadowSetoid Shadow.Mk.El :=
+    λ(A B : SetoidBox), λ(isoAB : Setoid.IsoAB.El A B), λ(isoBA : Setoid.IsoBA.El A B),
+    λ(isoABOk : Setoid.IsoAB.ElOk A B isoAB), λ(isoBAOk : Setoid.IsoBA.ElOk A B isoBA),
+    λ(isoAAOk : Setoid.IsoAA.ElOk A B isoAB isoBA), λ(isoBBOk : Setoid.IsoBB.ElOk A B isoAB isoBA),
+    λ(S : SetoidBox), λ(Mk : Poly.Hom.El S), λ(MkOk : Poly.Hom.ElOk S Mk),
+        (Poly.Hom.ElOk.getIso S Mk MkOk) A B isoAB isoBA isoABOk isoBAOk isoAAOk isoBBOk
+        -- SetoidBox.Equ S (Mk A) (Mk B)
+definition Shadow.Mk.ElOk : Poly.Hom.ElOk ShadowSetoid Shadow.Mk.El :=
+    and.intro (Shadow.Mk.ElOkOk) (Shadow.Mk.ElOkIso)
