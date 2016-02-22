@@ -191,48 +191,48 @@ definition ForgetPoint : IsoGraphMap PointedSetoids Setoids := sorry
 -- setoid of polymorphic functions
 --
 
-definition Poly.Hom.El (Gr : IsoGraph) (S : SetoidBox) : Star :=
+definition PolyFun.El (Gr : IsoGraph) (S : SetoidBox) : Star :=
     ∀(A : IsoGraph.Ob Gr), SetoidBox.El S
-definition Poly.Hom.ElOkOk (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S) : Prop :=
+definition PolyFun.ElOkOk (Gr : IsoGraph) (S : SetoidBox) (poly : PolyFun.El Gr S) : Prop :=
     ∀(A : IsoGraph.Ob Gr), SetoidBox.ElOk S (poly A)
-definition Poly.Hom.ElOkIso (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S) : Prop :=
+definition PolyFun.ElOkIso (Gr : IsoGraph) (S : SetoidBox) (poly : PolyFun.El Gr S) : Prop :=
     ∀(A B : IsoGraph.Ob Gr), ∀(iso : IsoTuple (IsoGraph.Iso Gr A B)),
         SetoidBox.Equ S (poly A) (poly B)
-definition Poly.Hom.ElOk (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S) : Prop :=
-    and (Poly.Hom.ElOkOk Gr S poly) (Poly.Hom.ElOkIso Gr S poly)
-definition Poly.Hom.ElOk.getOk (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S)
-    : Poly.Hom.ElOk Gr S poly → Poly.Hom.ElOkOk Gr S poly := and.left
-definition Poly.Hom.ElOk.getIso (Gr : IsoGraph) (S : SetoidBox) (poly : Poly.Hom.El Gr S)
-    : Poly.Hom.ElOk Gr S poly → Poly.Hom.ElOkIso Gr S poly := and.right
-definition Poly.Hom.Equ (Gr : IsoGraph) (S : SetoidBox) : EquBox (Poly.Hom.El Gr S) :=
+definition PolyFun.ElOk (Gr : IsoGraph) (S : SetoidBox) (poly : PolyFun.El Gr S) : Prop :=
+    and (PolyFun.ElOkOk Gr S poly) (PolyFun.ElOkIso Gr S poly)
+definition PolyFun.ElOk.getOk (Gr : IsoGraph) (S : SetoidBox) (poly : PolyFun.El Gr S)
+    : PolyFun.ElOk Gr S poly → PolyFun.ElOkOk Gr S poly := and.left
+definition PolyFun.ElOk.getIso (Gr : IsoGraph) (S : SetoidBox) (poly : PolyFun.El Gr S)
+    : PolyFun.ElOk Gr S poly → PolyFun.ElOkIso Gr S poly := and.right
+definition PolyFun.Equ (Gr : IsoGraph) (S : SetoidBox) : EquBox (PolyFun.El Gr S) :=
     λ(polyX polyY),
     ∀(A : IsoGraph.Ob Gr), SetoidBox.Equ S (polyX A) (polyY A)
-definition Poly.Hom.Refl (Gr : IsoGraph) (S : SetoidBox) : Equ.ReflProp (Poly.Hom.Equ Gr S) :=
+definition PolyFun.Refl (Gr : IsoGraph) (S : SetoidBox) : Equ.ReflProp (PolyFun.Equ Gr S) :=
     λ poly1, λ A, @SetoidBox.Refl S (poly1 A)
-definition Poly.Hom.Trans (Gr : IsoGraph) (S : SetoidBox) : Equ.TransProp (Poly.Hom.Equ Gr S) :=
+definition PolyFun.Trans (Gr : IsoGraph) (S : SetoidBox) : Equ.TransProp (PolyFun.Equ Gr S) :=
     λ poly1 poly2 poly3, λ eq12 eq23, λ A,
         @SetoidBox.Trans S (poly1 A) (poly2 A) (poly3 A) (eq12 A) (eq23 A)
-definition Poly.Hom.Sym (Gr : IsoGraph) (S : SetoidBox) : Equ.SymProp (Poly.Hom.Equ Gr S) :=
+definition PolyFun.Sym (Gr : IsoGraph) (S : SetoidBox) : Equ.SymProp (PolyFun.Equ Gr S) :=
     λ poly1 poly2, λ eq12, λ A,
         @SetoidBox.Sym S (poly1 A) (poly2 A) (eq12 A)
-definition Poly.Hom (Gr : IsoGraph) (S : SetoidBox) : SetoidBox :=
+definition PolyFun (Gr : IsoGraph) (S : SetoidBox) : SetoidBox :=
     SetoidBox.mk
-        (@Poly.Hom.El Gr S)
-        (@Poly.Hom.ElOk Gr S)
-        (@Poly.Hom.Equ Gr S)
-        (@Poly.Hom.Refl Gr S)
-        (@Poly.Hom.Trans Gr S)
-        (@Poly.Hom.Sym Gr S)
+        (@PolyFun.El Gr S)
+        (@PolyFun.ElOk Gr S)
+        (@PolyFun.Equ Gr S)
+        (@PolyFun.Refl Gr S)
+        (@PolyFun.Trans Gr S)
+        (@PolyFun.Sym Gr S)
 
 definition Shadow.El (Gr : IsoGraph) : Star :=
-    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El Gr S), ∀(MkOk : Poly.Hom.ElOk Gr S Mk),
+    ∀(S : SetoidBox), ∀(Mk : PolyFun.El Gr S), ∀(MkOk : PolyFun.ElOk Gr S Mk),
         SetoidBox.El S
 definition Shadow.ElOkOk (Gr : IsoGraph) (sh : Shadow.El Gr) : Prop :=
-    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El Gr S), ∀(MkOk : Poly.Hom.ElOk Gr S Mk),
+    ∀(S : SetoidBox), ∀(Mk : PolyFun.El Gr S), ∀(MkOk : PolyFun.ElOk Gr S Mk),
         SetoidBox.ElOk S (sh S Mk MkOk)
 definition Shadow.ElOkLim (Gr : IsoGraph) (sh : Shadow.El Gr) : Prop :=
-    ∀(X : SetoidBox), ∀(XMk : Poly.Hom.El Gr X), ∀(XMkOk : Poly.Hom.ElOk Gr X XMk),
-    ∀(Y : SetoidBox), ∀(YMk : Poly.Hom.El Gr Y), ∀(YMkOk : Poly.Hom.ElOk Gr Y YMk),
+    ∀(X : SetoidBox), ∀(XMk : PolyFun.El Gr X), ∀(XMkOk : PolyFun.ElOk Gr X XMk),
+    ∀(Y : SetoidBox), ∀(YMk : PolyFun.El Gr Y), ∀(YMkOk : PolyFun.ElOk Gr Y YMk),
     ∀(mor : Setoid.Hom.El X Y), ∀(morOk : Setoid.Hom.ElOk X Y mor),
     ∀(morLim : ∀(Q : IsoGraph.Ob Gr), SetoidBox.Equ Y (mor (XMk Q)) (YMk Q)),
         SetoidBox.Equ Y (mor (sh X XMk XMkOk)) (sh Y YMk YMkOk)
@@ -244,7 +244,7 @@ definition Shadow.ElOk.getLim (Gr : IsoGraph) (sh : Shadow.El Gr)
     : Shadow.ElOk Gr sh → Shadow.ElOkLim Gr sh := and.right
 definition Shadow.Equ (Gr : IsoGraph) : EquBox (Shadow.El Gr) :=
     λ(shA shB),
-    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El Gr S), ∀(MkOk : Poly.Hom.ElOk Gr S Mk),
+    ∀(S : SetoidBox), ∀(Mk : PolyFun.El Gr S), ∀(MkOk : PolyFun.ElOk Gr S Mk),
         SetoidBox.Equ S (shA S Mk MkOk) (shB S Mk MkOk)
 definition Shadow.Refl (Gr : IsoGraph) : Equ.ReflProp (Shadow.Equ Gr) :=
     λ sh1, λ S Mk MkOk, @SetoidBox.Refl S
@@ -265,23 +265,23 @@ definition ShadowSetoid (Gr : IsoGraph) : SetoidBox :=
         (@Shadow.Trans Gr)
         (@Shadow.Sym Gr)
 
-definition Shadow.Mk.El (Gr : IsoGraph) : Poly.Hom.El Gr (ShadowSetoid Gr) :=
+definition Shadow.Mk.El (Gr : IsoGraph) : PolyFun.El Gr (ShadowSetoid Gr) :=
     λ Arg, λ S Mk MkOk, Mk Arg
 definition Shadow.Mk.ElOkOkOk (Gr : IsoGraph) (Arg : IsoGraph.Ob Gr) : Shadow.ElOkOk Gr (Shadow.Mk.El Gr Arg) :=
-    λ S Mk MkOk, (Poly.Hom.ElOk.getOk Gr S Mk MkOk) Arg
+    λ S Mk MkOk, (PolyFun.ElOk.getOk Gr S Mk MkOk) Arg
 definition Shadow.Mk.ElOkOkLim (Gr : IsoGraph) (Arg : IsoGraph.Ob Gr) : Shadow.ElOkLim Gr (Shadow.Mk.El Gr Arg) :=
-    λ(X : SetoidBox), λ(XMk : Poly.Hom.El Gr X), λ(XMkOk : Poly.Hom.ElOk Gr X XMk),
-    λ(Y : SetoidBox), λ(YMk : Poly.Hom.El Gr Y), λ(YMkOk : Poly.Hom.ElOk Gr Y YMk),
+    λ(X : SetoidBox), λ(XMk : PolyFun.El Gr X), λ(XMkOk : PolyFun.ElOk Gr X XMk),
+    λ(Y : SetoidBox), λ(YMk : PolyFun.El Gr Y), λ(YMkOk : PolyFun.ElOk Gr Y YMk),
     λ(mor : Setoid.Hom.El X Y), λ(morOk : Setoid.Hom.ElOk X Y mor),
     λ(morLim : ∀(Q : IsoGraph.Ob Gr), SetoidBox.Equ Y (mor (XMk Q)) (YMk Q)),
         morLim Arg
-definition Shadow.Mk.ElOkOk (Gr : IsoGraph) : Poly.Hom.ElOkOk Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
+definition Shadow.Mk.ElOkOk (Gr : IsoGraph) : PolyFun.ElOkOk Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
     λ Arg, and.intro (Shadow.Mk.ElOkOkOk Gr Arg) (Shadow.Mk.ElOkOkLim Gr Arg)
-definition Shadow.Mk.ElOkIso (Gr : IsoGraph) : Poly.Hom.ElOkIso Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
+definition Shadow.Mk.ElOkIso (Gr : IsoGraph) : PolyFun.ElOkIso Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
     λ(A B : IsoGraph.Ob Gr), λ(iso : IsoTuple (IsoGraph.Iso Gr A B)),
-    λ(S : SetoidBox), λ(Mk : Poly.Hom.El Gr S), λ(MkOk : Poly.Hom.ElOk Gr S Mk),
-        (Poly.Hom.ElOk.getIso Gr S Mk MkOk) A B iso
-definition Shadow.Mk.ElOk (Gr : IsoGraph) : Poly.Hom.ElOk Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
+    λ(S : SetoidBox), λ(Mk : PolyFun.El Gr S), λ(MkOk : PolyFun.ElOk Gr S Mk),
+        (PolyFun.ElOk.getIso Gr S Mk MkOk) A B iso
+definition Shadow.Mk.ElOk (Gr : IsoGraph) : PolyFun.ElOk Gr (ShadowSetoid Gr) (Shadow.Mk.El Gr) :=
     and.intro (Shadow.Mk.ElOkOk Gr) (Shadow.Mk.ElOkIso Gr)
 
 ------------------------------------------------------------------
@@ -289,12 +289,12 @@ definition Shadow.Mk.ElOk (Gr : IsoGraph) : Poly.Hom.ElOk Gr (ShadowSetoid Gr) (
 definition backPoly.El
     {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
     (S : SetoidBox)
-    : Poly.Hom.El Gr2 S → Poly.Hom.El Gr1 S
+    : PolyFun.El Gr2 S → PolyFun.El Gr1 S
     := sorry
 definition backPoly.ElOk
     {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
-    (S : SetoidBox) (Mk : Poly.Hom.El Gr2 S)
-    : Poly.Hom.ElOk Gr2 S Mk → Poly.Hom.ElOk Gr1 S (backPoly.El map S Mk)
+    (S : SetoidBox) (Mk : PolyFun.El Gr2 S)
+    : PolyFun.ElOk Gr2 S Mk → PolyFun.ElOk Gr1 S (backPoly.El map S Mk)
     := sorry
 
 definition forwardShadow.El
@@ -302,7 +302,7 @@ definition forwardShadow.El
     : Shadow.El Gr1 → Shadow.El Gr2
     :=
         λ(psh : Shadow.El Gr1),
-        λ(S : SetoidBox), λ(Mk : Poly.Hom.El Gr2 S), λ(MkOk : Poly.Hom.ElOk Gr2 S Mk),
+        λ(S : SetoidBox), λ(Mk : PolyFun.El Gr2 S), λ(MkOk : PolyFun.ElOk Gr2 S Mk),
             psh S (backPoly.El map S Mk) (backPoly.ElOk map S Mk MkOk)
 
 definition TheFibration.onEl
