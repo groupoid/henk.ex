@@ -86,3 +86,24 @@ definition Shadow.ElOkLim (sh : Shadow.El) : Prop :=
         SetoidBox.Equ Y (mor (XMk A)) (YMk A)
 definition Shadow.ElOk (sh : Shadow.El) : Prop :=
     and (Shadow.ElOkOk sh) (Shadow.ElOkLim sh)
+definition Shadow.Equ (shA shB : Shadow.El) : Prop :=
+    ∀(S : SetoidBox), ∀(Mk : Poly.Hom.El S), ∀(MkOk : Poly.Hom.ElOk S Mk),
+        SetoidBox.Equ S (shA S Mk MkOk) (shB S Mk MkOk)
+definition Shadow.Refl : Equ.ReflProp Shadow.Equ :=
+    λ sh1, λ S Mk MkOk, @SetoidBox.Refl S
+        (sh1 S Mk MkOk)
+definition Shadow.Trans : Equ.TransProp Shadow.Equ :=
+    λ sh1 sh2 sh3, λ eq12 eq23, λ S Mk MkOk, @SetoidBox.Trans S
+        (sh1 S Mk MkOk) (sh2 S Mk MkOk) (sh3 S Mk MkOk) (eq12 S Mk MkOk) (eq23 S Mk MkOk)
+definition Shadow.Sym : Equ.SymProp Shadow.Equ :=
+    λ sh1 sh2, λ eq12, λ S Mk MkOk, @SetoidBox.Sym S
+        (sh1 S Mk MkOk) (sh2 S Mk MkOk) (eq12 S Mk MkOk)
+
+definition ShadowSetoid : SetoidBox :=
+    SetoidBox.mk
+        @Shadow.El
+        @Shadow.ElOk
+        @Shadow.Equ
+        @Shadow.Refl
+        @Shadow.Trans
+        @Shadow.Sym
