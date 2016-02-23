@@ -1,34 +1,46 @@
 -module(ch).
+-compile({parse_transform, pi}).
 -compile(export_all).
 
-% Erlang has no partial apply, so we draw it
+% Erlang Partial Application
 
 ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
-
-% MANUAL COMPILATION and formatting for visual algorithm description.
 
 %   data bool: * :=
 %        (true: bool)
 %        (false: bool)
 
-bool   () ->           [true, false].
-true   () ->            fun (T) -> fun (F) -> T end end.
-false  () ->            fun (T) -> fun (F) -> F end end.
+bool   () ->      [true, false].
+true   () ->       fun (T) -> fun (F) -> T end end.
+false  () ->       fun (T) -> fun (F) -> F end end.
 
-              bool(N) -> ap(?MODULE:N(),[]).
-              unbool(A) -> ap(A,ch:bool()).
+% record prod: * :=
+%        (pr1: *)
+%        (pr2: *)
 
-%   data return: * :=
-%        (ok: * → return)
-%        (error: * → return)
+prod   () ->      [pr1,pr2].
+prodid () ->       fun (X) -> X end.
+mk     () ->       fun (A) -> fun (B) -> [A,B] end end.
+pr1    () ->       fun (A) -> fun (B) -> A end end.
+pr2    () ->       fun (A) -> fun (B) -> B end end.
 
-return () ->           [fun (X) -> {ok,X} end, fun (X) -> {error,X} end].
-id     () -> fun (R) -> fun (Ok) -> fun (Error) -> R end end end.
-ok     () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Ok,   [ap(V,[Ok,Error])]) end end end.
-error  () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Error,[ap(V,[Ok,Error])]) end end end.
+              prod({A,B}) -> ap(mk(),[ap(prodid(),[A]),ap(prodid(),[B])]).
+              unprod(X) -> list_to_tuple(om:rev(lists:foldl(fun(F,A) -> [ap(?MODULE:F(),X)|A] end,[],prod()))).
 
-             ret({N,A}) -> ap(?MODULE:N(),[ap(id(),[A])]).
-             unret(A) -> ap(A,return()).
+%   data proto: * :=
+%        (ok: * → proto)
+%        (error: * → proto)
+%        (io: * → * → proto)
+
+ret    () ->           [fun (X) -> {ok,X} end, fun (X) -> {error,X} end, fun(X) -> fun (Y) -> {io,X,Y} end end].
+retid  () ->            fun (R) -> fun (Ok) -> fun (Error) -> fun (Io) -> R end end end end.
+ok     () ->            fun (V) -> fun (Ok) -> fun (Error) -> fun (Io) -> ap(Ok,   [ap(V,[Ok,Error,Io])]) end end end end.
+error  () ->            fun (V) -> fun (Ok) -> fun (Error) -> fun (Io) -> ap(Error,[ap(V,[Ok,Error,Io])]) end end end end.
+io     () -> fun (X) -> fun (Y) -> fun (Ok) -> fun (Error) -> fun (Io) -> ap(Io,   [ap(X,[Ok,Error,Io]),ap(Y,[Ok,Error,Io])]) end end end end end.
+
+             ret({N,A}) -> ap(?MODULE:N(),[ap(retid(),[A])]);
+             ret({io,A,B}) -> ap(io(),[ap(retid(),[A]),ap(retid(),[B])]).
+             unret(A) -> ap(A,ret()).
 
 %  data nat: * :=
 %       (zero: () → nat)
