@@ -1,0 +1,9 @@
+morte: 
+Line:   0
+Column: 0
+
+Parsing : EOF
+Expected: [OpenParen,Box,Star,Pi,Lambda]
+
+Error: Parsing failed
+
