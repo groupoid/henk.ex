@@ -1,0 +1,11 @@
+-- #ShadowTrans: \/(s1: #Shadow )-> \/(s2: #Shadow )-> \/(s3: #Shadow )-> #ShadowEqu s1 s2 -> #ShadowEqu s2 s3 -> #ShadowEqu s1 s3
+
+(\(t: 
+    \/(s1: #Shadow )-> 
+    \/(s2: #Shadow )-> 
+    \/(s3: #Shadow )-> 
+    #ShadowEqu s1 s2 -> 
+    #ShadowEqu s2 s3 -> 
+    #ShadowEqu s1 s3
+)-> t) 
+#ShadowTrans

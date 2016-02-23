@@ -1,0 +1,8 @@
+-- #IsoBAOk: \/(A B: #Setoid)-> \/(fba: #IsoBA A B)-> #Prop
+
+\/(A: #Star )-> \/(AOk: A -> #Prop ) -> \/(AEqu: A -> A -> #Prop )-> \/(ARefl: \/(a: A)-> AEqu a a)-> \/(ATrans: \/(a1: A)-> \/(a2: A)-> \/(a3: A)-> AEqu a1 a2 -> AEqu a2 a3 -> AEqu a1 a3)-> \/(ASym: \/(a1: A)-> \/(a2: A)-> AEqu a1 a2 -> AEqu a2 a1)->
+\/(B: #Star )-> \/(BOk: B -> #Prop ) -> \/(BEqu: B -> B -> #Prop )-> \/(BRefl: \/(b: B)-> BEqu b b)-> \/(BTrans: \/(b1: B)-> \/(b2: B)-> \/(b3: B)-> BEqu b1 b2 -> BEqu b2 b3 -> BEqu b1 b3)-> \/(BSym: \/(b1: B)-> \/(b2: B)-> BEqu b1 b2 -> BEqu b2 b1)->
+
+\/(isoBA: #IsoBA A AOk AEqu ARefl ATrans ASym B BOk BEqu BRefl BTrans BSym)->
+
+#IsoBAOk A AOk AEqu ARefl ATrans ASym B BOk BEqu BRefl BTrans BSym isoBA

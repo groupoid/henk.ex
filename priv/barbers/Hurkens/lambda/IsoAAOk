@@ -1,4 +1,4 @@
--- #IsoAAOk: \/(A B: #Setoid)-> \/(fab: IsoAB A B)-> \/(fba: IsoAB A B)-> #Prop
+-- #IsoAAOk: \/(A B: #Setoid)-> \/(fab: IsoAB A B)-> \/(fba: IsoBA A B)-> #Prop
 
 -- A, B: #Setoid
 \(A: #Star )-> \(AOk: A -> #Prop ) -> \(AEqu: A -> A -> #Prop )-> \(ARefl: \/(a: A)-> AEqu a a)-> \(ATrans: \/(a1: A)-> \/(a2: A)-> \/(a3: A)-> AEqu a1 a2 -> AEqu a2 a3 -> AEqu a1 a3)-> \(ASym: \/(a1: A)-> \/(a2: A)-> AEqu a1 a2 -> AEqu a2 a1)->

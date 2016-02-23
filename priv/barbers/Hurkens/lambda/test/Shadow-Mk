@@ -1,0 +1,11 @@
+-- #Shadow-Mk: #Setoid -> #Shadow
+(\(t: 
+    \/(Arg: #Star )->
+    \/(ArgOk: Arg -> #Prop )->
+    \/(ArgEqu: Arg -> Arg -> #Prop )->
+    \/(ArgRefl: \/(s: Arg)-> ArgEqu s s )->
+    \/(ArgTrans: \/(s1: Arg)-> \/(s2: Arg)-> \/(s3: Arg)-> ArgEqu s1 s2 -> ArgEqu s2 s3 -> ArgEqu s1 s3)->
+    \/(ArgSym: \/(s1: Arg)-> \/(s2: Arg)-> ArgEqu s1 s2 -> ArgEqu s2 s1)->
+    #Shadow
+)-> t) 
+#Shadow-Mk
