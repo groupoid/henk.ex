@@ -7,6 +7,29 @@ ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
 
 % MANUAL COMPILATION and formatting for visual algorithm description.
 
+%   data bool: * :=
+%        (true: bool)
+%        (false: bool)
+
+bool   () ->           [true, false].
+true   () ->            fun (T) -> fun (F) -> T end end.
+false  () ->            fun (T) -> fun (F) -> F end end.
+
+              bool(N) -> ap(?MODULE:N(),[]).
+              unbool(A) -> ap(A,ch:bool()).
+
+%   data return: * :=
+%        (ok: * → return)
+%        (error: * → return)
+
+return () ->           [fun (Ok) -> ok end, fun (Error) -> error end].
+id     () -> fun (R) -> fun (Ok) -> fun (Error) -> R end end end.
+ok     () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Ok,   [ap(V,[Ok,Error])]) end end end.
+error  () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Error,[ap(V,[Ok,Error])]) end end end.
+
+             ret({N,A}) -> ap(?MODULE:N(),[ap(id(),[A])]).
+             unret(A) -> ap(A,[fun (X) -> {ok,X} end, fun (X) -> {error,X} end]).
+
 %  data nat: * :=
 %       (zero: () → nat)
 %       (succ: nat → nat)
