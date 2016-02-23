@@ -22,20 +22,19 @@ false  () ->            fun (T) -> fun (F) -> F end end.
 %        (ok: * → return)
 %        (error: * → return)
 
-return () ->           [fun (Ok) -> ok end, fun (Error) -> error end].
+return () ->           [fun (X) -> {ok,X} end, fun (X) -> {error,X} end].
 id     () -> fun (R) -> fun (Ok) -> fun (Error) -> R end end end.
 ok     () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Ok,   [ap(V,[Ok,Error])]) end end end.
 error  () -> fun (V) -> fun (Ok) -> fun (Error) -> ap(Error,[ap(V,[Ok,Error])]) end end end.
 
              ret({N,A}) -> ap(?MODULE:N(),[ap(id(),[A])]).
-             unret(A) -> ap(A,[fun (X) -> {ok,X} end, fun (X) -> {error,X} end]).
+             unret(A) -> ap(A,return()).
 
 %  data nat: * :=
 %       (zero: () → nat)
 %       (succ: nat → nat)
 
-nat_   () ->                            [{X,?MODULE:X()} || X <- [nat,succ,zero]].
-nat    () ->                        [fun (Succ) -> fun (Zero) -> succ end end, zero].
+nat    () ->                        [fun (Succ) -> {succ,Succ} end, zero].
 zero   () ->                         fun (Succ) -> fun (Zero) -> Zero end end.
 succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
 
@@ -51,8 +50,7 @@ succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat
 %       (nil: () → list A)
 %       (cons: A → list A → list A)
 
-list_  () ->                            [{X,?MODULE:X()} || X <- [list,cons,nil]].
-list   () ->                            [fun (Cons) -> fun (Nil) -> cons end end, nil].
+list   () ->                            [fun (H) -> fun (T) -> {cons,H,T} end end, nil].
 nil    () ->                             fun (Cons) -> fun (Nil) -> Nil end end.
 cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Head,ap(Tail,[Cons,Nil])]) end end end end.
 
