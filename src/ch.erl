@@ -18,14 +18,19 @@ false  () ->       fun (T) -> fun (F) -> F end end.
 %        (pr1: *)
 %        (pr2: *)
 
-prod   () ->      [pr1,pr2].
-prodid () ->       fun (X) -> X end.
-mk     () ->       fun (A) -> fun (B) -> [A,B] end end.
-pr1    () ->       fun (A) -> fun (B) -> A end end.
-pr2    () ->       fun (A) -> fun (B) -> B end end.
+prod  () ->       [fun (A) -> fun (B)->  {prod,A,B} end end].
+prodid () ->                  fun (X) -> fun (Mk) -> X end end.
+mk     () ->       fun (A) -> fun (B) -> fun (Mk) -> ap(Mk,[ap(A,[Mk]),ap(B,[Mk])]) end end end.
+pr1    () ->       [fun (A) -> fun (B) -> A end end].
+pr2    () ->       [fun (A) -> fun (B) -> B end end].
 
-              prod({A,B}) -> ap(mk(),[ap(prodid(),[A]),ap(prodid(),[B])]).
-              unprod(X) -> list_to_tuple(om:rev(lists:foldl(fun(F,A) -> [ap(?MODULE:F(),X)|A] end,[],prod()))).
+            prod({A,B}) -> ap(mk(),[ap(prodid(),[A]),ap(prodid(),[B])]).
+            unprod(X) -> ap(X,prod()).
+
+% > ch:ap(ch:prod({io,2}),ch:pr1()).
+% io
+% 2> ch:ap(ch:prod({io,2}),ch:prod()).
+% {prod,io,2}
 
 %   data proto: * :=
 %        (ok: * → proto)
