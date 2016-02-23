@@ -61,10 +61,18 @@ cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Hea
              kons   ()            -> fun (A) -> fun (L) -> [A|L] end end.
              unlist (L)           -> ap(L,[kons(),[]]).
 
+% marshaling sample
+
+% > ch:ap(ch:ap(ch:succ(),[ch:ap(ch:succ(),[ch:zero()])]),ch:nat()).
+% {succ,{succ,zero}}
+
+% > ch:ap(ch:ap(ch:cons(),[2,ch:ap(ch:cons(),[1,ch:nil()])]),ch:list()).
+% {cons,2,{cons,1,nil}}
+
 % benchmarks in 1M
 
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
-             io:format("Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
+             io:format("Cons/Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
              io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () ->unnat(nat(1000000)) end)]),
              io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () ->unlist(list(lists:seq(1,1000000))) end)),'_'}]),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
