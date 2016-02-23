@@ -11,14 +11,15 @@ main(A)     -> mad:main(A).
 start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
+mode()      -> "normal".
 init([])    -> {ok, {{one_for_one, 5, 10}, []}}.
 type(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), type(P,lists:last(T)).
 type(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[X]} -> X end.
-parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv/Om",P,F],"/")),[]) catch E:R -> {[],error} end.
+parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R -> {[],error} end.
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
 file(F)     -> {ok,Bin} = read_file(F), Bin.
-scan()      -> [ show(F) || F <- filelib:wildcard("priv/Om/**/*"), filelib:is_dir(F) /= true ], ok.
+scan()      -> [ show(F) || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ], ok.
 show(F)     -> T = string:substr(string:tokens(F,"/"),3),
                error("~ts~n~ts~nsize: ~p~n",[F,file(F),size(term_to_binary(type(string:join(T,"/"))))]).
 

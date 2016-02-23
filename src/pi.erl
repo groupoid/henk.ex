@@ -1,5 +1,4 @@
 -module(pi).
--description('Pi-calculus model based on Erlang axioms').
 -export([parse_transform/2]).
 -compile(export_all).
 

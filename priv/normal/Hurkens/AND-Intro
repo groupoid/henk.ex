@@ -1,0 +1,12 @@
+-- #AND-Intro: \/(A B: #Prop )-> A -> B -> #AND A B
+
+-- arguments
+\(A: #Prop )->
+\(B: #Prop )->
+\(a: A)->
+\(b: B)->
+
+-- encoding
+\(AND: #Prop )->
+\(Intro: A -> B -> AND)->
+Intro a b

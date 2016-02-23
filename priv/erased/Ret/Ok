@@ -1,0 +1,5 @@
+  λ (A: *)
+→ λ (Ok: *)
+→ λ (Error: *)
+→ λ (Io: *)
+→ Ok (A Ok Error Io)

@@ -1,0 +1,5 @@
+→ λ (head: *)
+→ λ (tail: *)
+→ λ (Cons: *)
+→ λ (Nil: *)
+→ Cons head (tail Cons Nil)

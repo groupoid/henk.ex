@@ -1,0 +1,5 @@
+-- #AND: #Prop -> #Prop -> #Prop
+\(A: #Prop )-> \(B: #Prop )-> 
+\/(AND: #Prop )->
+\/(Intro: A -> B -> AND)->
+AND
