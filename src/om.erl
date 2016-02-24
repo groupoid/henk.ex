@@ -12,6 +12,7 @@ start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 mode()      -> "erased".
+%mode()      -> "normal".
 init([])    -> om_extract:scan(), om:scan(), {ok, {{one_for_one, 5, 10}, []}}.
 type(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), type(P,lists:last(T)).
 type(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[X]} -> X end.

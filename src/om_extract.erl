@@ -8,14 +8,15 @@ extract(F,Term) -> {function,1,om:atom(F),0,[{clause,1,[],[],[ext(F,Term,1)]}]}.
 extract(X)      -> Last = om:last(string:tokens(X,"/")),
                    io:format("Type: ~p at ~p~n",[Last,X]),
                    Forms = prologue(om:atom(Last))
-                      ++ [ begin
-                                Name = string:join([Last,F],"/"),
-                                io:format("Ctor: ~p~n",[Name]),
-                                om:show(string:join([X,F],"/")),
-                                extract(F,om:type(Name)) end || F <- element(2,file:list_dir(X)) ]
-                      ++ [{eof,1}],
+                      ++ [ begin Name = string:join([Last,F],"/"),
+                                 io:format("Ctor: ~p~n",[Name]),
+                                 om:show(string:join([X,F],"/")),
+                                 extract(F,om:type(Name)) end || F <- element(2,file:list_dir(X)) ] ++ [{eof,1}],
                    {ok,Name,Bin} = compile:forms(Forms),
                    file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
+
+%ext(F,{{"∀",Name},{_,Out}},N) -> ext(F,Out,N);
+%ext(F,{"→",{_,Out}},N)        -> ext(F,Out,N);
 
 % cartesian closed Erlang AST extraction
 
