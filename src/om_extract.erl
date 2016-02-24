@@ -21,6 +21,6 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
 % cartesian closed Erlang AST extraction
 
 ext(F,{{"λ",Name},{_,Out}},N) -> {'fun',N,{clauses,[{clause,N,[{var,N,Name}],[],[ext(F,Out,N)]}]}};
-ext(F,{app,{A,B}},N) -> {call,N,ext(F,A,N),[ext(F,B,N)]};
-ext(F,{var,{Name,I}},N) -> {var,N,Name}.
+ext(F,{app,{A,B}},N)          -> {call,N,ext(F,A,N),[ext(F,B,N)]};
+ext(F,{var,{Name,I}},N)       -> {var,N,Name}.
 
