@@ -1,10 +1,13 @@
 -module(ch).
--compile({parse_transform, pi}).
+-description('Natural Encoding Schema').
+-compile({parse_transform, dump}).
 -compile(export_all).
 
 % Erlang Partial Application
 
 ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
+
+ap1(Fun,Arg) -> Fun(Arg).
 
 %   data bool: * :=
 %        (true: bool)
@@ -69,7 +72,7 @@ succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat
 
 list   () ->                            [fun (H) -> fun (T) -> {cons,H,T} end end, nil].
 nil    () ->                             fun (Cons) -> fun (Nil) -> Nil end end.
-cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Head,ap(Tail,[Cons,Nil])]) end end end end.
+cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head))((Tail(Cons))(Nil))) end end end end.
 
              % mapping to erlang list
 

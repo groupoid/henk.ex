@@ -1,5 +1,5 @@
 -module(om_parse).
--description('Om Parser').
+-description('Parser').
 -compile(export_all).
 
 %     Om Specification

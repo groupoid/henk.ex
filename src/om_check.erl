@@ -1,4 +1,5 @@
 -module(om_check).
+-description('Type Checker').
 -compile(export_all).
 
 error({input,X})        -> om:print("Invalid input type: ~p~n",[X]);

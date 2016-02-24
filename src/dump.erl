@@ -1,4 +1,5 @@
--module(pi).
+-module(dump).
+-description('Dump Erlang AST').
 -export([parse_transform/2]).
 -compile(export_all).
 

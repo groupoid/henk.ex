@@ -1,4 +1,4 @@
-  λ (Nat : *)
+  λ (Nat: *)
 → λ (Succ: *)
 → λ (Zero: *)
 → Succ (Nat Succ Zero)
