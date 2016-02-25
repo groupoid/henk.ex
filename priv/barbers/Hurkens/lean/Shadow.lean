@@ -48,6 +48,17 @@ record IsoTupleMap (box1 box2 : IsoTupleBox) :=
         IsoTupleBox.BBOk box1 isoAB isoBA → IsoTupleBox.BBOk box2 (onAB isoAB) (onBA isoBA))
 check IsoTupleMap
 
+definition IsoTupleMap.action
+    {box1 box2 : IsoTupleBox} (map : IsoTupleMap box1 box2)
+    : IsoTuple box1 → IsoTuple box2
+    := λ iso, IsoTuple.mk
+        (IsoTupleMap.onAB map (IsoTuple.isoAB iso))
+        (IsoTupleMap.onBA map (IsoTuple.isoBA iso))
+        (IsoTupleMap.onABOk map (IsoTuple.isoAB iso) (IsoTuple.isoABOk iso))
+        (IsoTupleMap.onBAOk map (IsoTuple.isoBA iso) (IsoTuple.isoBAOk iso))
+        (IsoTupleMap.onAAOk map (IsoTuple.isoAB iso) (IsoTuple.isoBA iso) (IsoTuple.isoAAOk iso))
+        (IsoTupleMap.onBBOk map (IsoTuple.isoAB iso) (IsoTuple.isoBA iso) (IsoTuple.isoBBOk iso))
+
 record IsoGraph :=
     (Ob : Box)
     (Iso : ∀(X Y : Ob), IsoTupleBox)
@@ -57,6 +68,12 @@ record IsoGraphMap (G1 G2 : IsoGraph) :=
     (onOb : IsoGraph.Ob G1 → IsoGraph.Ob G2)
     (onIso : ∀(X Y : IsoGraph.Ob G1), IsoTupleMap (IsoGraph.Iso G1 X Y) (IsoGraph.Iso G2 (onOb X) (onOb Y)))
 check IsoGraphMap
+
+definition IsoGraphMap.action
+    {G1 G2 : IsoGraph} (map : IsoGraphMap G1 G2) (X Y : IsoGraph.Ob G1)
+    : IsoTuple (IsoGraph.Iso G1 X Y)  →
+        IsoTuple (IsoGraph.Iso G2 (IsoGraphMap.onOb map X) (IsoGraphMap.onOb map Y))
+    := IsoTupleMap.action (IsoGraphMap.onIso map X Y)
 
 --------------------------------------------
 --
@@ -286,16 +303,32 @@ definition Shadow.Mk.ElOk (Gr : IsoGraph) : PolyFun.ElOk Gr (ShadowSetoid Gr) (S
 
 ------------------------------------------------------------------
 
+definition and.map {L1 L2 R1 R2 : Prop}
+    (l : L1 → L2) (r : R1 → R2)
+    : and L1 R1 → and L2 R2
+    := λ lr1, and.intro (l (and.left lr1)) (r (and.right lr1))
+
 definition backPoly.El
     {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
     (S : SetoidBox)
     : PolyFun.El Gr2 S → PolyFun.El Gr1 S
-    := sorry
+    := λ Mk, λ (A : IsoGraph.Ob Gr1), Mk (IsoGraphMap.onOb map A)
+definition backPoly.ElOkOk
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (S : SetoidBox) (Mk : PolyFun.El Gr2 S)
+    : PolyFun.ElOkOk Gr2 S Mk → PolyFun.ElOkOk Gr1 S (backPoly.El map S Mk)
+    := λ MkOkOk, λ (A : IsoGraph.Ob Gr1), MkOkOk (IsoGraphMap.onOb map A)
+definition backPoly.ElOkIso
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (S : SetoidBox) (Mk : PolyFun.El Gr2 S)
+    : PolyFun.ElOkIso Gr2 S Mk → PolyFun.ElOkIso Gr1 S (backPoly.El map S Mk)
+    := λ MkOkIso, λ (A B : IsoGraph.Ob Gr1), λ (iso : IsoTuple (IsoGraph.Iso Gr1 A B)),
+        proof MkOkIso (IsoGraphMap.onOb map A) (IsoGraphMap.onOb map B) (IsoGraphMap.action map A B iso) qed
 definition backPoly.ElOk
     {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
     (S : SetoidBox) (Mk : PolyFun.El Gr2 S)
     : PolyFun.ElOk Gr2 S Mk → PolyFun.ElOk Gr1 S (backPoly.El map S Mk)
-    := sorry
+    := and.map (backPoly.ElOkOk map S Mk) (backPoly.ElOkIso map S Mk)
 
 definition forwardShadow.El
     {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
@@ -304,6 +337,48 @@ definition forwardShadow.El
         λ(psh : Shadow.El Gr1),
         λ(S : SetoidBox), λ(Mk : PolyFun.El Gr2 S), λ(MkOk : PolyFun.ElOk Gr2 S Mk),
             psh S (backPoly.El map S Mk) (backPoly.ElOk map S Mk MkOk)
+definition forwardShadow.ElOkOk
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (psh : Shadow.El Gr1)
+    : Shadow.ElOkOk Gr1 psh → Shadow.ElOkOk Gr2 (forwardShadow.El map psh)
+    :=
+        λ(pshOkOk : Shadow.ElOkOk Gr1 psh),
+        λ(S : SetoidBox), λ(Mk : PolyFun.El Gr2 S), λ(MkOk : PolyFun.ElOk Gr2 S Mk),
+            proof pshOkOk S (backPoly.El map S Mk) (backPoly.ElOk map S Mk MkOk) qed
+definition forwardShadow.ElOkLim
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (psh : Shadow.El Gr1)
+    : Shadow.ElOkLim Gr1 psh → Shadow.ElOkLim Gr2 (forwardShadow.El map psh)
+    :=
+        λ(pshOkLim : Shadow.ElOkLim Gr1 psh),
+        λ(X : SetoidBox), λ(XMk : PolyFun.El Gr2 X), λ(XMkOk : PolyFun.ElOk Gr2 X XMk),
+        λ(Y : SetoidBox), λ(YMk : PolyFun.El Gr2 Y), λ(YMkOk : PolyFun.ElOk Gr2 Y YMk),
+        λ(mor : Setoid.Hom.El X Y), λ(morOk : Setoid.Hom.ElOk X Y mor),
+        λ(morLim : ∀(Q : IsoGraph.Ob Gr2), SetoidBox.Equ Y (mor (XMk Q)) (YMk Q)),
+        proof
+            pshOkLim
+                X (backPoly.El map X XMk) (backPoly.ElOk map X XMk XMkOk)
+                Y (backPoly.El map Y YMk) (backPoly.ElOk map Y YMk YMkOk)
+                mor morOk
+                    ( λ(Q : IsoGraph.Ob Gr1), morLim (IsoGraphMap.onOb map Q))
+        qed
+definition forwardShadow.ElOk
+    {Gr1 Gr2 : IsoGraph} (map : IsoGraphMap Gr1 Gr2)
+    (psh : Shadow.El Gr1)
+    : Shadow.ElOk Gr1 psh → Shadow.ElOk Gr2 (forwardShadow.El map psh)
+    := and.map (forwardShadow.ElOkOk map psh) (forwardShadow.ElOkLim map psh)
+
+/-
+definition Shadow.ElOkOk (Gr : IsoGraph) (sh : Shadow.El Gr) : Prop :=
+    ∀(S : SetoidBox), ∀(Mk : PolyFun.El Gr S), ∀(MkOk : PolyFun.ElOk Gr S Mk),
+        SetoidBox.ElOk S (sh S Mk MkOk)
+definition Shadow.ElOkLim (Gr : IsoGraph) (sh : Shadow.El Gr) : Prop :=
+    ∀(X : SetoidBox), ∀(XMk : PolyFun.El Gr X), ∀(XMkOk : PolyFun.ElOk Gr X XMk),
+    ∀(Y : SetoidBox), ∀(YMk : PolyFun.El Gr Y), ∀(YMkOk : PolyFun.ElOk Gr Y YMk),
+    ∀(mor : Setoid.Hom.El X Y), ∀(morOk : Setoid.Hom.ElOk X Y mor),
+    ∀(morLim : ∀(Q : IsoGraph.Ob Gr), SetoidBox.Equ Y (mor (XMk Q)) (YMk Q)),
+        SetoidBox.Equ Y (mor (sh X XMk XMkOk)) (sh Y YMk YMkOk)
+-/
 
 definition TheFibration.onEl
     : Shadow.El PointedSetoids → Shadow.El Setoids
@@ -318,6 +393,6 @@ definition TheFibration.onEqu
     := sorry
 -----
 
--- TODO: Shadow in initial object
+-- TODO: Shadow is initial object with polymorphic function
 -- TODO: isomorphism: Shadow.Mk & TheFiber are inverse
 -- TODO: Hurken's paradox
