@@ -54,32 +54,34 @@ io     () -> fun (X) -> fun (Y) -> fun (Ok) -> fun (Error) -> fun (Io) -> ap(Io,
 %       (zero: () → nat)
 %       (succ: nat → nat)
 
+nat_   () ->                        [fun (Succ) -> 1 + Succ end, 0 ].
 nat    () ->                        [fun (Succ) -> {succ,Succ} end, zero].
 zero   () ->                         fun (Succ) -> fun (Zero) -> Zero end end.
-succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
+succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> Succ((Nat(Succ))(Zero)) end end end.
+                                                                 %ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
 
              % mapping to erlang integer
 
-             nat   (0) -> zero();
-             nat   (I) -> fun (Succ) -> fun(Zero) -> ap(Succ,[ap(nat(I-1),[Succ,Zero])]) end end.
-             inc    () -> fun (X) -> X + 1 end.
-             unnat (N) -> ap(N,[inc(),0]).
-             plus(A,B) -> nat(elrnag:'+'(unnat(A),unnat(B))).
+             nat   (0) -> 'Nat':'Zero'();
+             nat   (I) -> ('Nat':'Succ'())(nat(I-1)). % fun (Succ) -> fun(Zero) -> Succ(((nat(I-1))(Succ))(Zero)) end end.
+             unnat (N) -> ap(N,nat_()).
+             plus(A,B) -> nat(erlang:'+'(unnat(A),unnat(B))).
 
 %  data list: (A:*) → * :=
 %       (nil: () → list A)
 %       (cons: A → list A → list A)
 
+list_  () ->                            [fun (H) -> fun (T) -> [H|T] end end, [] ].
 list   () ->                            [fun (H) -> fun (T) -> {cons,H,T} end end, nil].
 nil    () ->                             fun (Cons) -> fun (Nil) -> Nil end end.
 cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head))((Tail(Cons))(Nil))) end end end end.
+                                                                    % ap(Cons,[Head,ap(Tail,[Cons,Nil])]) end end end end.
 
              % mapping to erlang list
 
-             list   ([])          -> nil();
-             list   ([Head|Tail]) -> fun (Cons) -> fun (Nil) -> ap(Cons,[Head,ap(list(Tail),[Cons,Nil])]) end end.
-             kons   ()            -> fun (A) -> fun (L) -> [A|L] end end.
-             unlist (L)           -> ap(L,[kons(),[]]).
+             list   ([])          -> 'List':'Nil'();
+             list   ([Head|Tail]) -> (('List':'Cons'())(Head))(list(Tail)). % fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
+             unlist (L)           -> ap(L,list_()).
 
 % marshaling sample
 
@@ -93,7 +95,7 @@ cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head)
 
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Cons/Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
-             io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () ->unnat(nat(1000000)) end)]),
-             io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () ->unlist(list(lists:seq(1,1000000))) end)),'_'}]),
+             spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () -> unnat(nat(1000000)) end)]) end),
+             spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () -> unlist(list(lists:seq(1,1000000))) end)),'_'}]) end ),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
