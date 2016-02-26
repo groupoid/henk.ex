@@ -19,7 +19,7 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                                  Extract = extract(F,Erased,get(x)+1),
                                  io:format("Tree: ~tp~n",[Extract]),
                                  Extract
-                     end || F <- element(2,file:list_dir(X)) ] ++ [{eof,1}],
+                     end || F <- element(2,file:list_dir(X)), F /= "@" ] ++ [{eof,1}],
                   io:format("Forms: ~tp~n",[Forms]),
                    {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
                    file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
@@ -28,7 +28,8 @@ erasure(F,{{"∀",Name},{In,Out}},N)   -> []; % eraseLambda(F,{"λ",Name},In,Out
 erasure(F,{"→",{_,Out}},N)           -> [];
 erasure(F,{{"λ",Name},{In,Out}}=T,N) -> eraseLambda(F,{"λ",Name},In,Out,N+1);
 erasure(F,{app,{A,B}},N)             -> eraseApp(erasure(F,A,N),erasure(F,B,N+1));
-erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}}.
+erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}};
+erasure(F,_,N)                       -> [].
 
 %eraseLambda(F,{"λ",Name},{const,"*"},Out,N) -> erasure(F,Out,N+1);
 eraseLambda(F,{"λ",Name},{"∀",_},Out,N)     -> erasure(F,Out,N+1);
