@@ -6,16 +6,16 @@ prologue(Name)  -> [{attribute,1,module,Name},{attribute,1,compile,export_all}].
 scan()          -> [ extract(F) || F <- filelib:wildcard(string:join(["priv",om:mode(),"**","*"],"/")), filelib:is_dir(F) == true ].
 extract(F,T,C)  -> case ext(F,T,C) of [] -> []; Ex -> {function,C,om:atom(F),0,[{clause,C,[],[],[Ex]}]} end.
 extract(X)      -> Last = om:last(string:tokens(X,"/")),
-                   io:format("Type: ~p at ~p~n",[Last,X]),
+                   mad:info("Type: ~p at ~p~n",[Last,X]),
                    Forms = prologue(om:atom(Last))
                       ++ [ begin Name = string:join([Last,F],"/"),
-                                 io:format("Ctor: ~tp~n",[Name]),
+                                 mad:info("Ctor: ~tp~n",[Name]),
                                  om:show(string:join([X,F],"/")),
                                  Erased = case om:mode() of "normal" -> erasure(F,om:type(Name),1);
                                                             "erased" -> om:type(Name) end,
-                                 io:format("Erased: ~tp~n",[Erased]),
+                                 mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
-                                 io:format("Tree: ~tp~n",[Extract]),
+                                 mad:info("Tree: ~tp~n",[Extract]),
                                  Extract
                      end || F <- element(2,file:list_dir(X)), F /= "@" ] ++ [{eof,1}],
                    {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
