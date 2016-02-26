@@ -1,6 +1,6 @@
 -module(ch).
 -description('Natural Encoding Schema').
--compile({parse_transform, dump}).
+%-compile({parse_transform, dump}).
 -compile(export_all).
 
 % Erlang Partial Application
