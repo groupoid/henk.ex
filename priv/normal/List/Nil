@@ -1,8 +1,8 @@
-  λ (a: *)
+  λ (A: *)
 → λ (List: *)
 → λ (Cons:
-    ∀ (head: a)
-  → ∀ (tail: List)
-    → List)
+    ∀ (Head: A)
+  → ∀ (Tail: List)
+  → List)
 → λ (Nil: List)
 → Nil

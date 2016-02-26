@@ -1,17 +1,17 @@
-  λ (a: *)
-→ λ (head: a)
-→ λ (tail:
+  λ (A: *)
+→ λ (Head: A)
+→ λ (Tail:
     ∀ (List: *)
   → ∀ (Cons:
-      ∀ (head: a)
-    → ∀ (tail: List)
+      ∀ (Head: A)
+    → ∀ (Tail: List)
     → List)
   → ∀ (Nil: List)
   → List)
 → λ (List: *)
 → λ (Cons:
-    ∀ (head: a)
-  → ∀ (tail: List)
+    ∀ (Head: A)
+  → ∀ (Tail: List)
   → List)
 → λ (Nil: List)
-→ Cons head (tail List Cons Nil)
+→ Cons Head (Tail List Cons Nil)

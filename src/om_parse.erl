@@ -24,7 +24,10 @@
 %                  lambda: arrow(app(typevar(x),A),B)
 %
 
-expr(P,[{remote,{X,L}}|T],Acc) -> expr(P,T,[om:type(X,L)|Acc]);
+ret({[],[X]}) -> X;
+ret(Y) -> Y.
+
+expr(P,[{remote,{X,L}}|T],Acc) -> expr(P,T,[ret(om:type(X,L))|Acc]);
 expr(P,[{remote,L}|T],Acc) -> expr(P,T,[om:type(L)|Acc]);
 expr(P,[{N,X}|T],[{typevar,Y}|Acc])   -> expr(P,T,[{N,X},{typevar,Y}|Acc]);
 expr(P,[{N,X}|T],[{C,Y}|Acc])         -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc]);

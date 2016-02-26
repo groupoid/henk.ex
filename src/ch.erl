@@ -17,6 +17,9 @@ bool   () ->      [true, false].
 true   () ->       fun (T) -> fun (F) -> T end end.
 false  () ->       fun (T) -> fun (F) -> F end end.
 
+            bool(F) -> ?MODULE:F().
+            unbool(X) -> ap(X,bool()).
+
 % record prod: * :=
 %        (pr1: *)
 %        (pr2: *)
