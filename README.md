@@ -41,7 +41,7 @@ Run Samples
 -----------
 
 * `brew install erlang`
-* `wget https://github.com/synrc/mad/blob/master/mad`
+* `wget https://raw.githubusercontent.com/synrc/mad/master/mad && chmod +x mad`
 *  `mad dep com plan sh`
 
 
