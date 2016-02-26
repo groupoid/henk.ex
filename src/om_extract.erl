@@ -23,8 +23,8 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
 
 % Erase Type Information from Normalized Files
 
-erasure(F,{{"∀",Name},{In,Out}},N)   -> erasure(F,Out,N+1);
-erasure(F,{"→",{_,Out}},N)           -> erasure(F,Out,N+1);
+erasure(F,{{"∀",Name},{In,Out}},N)   -> []; %erasure(F,Out,N+1);
+erasure(F,{"→",{_,Out}},N)           -> []; %erasure(F,Out,N+1);
 erasure(F,{{"λ",Name},{In,Out}}=T,N) -> eraseLambda(F,{"λ",Name},In,Out,N);
 erasure(F,{app,{A,B}},N)             -> eraseApp(erasure(F,A,N),erasure(F,B,N));
 erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}};
