@@ -1,7 +1,1 @@
-  λ (A: *)
-→ λ (B: *)
-→ λ (f: A → B)
-→ λ (xs: #List/id A)
-→ λ (List: *)
-→ λ (Cons: B → List → List)
-→ xs List (λ (x: A) → Cons (f x))
+λ(a : *) → λ(b : *) → λ(f : a → b) → λ(xs : ∀(List : *) → ∀(Cons : ∀(head : a) → ∀(tail : List) → List) → ∀(Nil : List) → List) → xs (∀(List : *) → ∀(Cons : ∀(head : b) → ∀(tail : List) → List) → ∀(Nil : List) → List) (λ(head : a) → λ(tail : ∀(List : *) → ∀(Cons : ∀(head : b) → ∀(tail : List) → List) → ∀(Nil : List) → List) → λ(List : *) → λ(Cons : ∀(head : b) → ∀(tail : List) → List) → λ(Nil : List) → Cons (f head) (tail List Cons Nil)) (λ(List : *) → λ(Cons : ∀(head : b) → ∀(tail : List) → List) → λ(Nil : List) → Nil)
