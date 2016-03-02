@@ -14,15 +14,22 @@ stop(_)     -> ok.
 mode()      -> application:get_env(om,mode,"erased").
 init([])    -> {ok, {{one_for_one, 5, 10}, []}}.
 type(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), type(P,lists:last(T)).
-type(P,F)   -> case parse(P,F) of {[],error} -> parse(P,F); {[],[X]} -> X end.
-parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R -> io:format("ERROR: ~p:~p~n",[R,erlang:get_stacktrace()]), {[],error} end.
+type(P,F)   -> case parse(P,F) of {[],error} -> parse(P,F); {[],[]} -> {[],error}; {[],[X]} -> X end.
+parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R ->
+              io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
+              {[],error} end.
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],list_to_binary(F),0,{1,[]},[]),[]), X.
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
 file(F)     -> {ok,Bin} = read_file(F), Bin.
-scan()      -> [ show(F) || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ], ok.
-show(F)     -> T = string:substr(string:tokens(F,"/"),3),
-               error("~ts~n~ts~nsize: ~p~n",[F,file(F),size(term_to_binary(type(string:join(T,"/"))))]).
+scan()      -> Res = [ {element(1,show(F))/=[],F} || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ],
+               error("Tests: ~tp~n",[Res]),
+               Passed = lists:all(fun({X,B}) -> X == true end, Res),
+               case Passed of
+                    true -> error("PASSED~n",[]);
+                    false -> error("FAILED~n",[]) end.
+show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = type(string:join(T,"/")),
+               error("===[ File: ~ts ]==========~nCat: ~ts~nTerm: ~tp~n",[F,file(F),Type]), Type.
 
 % relying function
 

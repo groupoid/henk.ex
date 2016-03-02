@@ -1,6 +1,6 @@
 -- #Unit/Type : #Type1
-forall(UnitElType : #Type1 ) ->
-forall(UnitElProp : UnitElType -> #Prop ) ->
+forall(UnitElType : #Unit/Type1 ) ->
+forall(UnitElProp : UnitElType -> #Unit/Prop ) ->
 forall(UnitEqu : 
     forall(a : UnitElType)->forall(aok : UnitElProp a)->
     forall(b : UnitElType)->forall(bok : UnitElProp b)-> 
