@@ -12,6 +12,7 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                                  mad:info("Ctor: ~tp~n",[Name]),
                                  om:show(string:join([X,F],"/")),
                                  Erased = case om:mode() of "normal" -> erasure(F,om:type(Name),1);
+                                                            "setoids" -> erasure(F,om:type(Name),1);
                                                             "erased" -> om:type(Name) end,
                                  mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
@@ -30,7 +31,8 @@ erasure(F,{app,{A,B}},N)             -> eraseApp(erasure(F,A,N),erasure(F,B,N));
 erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}};
 erasure(F,_,N)                       -> [].
 
-eraseLambda(F,{"λ",Name},{"∀",_},Out,N)     -> erasure(F,Out,N+1);
+eraseLambda(F,{"λ",Name},{"∀",_},Out,N)     -> []; %erasure(F,Out,N+1);
+eraseLambda(F,{"λ",Name},"→",Out,N)         -> []; %erasure(F,Out,N+1);
 eraseLambda(F,{"λ",Name},In,Out,N)          -> {{"λ",Name},{In,erasure(F,Out,N)}};
 eraseLambda(F,_,_,Out,N)                    -> [].
 
