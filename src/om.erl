@@ -19,7 +19,7 @@ parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],list_to_binary(F),0,{1,[]},[]),[]), X.
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
-file(F)     -> io:format("file load: ~p~n",[F]), {ok,Bin} = read_file(F), Bin.
+file(F)     -> {ok,Bin} = read_file(F), Bin.
 scan()      -> [ show(F) || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ], ok.
 show(F)     -> T = string:substr(string:tokens(F,"/"),3),
                error("~ts~n~ts~nsize: ~p~n",[F,file(F),size(term_to_binary(type(string:join(T,"/"))))]).
