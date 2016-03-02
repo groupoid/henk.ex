@@ -44,8 +44,10 @@ expr(P,[colon   |T], Acc) -> expr(P,T,[{colon}|Acc]);
 expr(P,[{var,L},colon|T],Acc)  -> expr(P,T,[{typevar,L}|Acc]);
 expr(P,[{var,L}|T],      Acc)  -> expr(P,T,[{var,L}|Acc]).
 
-rewind([{F}|Acc],         T, [{"→",{{app,{{typevar,{L,_}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
-                                        -> rewind(Acc,T,[{{func(F),L},{{A,X},{B,Y}}}|R]);
+rewind([{F}|Acc],         T, [{"→",{{app,{{typevar,{L,M}},{A,X}}},{B,Y}}}|R]) when F == lambda; F== pi
+                                        -> rewind(Acc,T,[{{func(F),{L,M}},{{A,X},{B,Y}}}|R]);
+rewind([{F}|Acc],         T, [{"→",{{L,{{G,{{K,M},A}},X}},{B,Y}}}|R]) when F == lambda; F== pi
+                                        -> rewind(Acc,T,[{{func(F),M},{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, [{B,Y}|R]) -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, R)         -> rewind(Acc,T,[{A,X}|R]);
 rewind([{arrow},Y|Acc],   T, [X|R])     -> rewind(Acc,T,[{func(arrow),{Y,X}}|R]);
