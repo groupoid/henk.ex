@@ -48,8 +48,8 @@ inet(P,X,Acc) -> [{remote,{P,X}}|Acc].
 atom(X,Acc)   -> [list_to_atom(X)|Acc].
 name(X,Acc)   -> [{var,{X,0}}|Acc].
 fix(X)        -> case lists:flatten(X) of [] -> "1"; A -> A end.
-index(X,Acc)  -> [star|Acc].
-                 %[{star,list_to_integer(fix(X))}|Acc].
+index(X,Acc)  -> %[star|Acc].
+                 [{star,list_to_integer(fix(X))}|Acc].
 ivar([N,I])   -> [N,I];
 ivar([N])     -> [N,"0"].
 vars(X,Acc)   -> [Name,Index]= ivar(om:tokens(X,"@")),
