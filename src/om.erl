@@ -58,4 +58,4 @@ file(F) -> Raw = case file:read_file(F) of
 
 mad(F) -> case mad_repl:load_file(F) of
                {ok,Bin} -> Bin;
-               {error,_} -> io:format("File not found ~p~n",[F]), <<>> end.
+               {error,_} -> <<>> end.
