@@ -134,6 +134,30 @@ Parse raw expressions:
               {var,{a,0}}}}}}}}}}]}
 ```
 
+Extract Erlang Modules:
+
+```
+> om_extract:scan().
+Active: module loaded: {loaded_new,'Bool'}
+Active: module loaded: {loaded_new,'List'}
+Active: module loaded: {loaded_new,'Nat'}
+Active: module loaded: {loaded_new,'Prod'}
+Active: module loaded: {loaded_new,'Ret'}
+```
+
+Example of usage of compiled modules `List` and `Nat`:
+
+```
+> ch:main().
+Zero: 0
+Cons/Nil: [2,1]
+Test Big List: [2,3,5,8,11,19]
+Two: 2
+ok
+Pack/Unpack 1 000 000 Inductive List: {733256,'_'}
+Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
+```
+
 Target Erlang VM and LLVM platforms
 -----------------------------------
 
