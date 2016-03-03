@@ -12,19 +12,25 @@ start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
+priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
 mode()      -> application:get_env(om,mode,"erased").
 init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 term(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), term(P,lists:last(T)).
 term(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
-parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R ->
-%              io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
-              {[],error} end.
+name(M,P,F) -> string:join(["priv",mode(),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
+parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
+               io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
+               {[],error} end.
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]),[]), X.
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
 all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
-scan()      -> Res = [ {element(1,show(F))/=[],F} || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ],
+syscard()   -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
+wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
+               lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
+
+scan()      -> Res = [ {element(1,show(F))/=[],F} || {F} <- lists:umerge(wildcard(),syscard()) ],
                error("Tests: ~tp~n",[Res]),
                Passed = lists:all(fun({X,B}) -> X == true end, Res),
                case Passed of
@@ -42,7 +48,6 @@ flat(X)      -> lists:flatten(X).
 tokens(X,Y)  -> string:tokens(X,Y).
 print(S,A)   -> io_lib:format(S,A).
 error(S,A)   -> io:format(S,A).
-read_file(F) -> file:read_file(F).
 atom(X)      -> list_to_atom(X).
 last(X)      -> lists:last(X).
 
@@ -53,4 +58,4 @@ file(F) -> Raw = case file:read_file(F) of
 
 mad(F) -> case mad_repl:load_file(F) of
                {ok,Bin} -> Bin;
-               {error,_} -> <<>> end.
+               {error,_} -> io:format("File not found ~p~n",[F]), <<>> end.
