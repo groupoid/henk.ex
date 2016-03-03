@@ -137,6 +137,8 @@ Parse raw expressions:
 Extract Erlang Modules:
 
 ```
+> application:set_env(om,mode,"erased").
+ok
 > om_extract:scan().
 Active: module loaded: {loaded_new,'Bool'}
 Active: module loaded: {loaded_new,'List'}
