@@ -13,7 +13,7 @@ assertEqual(_,_) -> erlang:error("must be equal").
 
 assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
 assertVar(Name,Bind,true)  -> true;
-assertVar(Name,Bind,false) -> erlang:error("free var").
+assertVar(Name,Bind,false) -> erlang:error(["free var", Name, Bind]).
 
 %hierarchy(Arg,Out) -> Out. % impredicative
 hierarchy(Arg,Out) -> max(Arg,Out). % predicative
@@ -33,7 +33,7 @@ getType(Term) -> getType(Term, []). % closed term (w/o free vars)
 
 getType({"→",{ArgType,OutType}},Bind) -> ArgLevel = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,Bind)), {star,hierarchy(ArgLevel,OutLevel)};
 getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,[{ArgName,normalize(ArgType)}|Bind])), {star,hierarchy(ArgLevel,OutLevel)};
-getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType), ArgLevel = getStar(TArg),   TOut = getType(OutTerm,[{ArgName,normalize(ArgType)}|Bind]), OutType = getStar(TOut), {{"∀",{ArgName,0}},{ArgType,TOut}};
+getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg),   TOut = getType(OutTerm,[{ArgName,normalize(ArgType)}|Bind]), {{"∀",{ArgName,0}},{ArgType,TOut}};
 getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), normalize(substVar(OutType,ArgName,normalize(Arg)));
 getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
 getType({star,N},Bind)                       -> {star,N+1}.
