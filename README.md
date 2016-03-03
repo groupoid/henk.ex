@@ -32,8 +32,8 @@ using F-algebras please refer to Exe macrosystem over Om. Also Om doesn't suppor
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just checks the given terms in its own language.
 
-Run Samples
------------
+Om REPL
+-------
 
 * `brew install erlang`
 * `wget https://raw.githubusercontent.com/synrc/mad/master/mad && chmod +x mad`
@@ -75,7 +75,7 @@ Om Intermediate Language
      
 This information is subject to change.
 
-## Result Terms in Erlang AST after parsing
+## Result AST
 
 ```erlang
      {  star,          Universe  }  -- universe
@@ -86,7 +86,7 @@ This information is subject to change.
      {  app,           {Fun,Arg} }  -- app
 ```
 
-## Intermediate AST terms before rewind and after tokenizer
+## Intermediate AST
 
 ```erlang
      {  open     }
