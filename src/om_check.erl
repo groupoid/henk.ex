@@ -31,6 +31,6 @@ subst(X,N,EP,Else)                             -> Else.
 
 test() -> lists:all(fun assert/1,lists:seq(1,10)).
 
-assert(1) -> freeIn({var,{'Head',0}},om:type("List/Cons")) == true;
+assert(1) -> freeIn({var,{'Head',0}},om:term("List/Cons")) == true;
 assert(_) -> true.
 

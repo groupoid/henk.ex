@@ -14,16 +14,15 @@ stop(_)     -> ok.
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 mode(S)     -> application:set_env(om,mode,S).
 mode()      -> application:get_env(om,mode,"erased").
-init([])    -> {ok, {{one_for_one, 5, 10}, []}}.
-type(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), type(P,lists:last(T)).
-type(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
+init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
+term(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), term(P,lists:last(T)).
+term(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
 parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R ->
 %              io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
               {[],error} end.
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]),[]), X.
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
-file(F)     -> {ok,Bin} = read_file(F), Bin.
 all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
 scan()      -> Res = [ {element(1,show(F))/=[],F} || F <- filelib:wildcard(string:join(["priv",mode(),"**","*"],"/")), filelib:is_dir(F) /= true ],
                error("Tests: ~tp~n",[Res]),
@@ -32,7 +31,7 @@ scan()      -> Res = [ {element(1,show(F))/=[],F} || F <- filelib:wildcard(strin
                     true -> error("PASSED~n",[]);
                     false -> error("FAILED~n",[]) end,
                Res.
-show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = type(string:join(T,"/")),
+show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = term(string:join(T,"/")),
                error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",[F,file(F),size(term_to_binary(Type))]), Type.
 
 
@@ -47,3 +46,11 @@ read_file(F) -> file:read_file(F).
 atom(X)      -> list_to_atom(X).
 last(X)      -> lists:last(X).
 
+
+file(F) -> Raw = case file:read_file(F) of
+                      {ok,Bin} -> Bin;
+                      {error,_} -> mad(F) end.
+
+mad(F) -> case mad_repl:load_file(F) of
+               {ok,Bin} -> Bin;
+               {error,_} -> <<>> end.

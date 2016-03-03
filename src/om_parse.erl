@@ -10,8 +10,8 @@
 
 expr(P,[],                       Acc)  ->             rewind(Acc,[],[]);
 expr(P,[close               |T], Acc)  -> {T1,Acc1} = rewind(Acc, T,[]),      expr(P,T1,Acc1);
-expr(P,[{remote,{X,L}}      |T], Acc)  -> expr(P,T,[ret(om:type(X,L))|Acc]);
-expr(P,[{remote,L}          |T], Acc)  -> expr(P,T,[om:type(L)|Acc]);
+expr(P,[{remote,{X,L}}      |T], Acc)  -> expr(P,T,[ret(om:term([],L))|Acc]);
+expr(P,[{remote,L}          |T], Acc)  -> expr(P,T,[om:term(L)|Acc]);
 expr(P,[{star,I}            |T], Acc)  -> expr(P,T,[{star,I}|Acc]);
 expr(P,[{N,X}|T],  [{typevar,Y}| Acc]) -> expr(P,T,[{N,X},{typevar,Y}|Acc]);
 expr(P,[{N,X}|T],        [{C,Y}| Acc]) -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc]);

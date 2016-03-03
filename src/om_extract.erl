@@ -11,8 +11,8 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                       ++ [ begin Name = string:join([Last,F],"/"),
                                  mad:info("Ctor: ~tp~n",[Name]),
                                  om:show(string:join([X,F],"/")),
-                                 Erased = case om:mode() of "erased" -> om:type(Name);
-                                                            _ -> erasure(F,om:type(Name),1) end,
+                                 Erased = case om:mode() of "erased" -> om:term(Name);
+                                                            _ -> erasure(F,om:term(Name),1) end,
                                  mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
                                  mad:info("Tree: ~tp~n",[Extract]),
