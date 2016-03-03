@@ -71,11 +71,11 @@ Om Intermediate Language
           I | O → O | O O
 ```
 
-# Parser Term Specification
+## Parser Term Specification
      
 This information is subject to change.
 
-## Result AST
+### Result AST
 
 ```erlang
      {  star,          Universe  }  -- universe
@@ -86,7 +86,7 @@ This information is subject to change.
      {  app,           {Fun,Arg} }  -- app
 ```
 
-## Intermediate AST
+### Intermediate AST
 
 ```erlang
      {  open     }
