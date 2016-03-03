@@ -35,10 +35,12 @@ Om just checks the given terms in its own language.
 Om REPL
 -------
 
-* `brew install erlang`
-* `wget https://raw.githubusercontent.com/synrc/mad/master/mad && chmod +x mad`
-*  `mad dep com plan sh`
-
+```shell
+$ brew install erlang
+$ wget https://github.com/groupoid/om/releases/download/0.3/om
+$ chmod +x om
+$ ./om sh
+```
 
 Exe Langauge
 ------------
