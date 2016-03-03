@@ -8,9 +8,6 @@ getStar(_) -> erlang:error("*").
 assertFunc({{"∀",ArgName},{ArgType,OutType}}) -> true;
 assertFunc(T) -> erlang:error(["∀",T]).
 
-assertEqual(T,T) -> true;
-assertEqual(A,B) -> erlang:error(["==", A, B]).
-
 assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
 assertVar(Name,Bind,true)  -> true;
 assertVar(Name,Bind,false) -> erlang:error(["free var", Name, Bind]).
@@ -28,6 +25,16 @@ substVar({app,{Func,Arg}},Name,Value,L)                  -> {app,{substVar(Func,
 substVar({var,{Name,L}},Name,Value,L)                    -> Value; % index match
 substVar({var,{VarName,I}},Name,Value,L)                 -> {var,{VarName,I}}; % no match
 substVar({star,N},Name,Value,L)                       -> {star,N}.
+
+assertEqual(T,T) -> true;
+assertEqual({{"∀",{ArgName1,0}},{ArgType1,OutType1}},{{"∀",{ArgName2,0}},{ArgType2,OutType2}}) ->
+    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,ArgName1,0));
+assertEqual({{"λ",{ArgName1,0}},{ArgType1,OutType1}},{{"λ",{ArgName2,0}},{ArgType2,OutType2}}) ->
+    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,ArgName1,0));
+assertEqual({app,{Func1,Arg1}},{app,{Func2,Arg2}}) -> assertEqual(Func1,Func2), assertEqual(Arg1,Arg2);
+assertEqual({var,{Name,I}},{var,{Name,I}}) -> true;
+assertEqual({star,N},{star,N}) -> true;
+assertEqual(A,B) -> erlang:error(["==", A, B]).
 
 getType(Term) -> getType(Term, []). % closed term (w/o free vars)
 
