@@ -71,6 +71,40 @@ Om Intermediate Language
           I | O → O | O O
 ```
 
+     Parser AST Erlang Term Specification
+     ====================================
+     
+     This information is subject to change.
+
+     Result Terms in Erlang AST after parsing
+     ----------------------------------------
+
+```erlang
+     {  star,          Universe  }  -- universe
+     { {"λ",{Name,I},  {In,Out}  }  -- lambda
+     { {"∀",{Name,I},  {In,Out}  }  -- pi
+     {  "→",           {In,Out}  }  -- anonymous pi
+     {  var,           {Name,I}  }  -- var
+     {  app,           {Fun,Arg} }  -- app
+```
+
+     Intermediate AST terms before rewind and after tokenizer
+     --------------------------------------------------------
+
+```erlang
+     {  open     }
+     {  close    }
+     {  arrow    }
+     {  colon    }
+     {  lambda   }
+     {  pi       }
+     {  var,      {Name,Depth} }
+     {  app,      {Fun,Arg}    }
+     {  typevar,  {Name,Depth} }    -- argument name,
+                                       transforms to lambda or pi
+                                       during rewind
+```
+
 Set the environment folder:
 
 ```erlang
@@ -80,14 +114,14 @@ ok
 
 Check how term inlining and loading works:
 
-```
+```erlang
  > om:a("#List/map") == om:type("List/map").
  true
 ```
 
 Inline some terms:
 
-```
+```erlang
 > om:a("\\(x:*)->\\(y:#List/id)->y").
 {{"λ",{x,0}},
  {{star,1},
@@ -101,7 +135,7 @@ Inline some terms:
 
 Use internal functions:
 
-```
+```erlang
 > om:show("priv/normal/List/@").
 
 ===[ File: priv/normal/List/@ ]==========
@@ -120,7 +154,7 @@ Term: 279
 
 Parse raw expressions:
 
-```
+```erlang
 > om_parse:expr("",om:str("",<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>),[]).
 {[],
  [{{"∀",{a,0}},
@@ -136,7 +170,7 @@ Parse raw expressions:
 
 Extract Erlang Modules:
 
-```
+```erlang
 > application:set_env(om,mode,"erased").
 ok
 > om_extract:scan().
@@ -149,7 +183,7 @@ Active: module loaded: {loaded_new,'Ret'}
 
 Example of usage of compiled modules `List` and `Nat`:
 
-```
+```erlang
 > ch:main().
 Zero: 0
 Cons/Nil: [2,1]
