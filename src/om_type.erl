@@ -12,8 +12,8 @@ assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind
 assertVar(Name,Bind,true)  -> true;
 assertVar(Name,Bind,false) -> erlang:error(["free var", Name, Bind]).
 
-%hierarchy(Arg,Out) -> Out. % impredicative
-hierarchy(Arg,Out) -> max(Arg,Out). % predicative
+hierarchy(Arg,Out) -> Out. % impredicative
+%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
 substVar(Term,Name,Value) -> substVar(Term,Name,Value,0).
 substVar({"→",{ArgType,OutType}},Name,Value,L)           -> {"→",{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
