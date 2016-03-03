@@ -160,6 +160,13 @@ Pack/Unpack 1 000 000 Inductive List: {733256,'_'}
 Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 ```
 
+`foldl` version of `stdlib` (for comparison):
+
+```
+> timer:tc(lists,foldl,[fun(X,A) -> A end,0,lists:seq(1,1000000)]).
+{735410,0}
+```
+
 Target Erlang VM and LLVM platforms
 -----------------------------------
 
