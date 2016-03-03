@@ -16,9 +16,9 @@ mode(S)     -> application:set_env(om,mode,S).
 mode()      -> application:get_env(om,mode,"erased").
 init([])    -> {ok, {{one_for_one, 5, 10}, []}}.
 type(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), type(P,lists:last(T)).
-type(P,F)   -> case parse(P,F) of {[],error} -> parse(P,F); {[],[]} -> {[],error}; {[],[X]} -> X end.
+type(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
 parse(P,F)  -> try om_parse:expr(P,read(P,string:join(["priv",mode(),P,F],"/")),[]) catch E:R ->
-              io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
+%              io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
               {[],error} end.
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]),[]), X.
