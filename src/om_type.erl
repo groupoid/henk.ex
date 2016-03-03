@@ -28,9 +28,9 @@ substVar({star,N},Name,Value,L)                       -> {star,N}.
 
 assertEqual(T,T) -> true;
 assertEqual({{"∀",{ArgName1,0}},{ArgType1,OutType1}},{{"∀",{ArgName2,0}},{ArgType2,OutType2}}) ->
-    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,ArgName1,0));
+    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,{var,{ArgName1,0}},0));
 assertEqual({{"λ",{ArgName1,0}},{ArgType1,OutType1}},{{"λ",{ArgName2,0}},{ArgType2,OutType2}}) ->
-    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,ArgName1,0));
+    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,{var,{ArgName1,0}},0));
 assertEqual({app,{Func1,Arg1}},{app,{Func2,Arg2}}) -> assertEqual(Func1,Func2), assertEqual(Arg1,Arg2);
 assertEqual({var,{Name,I}},{var,{Name,I}}) -> true;
 assertEqual({star,N},{star,N}) -> true;
