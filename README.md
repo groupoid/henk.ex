@@ -71,10 +71,9 @@ Om Intermediate Language
           I | O → O | O O
 ```
 
-Parser AST Erlang Term Specification
-====================================
+# Parser AST Erlang Term Specification
      
-# This information is subject to change.
+This information is subject to change.
 
 ## Result Terms in Erlang AST after parsing
 
