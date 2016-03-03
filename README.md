@@ -81,8 +81,8 @@ Om Intermediate Language
 
 ```erlang
      {  star,          Universe  }  -- universe
-     { {"λ",{Name,I},  {In,Out}  }  -- lambda
-     { {"∀",{Name,I},  {In,Out}  }  -- pi
+     { {"λ",{Name,I}}, {In,Out}  }  -- lambda
+     { {"∀",{Name,I}}, {In,Out}  }  -- pi
      {  "→",           {In,Out}  }  -- anonymous pi
      {  var,           {Name,I}  }  -- var
      {  app,           {Fun,Arg} }  -- app
