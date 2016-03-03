@@ -2,8 +2,8 @@
 -description('Type Checker').
 -compile(export_all).
 
-assertStar({const,"*"}) -> true;
-assertStar(_) -> erlang:error("*").
+getStar({star,N}) -> N;
+getStar(_) -> erlang:error("*").
 
 assertFunc({{"∀",ArgName},{ArgType,OutType}}) -> true;
 assertFunc(_) -> erlang:error("∀").
@@ -15,25 +15,33 @@ assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind
 assertVar(Name,Bind,true)  -> true;
 assertVar(Name,Bind,false) -> erlang:error("free var").
 
-substVar({"→",{ArgType,OutType}},Name,Value)           -> {"→",{substVar(ArgType,Name,Value),substVar(OutType,Name,Value)}};
-substVar({{"∀",Name},{ArgType,OutType}},Name,Value)    -> {{"∀",Name},{ArgType,OutType}};
-substVar({{"∀",ArgName},{ArgType,OutType}},Name,Value) -> {{"∀",ArgName},{substVar(ArgType,Name,Value),substVar(OutType,Name,Value)}};
-substVar({{"λ",Name},{ArgType,OutTerm}},Name,Value)    -> {{"λ",Name},{ArgType,OutTerm}};
-substVar({{"λ",ArgName},{ArgType,OutType}},Name,Value) -> {{"λ",ArgName},{substVar(ArgType,Name,Value),substVar(OutType,Name,Value)}};
-substVar({app,{Func,Arg}},Name,Value)                  -> {app,{substVar(Func,Name,Value),substVar(Arg,Name,Value)}};
-substVar({var,{Name,I}},Name,Value)                    -> Value; %FIXME index
-substVar({var,{VarName,I}},Name,Value)                 -> {var,{VarName,I}};
-substVar({const,"*"},Name,Value)                       -> {const,"*"}.
+%hierarchy(Arg,Out) -> Out. % impredicative
+hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
-getType(Term) -> getType(Term, []). %TODO BindVal=[{Name,{Term,Type}}]
+substVar(Term,Name,Value) -> substVar(Term,Name,Value,0).
+substVar({"→",{ArgType,OutType}},Name,Value,L)           -> {"→",{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
+substVar({{"∀",{Name,0}},{ArgType,OutType}},Name,Value,L)    -> {{"∀",{Name,0}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L+1)}};
+substVar({{"∀",{ArgName,N}},{ArgType,OutType}},Name,Value,L) -> {{"∀",{ArgName,N}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
+substVar({{"λ",{Name,0}},{ArgType,OutTerm}},Name,Value,L)    -> {{"λ",{Name,0}},{substVar(ArgType,Name,Value,L),substVar(OutTerm,Name,Value,L+1)}};
+substVar({{"λ",{ArgName,N}},{ArgType,OutType}},Name,Value,L) -> {{"λ",{ArgName,N}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
+substVar({app,{Func,Arg}},Name,Value,L)                  -> {app,{substVar(Func,Name,Value,L),substVar(Arg,Name,Value,L)}};
+substVar({var,{Name,L}},Name,Value,L)                    -> Value; % index match
+substVar({var,{VarName,I}},Name,Value,L)                 -> {var,{VarName,I}}; % no match
+substVar({star,N},Name,Value,L)                       -> {star,N}.
 
-getType({"→",{ArgType,OutType}},Bind) -> assertStar(getType(ArgType,Bind)), assertStar(getType(OutType,Bind));
-getType({{"∀",ArgName},{ArgType,OutType}},Bind) -> TArg  = getType(ArgType,Bind), assertStar(TArg),   TRes = getType(OutType,[{ArgName,normalize(ArgType,TArg)}|Bind]), assertStar(TRes), TRes;
-getType({{"λ",ArgName},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType),      assertStar(TArg),   TRes = getType(OutTerm,[{ArgName,ArgType}|Bind]), assertStar(TRes), {{"∀",ArgName},{ArgType,TRes}};
-getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",ArgName},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), substVar(OutType,ArgName,Arg);
-getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind);
-getType({const,"*"},Bind)                       -> {const,"*"}. %FIXME levels
+getType(Term) -> getType(Term, []). % closed term (w/o free vars)
 
-normalize(ArgType,TArg) -> TArg.
+getType({"→",{ArgType,OutType}},Bind) -> ArgLevel = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,Bind)), {star,hierarchy(ArgLevel,OutLevel)};
+getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,[{ArgName,normalize(ArgType)}|Bind])), {star,hierarchy(ArgLevel,OutLevel)};
+getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType), ArgLevel = getStar(TArg),   TOut = getType(OutTerm,[{ArgName,normalize(ArgType)}|Bind]), OutType = getStar(TOut), {{"∀",{ArgName,0}},{ArgType,TOut}};
+getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), normalize(substVar(OutType,ArgName,normalize(Arg)));
+getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
+getType({star,N},Bind)                       -> {star,N+1}.
 
-%erasure(Term,Type)
+normalize({"→",{ArgType,OutType}}) -> {"→",{normalize(ArgType),normalize(OutType)}};
+normalize({{"∀",{ArgName,0}},{ArgType,OutType}}) -> {{"∀",{ArgName,0}},{normalize(ArgType),normalize(OutType)}};
+normalize({{"λ",{ArgName,0}},{ArgType,OutTerm}}) -> {{"λ",{ArgName,0}},{normalize(ArgType),normalize(OutTerm)}};
+normalize({app,{{{"λ",{ArgName,0}},{ArgType,OutTerm}},ArgValue}}) -> normalize(substVar(OutTerm,ArgName,normalize(ArgValue)));
+normalize({app,{Func,Arg}}) -> {app,{normalize(Func),normalize(Arg)}};
+normalize({var,{Name,I}}) -> {var,{Name,I}};
+normalize({star,N}) -> {star,N}.
