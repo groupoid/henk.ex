@@ -24,10 +24,9 @@ tokens(P,<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [a
 tokens(P,<<"→"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
 tokens(P,<<$\\,$/,    R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
 tokens(P,<<"∀"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
-tokens(P,<<"\\/"/utf8,R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
 tokens(P,<<"forall"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
 tokens(P,<<"Π"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
-tokens(P,<<$\\,       R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [lambda | stack(P,C,  Acc)]);
+tokens(P,<<$\\,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [lambda | stack(P,C,  Acc)]);
 tokens(P,<<"λ"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [lambda | stack(P,C,  Acc)]);
 tokens(P,<<X,         R/binary>>, L, {a,C}, Acc) when ?is_alpha(X) -> tokens(P,R,L,{a,[X|C]},            Acc);
 tokens(P,<<X,         R/binary>>, L, {_,C}, Acc) when ?is_alpha(X) -> tokens(P,R,L,{a,[X]},    stack(P,[C],Acc));
