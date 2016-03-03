@@ -25,7 +25,7 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
 
 erasure(F,{{"∀",Name},{In,Out}},N)   -> []; %erasure(F,Out,N+1);
 erasure(F,{"→",{_,Out}},N)           -> []; %erasure(F,Out,N+1);
-erasure(F,{{"λ",Name},{In,Out}}=T,N) -> eraseLambda(F,{"λ",Name},In,Out,N);
+erasure(F,{{"λ",Name},{In,Out}}=T,N) -> eraseLambda(F,{"λ",Name},erasure(F,In,N),erasure(F,Out,N),N);
 erasure(F,{app,{A,B}},N)             -> eraseApp(erasure(F,A,N),erasure(F,B,N));
 erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}};
 erasure(F,_,N)                       -> [].
