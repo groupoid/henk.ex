@@ -76,6 +76,7 @@ Set the environment folder:
 ```erlang
 > application:set_env(om,mode,"normal").
 ok
+```
 
 Check how term inlining and loading works:
 
