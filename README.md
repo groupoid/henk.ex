@@ -66,11 +66,14 @@ Om Intermediate Language
    The Om Systax is the following:
 
 ```
-     I := #identifier
-     O := ∅ | ( O ) |
-          □ | ∀ ( I : O ) → O |
-          * | λ ( I : O ) → O |
-          I | O → O | O O
+   <> ::= #option
+
+    I ::= #identifier
+
+    U ::= * < #number >
+
+    O ::= U | I | ( O ) | O O | λ ( I : O ) → O
+                              | ∀ ( I : O ) → O
 ```
 
 ## Parser Term Specification
