@@ -6,10 +6,10 @@ getStar({star,N}) -> N;
 getStar(_) -> erlang:error("*").
 
 assertFunc({{"∀",ArgName},{ArgType,OutType}}) -> true;
-assertFunc(_) -> erlang:error("∀").
+assertFunc(T) -> erlang:error(["∀",T]).
 
 assertEqual(T,T) -> true;
-assertEqual(_,_) -> erlang:error("must be equal").
+assertEqual(A,B) -> erlang:error(["==", A, B]).
 
 assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
 assertVar(Name,Bind,true)  -> true;
@@ -36,9 +36,9 @@ getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(get
 getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg),   TOut = getType(OutTerm,[{ArgName,normalize(ArgType)}|Bind]), {{"∀",{ArgName,0}},{ArgType,TOut}};
 getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), normalize(substVar(OutType,ArgName,normalize(Arg)));
 getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
-getType({star,N},Bind)                       -> {star,N+1}.
+getType({star,N},Bind) -> {star,N+1}.
 
-normalize({"→",{ArgType,OutType}}) -> {"→",{normalize(ArgType),normalize(OutType)}};
+normalize({"→",{ArgType,OutType}}) -> {{"∀",{"_",0}},{normalize(ArgType),normalize(OutType)}};
 normalize({{"∀",{ArgName,0}},{ArgType,OutType}}) -> {{"∀",{ArgName,0}},{normalize(ArgType),normalize(OutType)}};
 normalize({{"λ",{ArgName,0}},{ArgType,OutTerm}}) -> {{"λ",{ArgName,0}},{normalize(ArgType),normalize(OutTerm)}};
 normalize({app,{{{"λ",{ArgName,0}},{ArgType,OutTerm}},ArgValue}}) -> normalize(substVar(OutTerm,ArgName,normalize(ArgValue)));
