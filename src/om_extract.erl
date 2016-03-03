@@ -11,9 +11,8 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                       ++ [ begin Name = string:join([Last,F],"/"),
                                  mad:info("Ctor: ~tp~n",[Name]),
                                  om:show(string:join([X,F],"/")),
-                                 Erased = case om:mode() of "normal" -> erasure(F,om:type(Name),1);
-                                                            "setoids" -> erasure(F,om:type(Name),1);
-                                                            "erased" -> om:type(Name) end,
+                                 Erased = case om:mode() of "erased" -> om:type(Name);
+                                                            _ -> erasure(F,om:type(Name),1) end,
                                  mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
                                  mad:info("Tree: ~tp~n",[Extract]),
@@ -46,7 +45,7 @@ eraseApp(EA,EB) -> {app,{EA,EB}}.
 ext(F,[],N)                    -> [];
 ext(F,{{"∀",Name},{_,Out}},N)  -> [];
 ext(F,{"→",{_,Out}},N)         -> [];
-ext(F,{{"λ",Name},{_,Out}},N) -> {'fun', N,{clauses,[{clause,N,[{var,N,Name}],[],[ext(F,Out,N)]}]}};
+ext(F,{{"λ",{Name,_}},{_,Out}},N) -> {'fun', N,{clauses,[{clause,N,[{var,N,Name}],[],[ext(F,Out,N)]}]}};
 ext(F,{app,{A,B}},N)          -> {'call',N,ext(F,A,N),[ext(F,B,N)]};
 ext(F,{var,{Name,I}},N)       -> {'var', N,Name}.
 
