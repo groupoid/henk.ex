@@ -71,13 +71,12 @@ Om Intermediate Language
           I | O → O | O O
 ```
 
-     Parser AST Erlang Term Specification
-     ====================================
+Parser AST Erlang Term Specification
+====================================
      
-     This information is subject to change.
+# This information is subject to change.
 
-     Result Terms in Erlang AST after parsing
-     ----------------------------------------
+## Result Terms in Erlang AST after parsing
 
 ```erlang
      {  star,          Universe  }  -- universe
@@ -88,8 +87,7 @@ Om Intermediate Language
      {  app,           {Fun,Arg} }  -- app
 ```
 
-     Intermediate AST terms before rewind and after tokenizer
-     --------------------------------------------------------
+## Intermediate AST terms before rewind and after tokenizer
 
 ```erlang
      {  open     }
@@ -196,7 +194,7 @@ Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 
 `foldl` version of `stdlib` (for comparison):
 
-```
+```erlang
 > timer:tc(lists,foldl,[fun(X,A) -> A end,0,lists:seq(1,1000000)]).
 {735410,0}
 ```
