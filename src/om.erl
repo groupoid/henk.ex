@@ -33,7 +33,7 @@ scan()      -> Res = [ {element(1,show(F))/=[],F} || F <- filelib:wildcard(strin
                     false -> error("FAILED~n",[]) end,
                Res.
 show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = type(string:join(T,"/")),
-               error("===[ File: ~ts ]==========~nCat: ~ts~nTerm: ~tp~n",[F,file(F),Type]), Type.
+               error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",[F,file(F),size(term_to_binary(Type))]), Type.
 
 
 % relying function
