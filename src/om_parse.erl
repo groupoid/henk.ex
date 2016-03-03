@@ -47,7 +47,7 @@ expr(P,[{var,L}|T],      Acc)  -> expr(P,T,[{var,L}|Acc]).
 -define(is_fun(F), F == lambda; F== pi).
 
 rewind([{F}|Acc],         T, [{"→",{{app,{{typevar,{L,M}},{A,X}}},{B,Y}}}|R]) when ?is_fun(F) -> rewind(Acc,T,[{{func(F),{L,M}},{{A,X},{B,Y}}}|R]);
-rewind([{F}|Acc],         T, [{"→",{{L,{{app,{{typevar,M},A}},X}},{B,Y}}}|R]) when ?is_fun(F) -> rewind(Acc,T,[{{func(F),M},{L,{{A,X},{B,Y}}}}|R]);
+rewind([{F}|Acc],         T, [{"→",{{L,{{app,{{typevar,M},A}},X}},{B,Y}}}|R]) when ?is_fun(F) -> rewind(Acc,T,[{{func(F),M},{{L,{A,X}},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, [{B,Y}|R]) -> rewind(Acc,T,[{app,{{A,X},{B,Y}}}|R]);
 rewind([{A,X}|Acc],       T, R)         -> rewind(Acc,T,[{A,X}|R]);
 rewind([{arrow},Y|Acc],   T, [X|R])     -> rewind(Acc,T,[{func(arrow),{Y,X}}|R]);
