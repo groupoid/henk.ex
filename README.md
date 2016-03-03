@@ -1,21 +1,16 @@
 Om: Lambda Assembler
 ====================
 
-Maxim Sokhatsky maxim@synrc.com
-
-![Om](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Georg_Simon_Ohm3.jpg/200px-Georg_Simon_Ohm3.jpg)
-
-Georg Simon Ohm -- a German physicist and mathematician who was born in German town Erlangen.
-
 Abstract
 --------
 
-This library is created to provide backbone lambda assembler as target language for
-general purpose languages, possibly with dependent types. This work is based on lambda
-cube assembler Henk, and Morte implementation by Gabriel Gonzalez. Om is intended
-to be a compatible version of Morte. Om is useful as an intermediate language for
-high level front-end languages with <b>System F<sub>ω<sub></b>, <b>System F<sub>&lt;:</sub></b> or
-<b>CoC</b> type systems.
+Om library provides backbone CoC lambda assembler with predicative universes
+as target language for general purpose languages or macrosystems, possibly with
+dependent types. This work is based on lambda cube assembler Henk, and impredicative
+Morte implementation by Gabriel Gonzalez. Om is intended to be a compatible version
+of Morte and supports two typecheckers: predicative and impredicative.
+Om is useful as an intermediate language for high level front-end languages
+with <b>System F<sub>ω<sub></b>, <b>System F<sub>&lt;:</sub></b> or pure <b>CoC</b> type systems.
 
 Types
 -----
@@ -33,7 +28,7 @@ Here is description in Exe language.
 ```
 
 As defined in Morte, Om doesn't support recursive types. To see how you can encode List
-using F-algebras please refer to Morte.Turtorial. Also Om doesn't support type inference,
+using F-algebras please refer to Exe macrosystem over Om. Also Om doesn't support type inference,
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just checks the given terms in its own language.
 
@@ -76,67 +71,66 @@ Om Intermediate Language
           I | O → O | O O
 ```
 
+Set the environment folder:
+
 ```erlang
+> application:set_env(om,mode,"normal").
+ok
+
+Check how term inlining and loading works:
+
+```
  > om:a("#List/map") == om:type("List/map").
  true
+```
 
-> om:a("\\(x:*)->\\(y:#List/map)->y").
-{lambda,{{arg,x},
-         {const,star},
-         {lambda,{{arg,y},
-                  {lambda,{{arg,a},
-                           {const,star},
-                           {lambda,{{arg,b},
-                                    {const,star},
-                                    {lambda,{{arg,f},...
+Inline some terms:
 
-> om:show("priv/List/@").
+```
+> om:a("\\(x:*)->\\(y:#List/id)->y").
+{{"λ",{x,0}},
+ {{star,1},
+  {{"λ",{y,0}},
+   {{{"λ",{'X',0}},
+     {{star,1},
+      {{"λ",{'Cons',0}},
+       {{star,1},{{"λ",{'Nil',0}},{{star,1},{var,{'X',0}}}}}}}},
+    {var,{y,0}}}}}}
+```
 
-=INFO REPORT==== 22-Dec-2015::10:01:10 ===
-"priv/List/@"
-  λ (a: *)
-→ ∀ (List: *)
-→ ∀ (Cons:
-    ∀ (head: a)
-  → ∀ (tail: List)
-  → List)
-→ ∀ (Nil: List)
-→ List
+Use internal functions:
 
+```
+> om:show("priv/normal/List/@").
+
+===[ File: priv/normal/List/@ ]==========
+Cat: λ(a : *) → ∀(List : *) → ∀(Cons : ∀(head : a) → ∀(tail : List) → List) → ∀(Nil : List) → List
+Term: 279
+{{"λ",{a,0}},
+ {{star,1},
+  {{"∀",{'List',0}},
+   {{star,1},
+    {{"∀",{'Cons',0}},
+     {{{"∀",{head,0}},
+       {{var,{a,0}},
+        {{"∀",{tail,0}},{{var,{'List',0}},{var,{'List',0}}}}}},
+      {{"∀",{'Nil',0}},{{var,{'List',0}},{var,{'List',0}}}}}}}}}}
+```
+
+Parse raw expressions:
+
+```
+> om_parse:expr("",om:str("",<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>),[]).
 {[],
- [{lambda,{{arg,a},
-           {const,star},
-           {pi,{{arg,'List'},
-                {const,star},
-                {pi,{{arg,'Cons'},
-                     {pi,{{arg,head},
-                          {var,{a,0}},
-                          {pi,{{arg,tail},
-                               {var,{'List',0}},
-                               {var,{'List',0}}}}}},
-                     {pi,{{arg,'Nil'},
-                          {var,{'List',0}},
-                          {var,{'List',0}}}}}}}}}}]}
-
-> om:parse(<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>).
-{[],
- [{pi,
-      {{arg,"a"},
-       {const,star},
-       {lambda,
-           {{arg,"b"},
-            {arrow,
-                {{const,star},{arrow,{{const,star},{const,star}}}}},
-            {lambda,
-                {{arg,"c"},
-                 {arrow,{{const,star},{var,"a"}}},
-                 {app,
-                     {{app,
-                          {{app,
-                               {{var,"b"},
-                                {app,{{var,"c"},{var,"a"}}}}},
-                           {var,"a"}}},
-                      {var,"a"}}}}}}}}}]}
+ [{{"∀",{a,0}},
+   {{star,1},
+    {{"λ",{b,0}},
+     {{"→",{{star,1},{"→",{{star,1},{star,1}}}}},
+      {{"λ",{c,0}},
+       {{"→",{{star,1},{var,{a,0}}}},
+        {app,{{app,{{app,{{var,{b,0}},{app,{{var,...},{...}}}}},
+                    {var,{a,0}}}},
+              {var,{a,0}}}}}}}}}}]}
 ```
 
 Target Erlang VM and LLVM platforms
@@ -152,6 +146,7 @@ Publications
 * Compilation from OM to Erlang and LLVM
 * Om Intermediate Language
 * Categorical semantic of general purpose functional language that compiles to Om
+* Categorical encoding of inductive constructions to CoC
 * Exe Processing Language
 
 OM A HUM
