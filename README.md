@@ -114,7 +114,7 @@ ok
 Check how term inlining and loading works:
 
 ```erlang
- > om:a("#List/map") == om:type("List/map").
+ > om:a("#List/map") == om:term("List/map").
  true
 ```
 
