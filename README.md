@@ -44,7 +44,7 @@ $ chmod +x om
 $ ./om sh
 ```
 
-Session example in Erlang/OTP:
+Session example with Om:
 
 ```erlang
 > om:all().
