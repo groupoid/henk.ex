@@ -138,7 +138,7 @@ This information is subject to change.
 Set the environment folder:
 
 ```erlang
-> application:set_env(om,mode,"normal").
+> om:mode("normal").
 ok
 ```
 
@@ -201,9 +201,9 @@ Parse raw expressions:
 Extract Erlang Modules:
 
 ```erlang
-> application:set_env(om,mode,"erased").
+> om:mode("erased").
 ok
-> om_extract:scan().
+> om:extract().
 Active: module loaded: {loaded_new,'Bool'}
 Active: module loaded: {loaded_new,'List'}
 Active: module loaded: {loaded_new,'Nat'}
@@ -229,6 +229,24 @@ Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 ```erlang
 > timer:tc(lists,foldl,[fun(X,A) -> A end,0,lists:seq(1,1000000)]).
 {735410,0}
+```
+
+Typechecking:
+
+```
+> om:type("DEP.AND.PR-L-test").
+** exception error: ["∀",
+                     {app,{{{"λ",{'B',0}},
+                            {{{"∀",{"_",0}},{{var,{'A',0}},{star,1}}},
+                             {{"∀",{'AND',0}},
+                              {{star,1},
+                               {{"∀",{pair,0}},
+                                {{{"∀",{a,0}},
+                                  {{var,{'A',0}},
+                                   {{"∀",{b,0}},
+                                    {{app,{{var,{'B',...}},{var,{...}}}},{var,{'AND',0}}}}}},
+                                 {var,{'AND',0}}}}}}}},
+                           {var,{'B',0}}}}]
 ```
 
 Target Erlang VM and LLVM platforms
