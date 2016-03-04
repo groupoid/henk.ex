@@ -32,8 +32,8 @@ using F-algebras please refer to Exe macrosystem over Om. Also Om doesn't suppor
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just checks the given terms in its own language.
 
-Om REPL
--------
+REPL
+----
 
 wget install:
 
@@ -134,6 +134,8 @@ This information is subject to change.
                                        transforms to lambda or pi
                                        during rewind
 ```
+
+## Commands
 
 ### mode
 
