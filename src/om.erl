@@ -5,7 +5,7 @@
 -export([init/1, start/2, stop/1]).
 -compile(export_all).
 
-% provided functions
+% providing functions
 
 main(A)     -> mad:main(A).
 start()     -> start(normal,[]).
@@ -14,6 +14,7 @@ stop(_)     -> ok.
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
+type(S)     -> om_type:getType(om:term(S)).
 mode()      -> application:get_env(om,mode,"erased").
 init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 term(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), term(P,lists:last(T)).
@@ -41,7 +42,7 @@ show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = term(string:joi
                error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",[F,file(F),size(term_to_binary(Type))]), Type.
 
 
-% relying function
+% relying functions
 
 rev(X)       -> lists:reverse(X).
 flat(X)      -> lists:flatten(X).
@@ -52,10 +53,10 @@ atom(X)      -> list_to_atom(X).
 last(X)      -> lists:last(X).
 
 
-file(F) -> Raw = case file:read_file(F) of
-                      {ok,Bin} -> Bin;
-                      {error,_} -> mad(F) end.
+file(F) -> case file:read_file(F) of
+                {ok,Bin} -> Bin;
+                {error,_} -> mad(F) end.
 
-mad(F) -> case mad_repl:load_file(F) of
-               {ok,Bin} -> Bin;
-               {error,_} -> <<>> end.
+mad(F)  -> case mad_repl:load_file(F) of
+                {ok,Bin} -> Bin;
+                {error,_} -> <<>> end.
