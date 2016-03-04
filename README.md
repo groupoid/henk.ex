@@ -35,13 +35,22 @@ Om just checks the given terms in its own language.
 Om REPL
 -------
 
-```erlang
+wget install:
+
+```sh
 $ brew install erlang
 $ wget https://github.com/groupoid/om/releases/download/0.3/om
 $ chmod +x om
 $ ./om sh
+```
+
+Session example in Erlang/OTP:
+
+```erlang
 > om:all().
+...
 > om:scan().
+...
 > om:modes().
 ["erased","girard","hurkens","normal","setoids"]
 > om:mode("normal").
