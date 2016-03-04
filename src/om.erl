@@ -1,5 +1,5 @@
 -module(om).
--description('Om Intermediate Compiler').
+-description('CoC Compiler').
 -behaviour(supervisor).
 -behaviour(application).
 -export([init/1, start/2, stop/1]).
@@ -7,31 +7,18 @@
 
 % providing functions
 
-main(A)     -> mad:main(A).
-start()     -> start(normal,[]).
-start(_,_)  -> supervisor:start_link({local,om},om,[]).
-stop(_)     -> ok.
+parse(X)    -> om_parse:expr([],om:str([],X),[]).
 extract()   -> om_extract:scan().
+type(S)     -> om_type:getType(om:term(S)).
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
-type(S)     -> om_type:getType(om:term(S)).
 mode()      -> application:get_env(om,mode,"erased").
-init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
-term(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), term(P,lists:last(T)).
-term(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
-name(M,P,F) -> string:join(["priv",mode(),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
-parse(X)    -> om_parse:expr("",om:str("",X),[]).
-parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
-               io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
-               {[],error} end.
-str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
-a(F)        -> {[],[X]} = om_parse:expr([],om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]),[]), X.
-read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
-all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
-syscard()   -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
-wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
-               lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
+a(F)        -> {[],[X]} = parse(F), X.
+
+term(F)     -> T = string:tokens(F,"/"),
+               P = string:join(rev(tl(rev(T))),"/"),
+               term(P,lists:last(T)).
 
 scan()      -> Res = [ {element(1,show(F))/=[],F} || {F} <- lists:umerge(wildcard(),syscard()) ],
                error("Tests: ~tp~n",[Res]),
@@ -40,9 +27,35 @@ scan()      -> Res = [ {element(1,show(F))/=[],F} || {F} <- lists:umerge(wildcar
                     true -> error("PASSED~n",[]);
                     false -> error("FAILED~n",[]) end,
                Res.
-show(F)     -> T = string:substr(string:tokens(F,"/"),3), Type = term(string:join(T,"/")),
-               error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",[F,file(F),size(term_to_binary(Type))]), Type.
 
+show(F)     -> T = string:substr(string:tokens(F,"/"),3),
+               Type = term(string:join(T,"/")),
+               error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",
+                     [F,file(F),size(term_to_binary(Type))]), Type.
+
+% system functions
+
+main(A)     -> mad:main(A).
+start()     -> start(normal,[]).
+start(_,_)  -> supervisor:start_link({local,om},om,[]).
+stop(_)     -> ok.
+init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
+
+% internal functions
+
+term(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
+name(M,P,F) -> string:join(["priv",mode(),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
+str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
+read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
+all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
+syscard()   -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
+
+wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
+               lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
+
+parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
+               error("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
+               {[],error} end.
 
 % relying functions
 
@@ -53,7 +66,6 @@ print(S,A)   -> io_lib:format(S,A).
 error(S,A)   -> io:format(S,A).
 atom(X)      -> list_to_atom(X).
 last(X)      -> lists:last(X).
-
 
 file(F) -> case file:read_file(F) of
                 {ok,Bin} -> Bin;
