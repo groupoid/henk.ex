@@ -11,6 +11,7 @@ main(A)     -> mad:main(A).
 start()     -> start(normal,[]).
 start(_,_)  -> supervisor:start_link({local,om},om,[]).
 stop(_)     -> ok.
+extract()   -> om_extract:scan().
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).

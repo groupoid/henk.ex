@@ -35,11 +35,30 @@ Om just checks the given terms in its own language.
 Om REPL
 -------
 
-```shell
+```erlang
 $ brew install erlang
 $ wget https://github.com/groupoid/om/releases/download/0.3/om
 $ chmod +x om
 $ ./om sh
+> om:all().
+> om:scan().
+> om:modes().
+["erased","girard","hurkens","normal","setoids"]
+> om:mode("normal").
+> om:extract().
+>
+Active: module loaded: {reloaded,'List'}
+Active: module loaded: {reloaded,'Maybe'}
+Active: module loaded: {reloaded,'Nat'}
+Active: module loaded: {reloaded,'Vector'}
+> ch:main().
+Zero: 0
+Cons/Nil: [2,1]
+Test Big List: [2,3,5,8,11,19]
+Two: 2
+ok
+Pack/Unpack 1 000 000 Inductive List: {714483,'_'}
+Pack/Unpack 1 000 000 Inductive Nat: {743755,1000000}
 ```
 
 Exe Langauge

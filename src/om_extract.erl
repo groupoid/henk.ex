@@ -1,5 +1,5 @@
 -module(om_extract).
--description('Extract').
+-description('Extractor').
 -compile(export_all).
 
 prologue(Name)  -> [{attribute,1,module,Name},{attribute,1,compile,export_all}].
