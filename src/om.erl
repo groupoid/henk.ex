@@ -21,6 +21,7 @@ init([])    -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 term(F)     -> T = string:tokens(F,"/"), P = string:join(rev(tl(rev(T))),"/"), term(P,lists:last(T)).
 term(P,F)   -> case parse(P,F) of {[],error} -> parse([],F); {[],[]} -> {[],error}; {[],[X]} -> X end.
 name(M,P,F) -> string:join(["priv",mode(),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
+parse(X)    -> om_parse:expr("",om:str("",X),[]).
 parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
                io:format("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
                {[],error} end.

@@ -135,6 +135,8 @@ This information is subject to change.
                                        during rewind
 ```
 
+### mode
+
 Set the environment folder:
 
 ```erlang
@@ -142,12 +144,7 @@ Set the environment folder:
 ok
 ```
 
-Check how term inlining and loading works:
-
-```erlang
- > om:a("#List/map") == om:term("List/map").
- true
-```
+### a
 
 Inline some terms:
 
@@ -162,6 +159,17 @@ Inline some terms:
        {{star,1},{{"λ",{'Nil',0}},{{star,1},{var,{'X',0}}}}}}}},
     {var,{y,0}}}}}}
 ```
+
+### term
+
+Check how term inlining and loading works:
+
+```erlang
+ > om:a("#List/map") == om:term("List/map").
+ true
+```
+
+### show
 
 Use internal functions:
 
@@ -182,10 +190,12 @@ Term: 279
       {{"∀",{'Nil',0}},{{var,{'List',0}},{var,{'List',0}}}}}}}}}}
 ```
 
+### parse
+
 Parse raw expressions:
 
 ```erlang
-> om_parse:expr("",om:str("",<<"∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))"/utf8>>),[]).
+> om:parse("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))").
 {[],
  [{{"∀",{a,0}},
    {{star,1},
@@ -197,6 +207,8 @@ Parse raw expressions:
                     {var,{a,0}}}},
               {var,{a,0}}}}}}}}}}]}
 ```
+
+### extract
 
 Extract Erlang Modules:
 
@@ -211,6 +223,9 @@ Active: module loaded: {loaded_new,'Prod'}
 Active: module loaded: {loaded_new,'Ret'}
 ```
 
+### main
+
+Sandbox for testing from bare Erlang.
 Example of usage of compiled modules `List` and `Nat`:
 
 ```erlang
@@ -231,6 +246,8 @@ Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 {735410,0}
 ```
 
+### type
+
 Typechecking:
 
 ```
@@ -248,6 +265,8 @@ Typechecking:
                                  {var,{'AND',0}}}}}}}},
                            {var,{'B',0}}}}]
 ```
+
+### scan
 
 Scan modules in current mode:
 
