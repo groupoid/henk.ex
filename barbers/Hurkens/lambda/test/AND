@@ -1,0 +1,2 @@
+-- test #AND: #Prop -> #Prop -> #Prop
+(\(t: #Prop -> #Prop -> #Prop )-> t) #AND

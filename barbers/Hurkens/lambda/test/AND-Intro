@@ -1,0 +1,2 @@
+-- test #AND-Intro: \/(A B: #Prop )-> A -> B -> #AND A B
+(\(t: \/(A: #Prop )-> \/(B: #Prop )-> A -> B -> #AND A B )-> t) #AND-Intro
