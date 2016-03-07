@@ -14,7 +14,7 @@ modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
 mode()      -> application:get_env(om,mode,"erased").
-a(F)        -> {[],[X]} = parse(F), X.
+a(F)        -> case parse(F) of {error,R} -> {error,R}; {[],[A]} -> A end.
 
 term(F)     -> T = string:tokens(F,"/"),
                P = string:join(rev(tl(rev(T))),"/"),
