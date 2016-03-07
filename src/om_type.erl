@@ -29,7 +29,7 @@ substVar({star,N},Name,Value,L)                       -> {star,N}.
 assertEqual(T,T) -> true;
 assertEqual({{"∀",{"_",0}},X},{"→",Y}) -> assertEqual(X,Y);
 %assertEqual({"→",{I1,O1}},{{"∀",{"_",0}},{I2,O2}}) -> assertEqual(O2,substVar(O1,I2,{var,{I1,0}},0));
-assertEqual({"→",{I1,O1}},{{"∀",{_,0}},{I2,O2}}) -> assertEqual(O2,substVar(O1,I2,{var,{I1,0}},0));
+%assertEqual({"→",{I1,O1}},{{"∀",{_,0}},{I2,O2}}) -> assertEqual(O2,substVar(O1,I2,{var,{I1,0}},0));
 assertEqual({{"∀",{ArgName1,0}},{ArgType1,OutType1}},{{"∀",{ArgName2,0}},{ArgType2,OutType2}}) ->
     assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,{var,{ArgName1,0}},0));
 assertEqual({{"λ",{ArgName1,0}},{ArgType1,OutType1}},{{"λ",{ArgName2,0}},{ArgType2,OutType2}}) ->
@@ -42,8 +42,8 @@ assertEqual(A,B) -> erlang:error(["==", A, B]).
 getType(Term) -> getType(Term, []). % closed term (w/o free vars)
 
 getType({"→",{ArgType,OutType}},Bind) -> ArgLevel = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,Bind)), {star,hierarchy(ArgLevel,OutLevel)};
-getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,[{ArgName,normalize(ArgType)}|Bind])), {star,hierarchy(ArgLevel,OutLevel)};
-getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg),   TOut = getType(OutTerm,[{ArgName,normalize(ArgType)}|Bind]), {{"∀",{ArgName,0}},{ArgType,TOut}};
+getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(getType(ArgType,Bind)), NormArgType = normalize(ArgType), OutLevel = getStar(getType(OutType,[{ArgName,NormArgType}|Bind])), {star,hierarchy(ArgLevel,OutLevel)};
+getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg), NormArgType = normalize(ArgType), TOut = getType(OutTerm,[{ArgName,NormArgType}|Bind]), {{"∀",{ArgName,0}},{NormArgType,TOut}};
 getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), normalize(substVar(OutType,ArgName,normalize(Arg)));
 getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
 getType({star,N},Bind) -> {star,N+1}.
@@ -55,3 +55,12 @@ normalize({app,{{{"λ",{ArgName,0}},{ArgType,OutTerm}},ArgValue}}) -> normalize(
 normalize({app,{Func,Arg}}) -> {app,{normalize(Func),normalize(Arg)}};
 normalize({var,{Name,I}}) -> {var,{Name,I}};
 normalize({star,N}) -> {star,N}.
+
+toString(Term) -> unicode:characters_to_binary(toString(Term,"")).
+
+toString({"→",{ArgType,OutType}},Str) -> "("++toString(ArgType," → "++toString(OutType,")"++Str));
+toString({{"∀",{ArgName,0}},{ArgType,OutType}},Str) -> "(∀("++atom_to_list(ArgName)++":"++toString(ArgType,") → "++toString(OutType,")"++Str));
+toString({{"λ",{ArgName,0}},{ArgType,OutTerm}},Str) -> "(λ("++atom_to_list(ArgName)++":"++toString(ArgType,") → "++toString(OutTerm,")"++Str));
+toString({app,{Func,Arg}},Str) -> "("++toString(Func," "++toString(Arg,")"++Str));
+toString({var,{Name,I}},Str) -> atom_to_list(Name)++Str;
+toString({star,N},Str) -> "*"++integer_to_list(N)++Str.
