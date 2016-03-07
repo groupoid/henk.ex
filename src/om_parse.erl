@@ -58,9 +58,9 @@ rewind([{arrow},{{F,N},{I,O}}|Acc],T,[X|R])             -> rewind2(Acc,T,[{{func
 rewind([{arrow},{"→",{{app,X},I}}|Acc],T,[Y|R])         -> {error,{"parser3",{X,I,Y}}};
 rewind([{arrow},Y|Acc],      T,  [X|R])                 -> rewind2(Acc,T,[{func(arrow),{Y,X}}|R]);
 rewind([{colon}|Acc],        T,  R)                     -> {T,om:flat([R|Acc])};
-rewind([],                   T,  [{"→",{{app,X},Y}}|R]) -> {error,{"parser3",{X,Y}}};
+rewind([],                   T,  [{"→",{{app,X},Y}}|R]) -> {error,{"parser4",{X,Y}}};
 rewind([],                   T,  R)                     -> {T,R};
-rewind(X,                    T,  [Y|R])                 -> {error,{"parser4",{X,Y}}}.
+rewind(X,                    T,  [Y|R])                 -> {error,{"parser5",{X,Y}}}.
 rewind2(X,T,Y) ->
 %   io:format("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
     rewind(X,T,Y).
@@ -72,7 +72,6 @@ rewind2(X,T,Y) ->
 test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",
                 "\\ (x : ( err (o:*) -> o ) -> p ) -> o",
                 "\\ (x : ( (o:*) -> o ) -> p ) -> o",
-                "\\ (x : ( \\ (o:*) err -> o ) -> p ) -> o",
                 "\\ (x : ( \\ (o:*) -> o ) -> p ) err -> o",
                 "\\ (x : \\ (x: x -> l) -> o ) l -> z",
                 "\\ (x : ( (o:*) -> o ) -> p ) -> o",
@@ -80,6 +79,7 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",
               ],
 
           T = [ "\\ (x : (\\ (o:*) -> o) l -> p ) -> o",
+                "\\ (x : ( \\ (o: \\ (x : (\\ (o:*) -> o) l -> p ) -> o) -> o ) -> p ) -> o",
                 "a \\ (x : (a \\ (o:*) -> o) l -> p ) -> o",
                  "\\(x : (\\ (o:*) -> o) -> p ) -> o"
                ],
