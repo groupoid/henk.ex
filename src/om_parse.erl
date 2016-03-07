@@ -49,14 +49,11 @@ expr2(X,T,Y) ->
 
 -define(arr(F), F == lambda; F== pi).
 
-% TODO: write DSL for expr and rewind
-
 rewind([],            T,[{"→",    {{app,X},Y}}            |R])              -> {error,{"parser1",{X,Y}}};
-rewind([{F}|A],       T,[{"→",{{_,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
+rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
 rewind([{F}|A],       T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),{L,M}},{X,Y}}|R]);
-rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),M},{{L,{C,X}},Y}}|R]);
-rewind([{open},{F}|A],T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),{L,M}},{X,Y}}|[R|A]])};
 rewind([{open},{F}|A],T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
+rewind([{open},{F}|A],T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),{L,M}},{X,Y}}|[R|A]])};
 rewind([{open},{a,Z}|A],T,               [{I, {{app,X},Y}}|R])              -> {error,{"parser3",{Z,I,X,Y}}};
 rewind([{open},{C,X}|A],T,                          [{B,Y}|R])              -> {T,om:flat([{app,{{C,X},{B,Y}}}|[R|A]])};
 rewind([{open}|A],    T,                                   R)               -> {T,om:flat([R|A])};

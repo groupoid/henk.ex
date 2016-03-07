@@ -23,17 +23,17 @@ term(F)     -> T = string:tokens(F,"/"),
                term(P,lists:last(T)).
 
 scan()      -> Res = [ {element(1,show(F))/=[],F} || {F} <- lists:umerge(wildcard(),syscard()) ],
-               error("Tests: ~tp~n",[Res]),
+               mad:info("Tests: ~tp~n",[Res]),
                Passed = lists:all(fun({X,B}) -> X == true end, Res),
                case Passed of
-                    true -> error("PASSED~n",[]);
-                    false -> error("FAILED~n",[]) end,
+                    true -> mad:info("PASSED~n",[]);
+                    false -> mad:info("FAILED~n",[]) end,
                Res.
 
 show(F)     -> T = string:substr(string:tokens(F,"/"),3),
                Type = term(string:join(T,"/")),
-               error("~n===[ File: ~ts ]==========~nCat: ~tsTerm: ~100tp~n",
-                     [F,file(F),size(term_to_binary(Type))]), Type.
+               mad:info("~n~ts~nTerm: ~60tp~n",
+                     [file(F),size(term_to_binary(Type))]), Type.
 
 % system functions
 
