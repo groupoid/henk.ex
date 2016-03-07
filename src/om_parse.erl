@@ -44,6 +44,7 @@ expr(P,[{var,L}             |T], Acc)  -> expr(P,T,[{var,L}|Acc]).
 
 -define(is_fun(F), F == lambda; F== pi).
 
+rewind([],                   T,  [{"→",{{app,X},Y}}|R]) -> {error,{"parser4",{X,Y}}};
 rewind([{F}|Acc],            T,  [{"→",{{app,{{app,{{typevar,M},A}},X}},Y}}|R])   when ?is_fun(F) -> {error,{"parser1",{M,A,X,Y}}};
 rewind([{F}|Acc],            T,  [{"→",{{app,{{typevar,{L,M}},{A,X}}},{B,Y}}}|R]) when ?is_fun(F) -> rewind2(Acc,T,[{{func(F),{L,M}},{{A,X},{B,Y}}}|R]);
 rewind([{F}|Acc],            T,  [{"→",{{L,{{app,{{typevar,M},A}},X}},{B,Y}}}|R]) when ?is_fun(F) -> rewind2(Acc,T,[{{func(F),M},{{L,{A,X}},{B,Y}}}|R]);
@@ -57,21 +58,19 @@ rewind([{A,X}|Acc],          T,  R)                     -> rewind2(Acc,T,[{A,X}|
 rewind([{arrow},{{F,N},{I,O}}|Acc],T,[X|R])             -> rewind2(Acc,T,[{{func(F),N},{{func(arrow),{I,O}},X}}|R]);
 rewind([{arrow},{"→",{{app,X},I}}|Acc],T,[Y|R])         -> {error,{"parser3",{X,I,Y}}};
 rewind([{arrow},Y|Acc],      T,  [X|R])                 -> rewind2(Acc,T,[{func(arrow),{Y,X}}|R]);
-rewind([],                   T,  [{"→",{{app,X},Y}}|R]) -> {error,{"parser4",{X,Y}}};
-rewind([],                   T,  R)                     -> {T,R};
-rewind(X,                    T,  [Y|R])                 -> {error,{"parser5",{X,Y}}}.
+rewind([],                   T,  R)                     -> {T,R}.
 
 rewind2(X,T,Y) ->
-%   io:format("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
+%    io:format("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
     rewind(X,T,Y).
 
-test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",
-                "\\ (x : ( err (o:*) -> o ) -> p ) -> o",
-                "\\ (x : ( (o:*) -> o ) -> p ) -> o",
-                "\\ (x : ( \\ (o:*) -> o ) -> p ) err -> o",
-                "\\ (x : \\ (x: x -> l) -> o ) l -> z",
-                "\\ (x : ( (o:*) -> o ) -> p ) -> o",
-                "\\ (x : ( err (o:*) -> o ) -> p ) -> o"
+test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser3
+                "\\ (x : ( err (o:*) -> o ) -> p ) -> o",    % parser2
+                "\\ (x : ( (o:*) -> o ) -> p ) -> o",        % parser2
+                "\\ (x : ( \\ (o:*) -> o ) -> p ) err -> o", % parser4
+                "\\ (x : \\ (x: x -> l) -> o ) l -> z",      % parser1
+                "\\ (x : ( (o:*) -> o ) -> p ) -> o",        % parser2
+                "\\ (x : ( err (o:*) -> o ) -> p ) -> o"     % parser2
               ],
 
           T = [ "\\ (x : (\\ (o:*) -> o) l -> p ) -> o",
