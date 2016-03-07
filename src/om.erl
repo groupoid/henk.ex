@@ -7,6 +7,8 @@
 
 % providing functions
 
+print(X)    -> io:format("~ts",[bin(X)]).
+bin(X)      -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 parse(X)    -> om_parse:expr([],om:str([],X),[]).
 extract()   -> om_extract:scan().
 type(S)     -> om_type:getType(om:term(S)).
@@ -65,7 +67,8 @@ rev(X)       -> lists:reverse(X).
 flat(X)      -> lists:flatten(X).
 tokens(X,Y)  -> string:tokens(X,Y).
 debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
-atom(X)      -> list_to_atom(X).
+atom(X)      -> list_to_atom(cat(X)).
+cat(X)       -> lists:concat([X]).
 last(X)      -> lists:last(X).
 
 file(F) -> case file:read_file(F) of

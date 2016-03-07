@@ -61,7 +61,6 @@ normalize({var,{Name,I}}) -> {var,{Name,I}};
 normalize({star,N}) -> {star,N}.
 
 toString(Term) -> unicode:characters_to_binary(toString(Term,"")).
-
 toString({"→",{ArgType,OutType}},Str) -> "("++toString(ArgType," → "++toString(OutType,")"++Str));
 toString({{"∀",{ArgName,0}},{ArgType,OutType}},Str) -> "(∀("++atom_to_list(ArgName)++":"++toString(ArgType,") → "++toString(OutType,")"++Str));
 toString({{"λ",{ArgName,0}},{ArgType,OutTerm}},Str) -> "(λ("++atom_to_list(ArgName)++":"++toString(ArgType,") → "++toString(OutTerm,")"++Str));
