@@ -14,6 +14,8 @@ modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
 mode()      -> application:get_env(om,mode,"erased").
+debug(S)    -> application:set_env(om,debug,S).
+debug()     -> application:get_env(om,debug,false).
 a(F)        -> case parse(F) of {error,R} -> {error,R}; {[],[A]} -> A end.
 
 term(F)     -> T = string:tokens(F,"/"),
@@ -54,7 +56,7 @@ wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
 
 parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
-               error("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
+               mad:info("ERROR: file: ~tp~n~tp~n",[erlang:get_stacktrace(),R]),
                {[],error} end.
 
 % relying functions
@@ -62,8 +64,7 @@ parse(P,F)  -> try om_parse:expr(P,read(P,name(mode(),P,F)),[]) catch E:R ->
 rev(X)       -> lists:reverse(X).
 flat(X)      -> lists:flatten(X).
 tokens(X,Y)  -> string:tokens(X,Y).
-print(S,A)   -> io_lib:format(S,A).
-error(S,A)   -> io:format(S,A).
+debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
 atom(X)      -> list_to_atom(X).
 last(X)      -> lists:last(X).
 

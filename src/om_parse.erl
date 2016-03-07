@@ -8,25 +8,30 @@
 %          * | λ ( I : O ) → O |
 %          I | O → O | O O
 
-expr(P,[],                       Acc)  ->      rewind(Acc,[],[]);
-expr(P,[close               |T], Acc)  -> case rewind(Acc, T,[]) of
+expr(P,[],                       Acc)  ->      rewind2(Acc,[],[]);
+expr(P,[close               |T], Acc)  -> om:debug("backwd: ~tp~n",[Acc]),
+                                          case rewind(Acc, T,[]) of
                                                {error,R} -> {error,R};
-                                               {T1,Acc1} -> expr(P,T1,Acc1) end;
+                                               {T1,Acc1} -> expr2(P,T1,Acc1) end;
 
-expr(P,[{remote,{X,L}}      |T], Acc)  -> expr(P,T,[ret(om:term([],L))|Acc]);
-expr(P,[{remote,L}          |T], Acc)  -> expr(P,T,[om:term(L)|Acc]);
-expr(P,[{star,I}            |T], Acc)  -> expr(P,T,[{star,I}|Acc]);
-expr(P,[{N,X}|T],        [{a,Y}| Acc]) -> expr(P,T,[{N,X},{a,Y}|Acc]);
-expr(P,[{N,X}|T],        [{C,Y}| Acc]) -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
-expr(P,[star                |T], Acc)  -> expr(P,T,[{star,1}|Acc]);
-expr(P,[box                 |T], Acc)  -> expr(P,T,[{box,1}|Acc]);
-expr(P,[open                |T], Acc)  -> expr(P,T,[{open}|Acc]);
-expr(P,[arrow               |T], Acc)  -> expr(P,T,[{arrow}|Acc]);
-expr(P,[lambda              |T], Acc)  -> expr(P,T,[{lambda}|Acc]);
-expr(P,[pi                  |T], Acc)  -> expr(P,T,[{pi}|Acc]);
-expr(P,[colon               |T], Acc)  -> expr(P,T,[{colon}|Acc]);
-expr(P,[{var,L},colon       |T], Acc)  -> expr(P,T,[{a,L}|Acc]);
-expr(P,[{var,L}             |T], Acc)  -> expr(P,T,[{var,L}|Acc]).
+expr(P,[{remote,{X,L}}      |T], Acc)  -> expr2(P,T,[ret(om:term([],L))|Acc]);
+expr(P,[{remote,L}          |T], Acc)  -> expr2(P,T,[om:term(L)|Acc]);
+expr(P,[{star,I}            |T], Acc)  -> expr2(P,T,[{star,I}|Acc]);
+expr(P,[{N,X}|T],        [{a,Y}| Acc]) -> expr2(P,T,[{N,X},{a,Y}|Acc]);
+expr(P,[{N,X}|T],        [{C,Y}| Acc]) -> expr2(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr(P,[star                |T], Acc)  -> expr2(P,T,[{star,1}|Acc]);
+expr(P,[box                 |T], Acc)  -> expr2(P,T,[{box,1}|Acc]);
+expr(P,[open                |T], Acc)  -> expr2(P,T,[{open}|Acc]);
+expr(P,[arrow               |T], Acc)  -> expr2(P,T,[{arrow}|Acc]);
+expr(P,[lambda              |T], Acc)  -> expr2(P,T,[{lambda}|Acc]);
+expr(P,[pi                  |T], Acc)  -> expr2(P,T,[{pi}|Acc]);
+expr(P,[colon               |T], Acc)  -> expr2(P,T,[{colon}|Acc]);
+expr(P,[{var,L},colon       |T], Acc)  -> expr2(P,T,[{a,L}|Acc]);
+expr(P,[{var,L}             |T], Acc)  -> expr2(P,T,[{var,L}|Acc]).
+
+expr2(X,T,Y) ->
+    om:debug("forwrd: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
+    expr(X,T,Y).
 
 % During forward pass we stack applications (except typevars), then
 % on reaching close paren ")" we perform backward pass and stack arrows,
@@ -44,7 +49,9 @@ expr(P,[{var,L}             |T], Acc)  -> expr(P,T,[{var,L}|Acc]).
 
 -define(arr(F), F == lambda; F== pi).
 
-rewind([],            T,[{"→",{{app,X},Y}}|R])                              -> {error,{"parser1",{X,Y}}};
+% TODO: write DSL for expr and rewind
+
+rewind([],            T,[{"→",    {{app,X},Y}}            |R])              -> {error,{"parser1",{X,Y}}};
 rewind([{F}|A],       T,[{"→",{{_,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
 rewind([{F}|A],       T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),{L,M}},{X,Y}}|R]);
 rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),M},{{L,{C,X}},Y}}|R]);
@@ -61,7 +68,7 @@ rewind([{arrow},Y|A],T,                                 [X|R])              -> r
 rewind([],            T,                                   R)               -> {T,R}.
 
 rewind2(X,T,Y) ->
-%    io:format("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
+    om:debug("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
     rewind(X,T,Y).
 
 test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser4
