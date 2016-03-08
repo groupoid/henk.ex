@@ -92,11 +92,14 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1
 
 pad(D)                       -> lists:duplicate(D,"  ").
 
+print(any,D) -> ["any"];
 print({var,{N,I}},D)         -> [ om:cat(N) ];
 print({star,N},D)            -> [ "*",om:cat(N) ];
 print({"→",{I,O}},D)         -> [ "(", print(I,D+1),"\n",pad(D),"→ ",print(O,D), ")\n" ];
 print({app,{I,O}},D)         -> [ "(",print(I,D)," ",print(O,D),")" ];
+print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ",om:cat(N),"\n",pad(D),"→ ",print(O,D),")" ];
 print({{"∀",{N,_}},{I,O}},D) -> [ "( ∀ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ];
+print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ",om:cat(N),"\n",pad(D),"→ ",print(O,D),")" ];
 print({{"λ",{N,_}},{I,O}},D) -> [ "( λ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
 
 func(lambda) -> "λ";
