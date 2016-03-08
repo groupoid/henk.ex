@@ -50,16 +50,16 @@ expr2(X,T,Y) ->
 -define(arr(F), F == lambda; F== pi).
 
 rewind([],            T,[{"→",    {{app,X},Y}}            |R])              -> {error,{"parser1",{X,Y}}};
-rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
 rewind([{F}|A],       T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),{L,M}},{X,Y}}|R]);
-rewind([{open},{F}|A],T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
+rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
 rewind([{open},{F}|A],T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),{L,M}},{X,Y}}|[R|A]])};
+rewind([{open},{F}|A],T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
+rewind([{open},{a,Z}|A],T,                        [{app,X}|R])              -> {error,{"parser5",{Z,X}}};
 rewind([{open},{a,Z}|A],T,               [{I, {{app,X},Y}}|R])              -> {error,{"parser3",{Z,I,X,Y}}};
-rewind([{open},{C,X}|A],T,                          [{B,Y}|R])              -> {T,om:flat([{app,{{C,X},{B,Y}}}|[R|A]])};
+rewind([{open},{{F,N}=C,X}|A],T,                    [{B,Y}|R]) when not ?arr(F) -> {T,om:flat([{app,{{C,X},{B,Y}}}|[R|A]])};
 rewind([{open}|A],    T,                                   R)               -> {T,om:flat([R|A])};
 rewind([{C,X}|A],     T,                            [{B,Y}|R])              -> rewind2(A,T,[{app,{{C,X},{B,Y}}}|R]);
 rewind([{C,X}|A],     T,                                   R)               -> rewind2(A,T,[{C,X}|R]);
-rewind([{arrow},{{F,N},{I,O}}|A],T,                     [X|R])              -> rewind2(A,T,[{{func(F),N},{{func(arrow),{I,O}},X}}|R]);
 rewind([{arrow},{"→",{{app,X},I}}|A],T,                 [Y|R])              -> {error,{"parser4",{X,I,Y}}};
 rewind([{arrow},Y|A],T,                                 [X|R])              -> rewind2(A,T,[{func(arrow),{Y,X}}|R]);
 rewind([],            T,                                   R)               -> {T,R}.
@@ -73,13 +73,12 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser4
                 "\\ (x : ( (o:*) -> o ) -> p ) -> o",        % parser3
                 "\\ (x : ( \\ (o:*) -> o ) -> p ) err -> o", % parser1
                 "\\ (x : \\ (x: x -> l) -> o ) l -> z",      % parser2
-                "\\ (x : ( (o:*) -> o ) -> p ) -> o",        % parser3
-                "\\ (x : ( err (o:*) -> o ) -> p ) -> o"     % parser3
+                "\\ (x : ( (o:*) -> o ) -> p ) -> o"         % parser3
               ],
 
           T = [ "\\ (x : (\\ (o:*) -> o) l -> p ) -> o",
                 "\\ (x : ( \\ (o: \\ (x : (\\ (o:*) -> o) l -> p ) -> o) -> o ) -> p ) -> o",
-                "a \\ (x : (a \\ (o:*) -> o) l -> p ) -> o",
+%                "a \\ (x : (a \\ (o:*) -> o) l -> p ) -> o",
                  "\\(x : (\\ (o:*) -> o) -> p ) -> o"
                ],
 
@@ -96,10 +95,10 @@ pad(D)                       -> lists:duplicate(D,"  ").
 
 print({var,{N,I}},D)         -> [ om:cat(N) ];
 print({star,N},D)            -> [ "*",om:cat(N) ];
-print({"→",{I,O}},D)         -> [ print(I,D+1),"\n",pad(D),"→ ",print(O,D) ];
+print({"→",{I,O}},D)         -> [ "(", print(I,D+1),"\n",pad(D),"→ ",print(O,D), "\n)" ];
 print({app,{I,O}},D)         -> [ "(",print(I,D)," ",print(O,D),")" ];
-print({{"∀",{N,_}},{I,O}},D) -> [ "∀ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D) ];
-print({{"λ",{N,_}},{I,O}},D) -> [ "λ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D) ].
+print({{"∀",{N,_}},{I,O}},D) -> [ "( ∀ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ];
+print({{"λ",{N,_}},{I,O}},D) -> [ "( λ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
 
 func(lambda) -> "λ";
 func(pi)     -> "∀";

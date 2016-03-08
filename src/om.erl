@@ -7,7 +7,7 @@
 
 % providing functions
 
-print(X)    -> io:format("~ts",[bin(X)]).
+print(X)    -> io:format("~ts~n",[bin(X)]).
 bin(X)      -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 parse(X)    -> om_parse:expr([],om:str([],X),[]).
 extract()   -> om_extract:scan().
