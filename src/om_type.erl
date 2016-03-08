@@ -2,62 +2,59 @@
 -description('Type Checker').
 -compile(export_all).
 
-getStar({star,N}) -> N;
-getStar(_) -> erlang:error("*").
-
-isUniv({star,N}) -> true;
-isUniv({{"∀",ArgName},{ArgType,OutType}}) -> isUniv(OutType);
-isUniv(_) -> false.
-
-assertFunc({{"∀",ArgName},{ArgType,OutType}}) -> true;
-assertFunc(T) -> erlang:error(["∀",T]).
-
-assertVar(Name,Bind)       -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
-assertVar(Name,Bind,true)  -> true;
-assertVar(Name,Bind,false) -> erlang:error(["free var", Name, Bind]).
-
-hierarchy(Arg,Out) -> Out. % impredicative
+hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
-substVar(Term,Name,Value) -> substVar(Term,Name,Value,0).
-substVar({"→",{ArgType,OutType}},Name,Value,L)           -> {"→",{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
-substVar({{"∀",{Name,0}},{ArgType,OutType}},Name,Value,L)    -> {{"∀",{Name,0}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L+1)}};
-substVar({{"∀",{ArgName,N}},{ArgType,OutType}},Name,Value,L) -> {{"∀",{ArgName,N}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
-substVar({{"λ",{Name,0}},{ArgType,OutTerm}},Name,Value,L)    -> {{"λ",{Name,0}},{substVar(ArgType,Name,Value,L),substVar(OutTerm,Name,Value,L+1)}};
-substVar({{"λ",{ArgName,N}},{ArgType,OutType}},Name,Value,L) -> {{"λ",{ArgName,N}},{substVar(ArgType,Name,Value,L),substVar(OutType,Name,Value,L)}};
-substVar({app,{Func,Arg}},Name,Value,L)                  -> {app,{substVar(Func,Name,Value,L),substVar(Arg,Name,Value,L)}};
-substVar({var,{Name,L}},Name,Value,L)                    -> Value; % index match
-substVar({var,{VarName,I}},Name,Value,L)                 -> {var,{VarName,I}}; % no match
-substVar({star,N},Name,Value,L)                       -> {star,N}.
+type(Term) -> type(Term, []). % closed term (w/o free vars)
+type({star,N},D)              -> {star,N+1};
+type({var,{N,I}},D)           -> assertVar(N,D), proplists:get_value(N,D); % TODO respect index of var
+type({"→",{I,O}},D)           -> {star,hierarchy(star(type(I,D)),star(type(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type(I,D)),star(type(O,[{N,normalize(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> star(type(I,D)), NI = normalize(I), {{"∀",{N,0}},{NI,type(O,[{N,NI}|D])}};
+type({app,{F,A}},D)           -> T = type(F,D),
+                                 assertFunc(T),
+                                 {{"∀",{N,0}},{I,O}} = T,
+                                 eq(I,type(A,D)),
+                                 normalize(subst(O,N,A)).
 
-assertEqual(T,T) -> true;
-assertEqual({{"∀",{"_",0}},X},{"→",Y}) -> assertEqual(X,Y);
-%assertEqual({"→",{I1,O1}},{{"∀",{"_",0}},{I2,O2}}) -> assertEqual(O2,substVar(O1,I2,{var,{I1,0}},0));
-%assertEqual({"→",{I1,O1}},{{"∀",{_,0}},{I2,O2}}) -> assertEqual(O2,substVar(O1,I2,{var,{I1,0}},0));
-assertEqual({{"∀",{ArgName1,0}},{ArgType1,OutType1}},{{"∀",{ArgName2,0}},{ArgType2,OutType2}}) ->
-    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,{var,{ArgName1,0}},0));
-assertEqual({{"λ",{ArgName1,0}},{ArgType1,OutType1}},{{"λ",{ArgName2,0}},{ArgType2,OutType2}}) ->
-    assertEqual(ArgType1,ArgType2), assertEqual(OutType1,substVar(OutType2,ArgName2,{var,{ArgName1,0}},0));
-assertEqual({app,{Func1,Arg1}},{app,{Func2,Arg2}}) -> assertEqual(Func1,Func2), assertEqual(Arg1,Arg2);
-assertEqual({var,{Name,I}},{var,{Name,I}}) -> true;
-assertEqual({star,N},{star,N}) -> true;
-assertEqual(A,B) -> erlang:error(["==", A, B]).
+normalize(none)                          -> none;
+normalize(any)                           -> {star,1};
+normalize({"→",        {I,O}})           -> {{"∀",{'_',0}},{normalize(I),normalize(O)}};
+normalize({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {normalize(I),normalize(O)}};
+normalize({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {normalize(I),normalize(O)}};
+normalize({app,{{{"λ",{N,0}},{I,O}},A}}) -> normalize(subst(O,N,A));
+normalize({app,{F,A}})                   -> {app,          {normalize(F),normalize(A)}};
+normalize({var,{N,I}})                   -> {var,{N,I}};
+normalize({star,N})                      -> {star,N}.
 
-getType(Term) -> getType(Term, []). % closed term (w/o free vars)
+subst(Term,Name,Value)           -> subst(Term,Name,Value,0).
+subst({"→",        {I,O}},N,V,L) -> {"→",        {subst(I,N,V,L),subst(O,N,V,L)}};
+subst({{"∀",{F,0}},{I,O}},N,V,L) -> {{"∀",{F,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
+subst({{"∀",{F,X}},{I,O}},N,V,L) -> {{"∀",{F,X}},{subst(I,N,V,L),subst(O,N,V,L)}};
+subst({{"λ",{F,0}},{I,O}},N,V,L) -> {{"λ",{F,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
+subst({{"λ",{F,X}},{I,O}},N,V,L) -> {{"λ",{F,X}},{subst(I,N,V,L),subst(O,N,V,L)}};
+subst({app, {F,A}},       N,V,L) -> {app,        {subst(F,N,V,L),subst(A,N,V,L)}};
+subst({var,{N,I}},_,_,_)         -> {var,{N,I}}; % no match
+subst({var,_},_,Value,_)         -> Value;       % index match
+subst({star,N},_,_,_)            -> {star,N}.
 
-getType({"→",{ArgType,OutType}},Bind) -> ArgLevel = getStar(getType(ArgType,Bind)), OutLevel = getStar(getType(OutType,Bind)), {star,hierarchy(ArgLevel,OutLevel)};
-getType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> ArgLevel  = getStar(getType(ArgType,Bind)), NormArgType = normalize(ArgType), OutLevel = getStar(getType(OutType,[{ArgName,NormArgType}|Bind])), {star,hierarchy(ArgLevel,OutLevel)};
-getType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg), NormArgType = normalize(ArgType), TOut = getType(OutTerm,[{ArgName,NormArgType}|Bind]), {{"∀",{ArgName,0}},{NormArgType,TOut}};
-getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),    assertFunc(TFunc),  {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, TArg = getType(Arg,Bind), assertEqual(ArgType,TArg), normalize(substVar(OutType,ArgName,(Arg)));
-getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
-getType({star,N},Bind) -> {star,N+1}.
+eq(T,T)                                           -> true;
+eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
+eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
+eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
+eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
+eq(A,B)                                           -> erlang:error(["==", A, B]).
 
-normalize(none) -> none;
-normalize(any) -> {star,1};
-normalize({"→",{ArgType,OutType}}) -> {{"∀",{"_",0}},{normalize(ArgType),normalize(OutType)}};
-normalize({{"∀",{ArgName,0}},{ArgType,OutType}}) -> {{"∀",{ArgName,0}},{normalize(ArgType),normalize(OutType)}};
-normalize({{"λ",{ArgName,0}},{ArgType,OutTerm}}) -> {{"λ",{ArgName,0}},{normalize(ArgType),normalize(OutTerm)}};
-normalize({app,{{{"λ",{ArgName,0}},{ArgType,OutTerm}},ArgValue}}) -> normalize(substVar(OutTerm,ArgName,(ArgValue)));
-normalize({app,{Func,Arg}}) -> {app,{normalize(Func),normalize(Arg)}};
-normalize({var,{Name,I}}) -> {var,{Name,I}};
-normalize({star,N}) -> {star,N}.
+star({star,N})        -> N;
+star(_)               -> erlang:error("*").
+
+univ({star,N})        -> true;
+univ({{"∀",N},{I,O}}) -> univ(O);
+univ(_)               -> false.
+
+assertFunc({{"∀",N},{I,O}}) -> true;
+assertFunc(T)               -> erlang:error(["∀",T]).
+
+assertVar(Name,Bind)        -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
+assertVar(Name,Bind,true)   -> true;
+assertVar(Name,Bind,false)  -> erlang:error(["free var", Name, Bind]).

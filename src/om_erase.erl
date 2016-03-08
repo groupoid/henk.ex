@@ -26,9 +26,8 @@ erase({{F,{N,0}},{I,O}},D) when ?is_fun(F) ->
     case univ(NI) of
         true  -> {B1,S1};
         false -> case F of
-                     "∀" -> {{{F,{N,0}},{any,B1}},{star,hierarchy(star(om_type:getType(I,D)),star(S1))}};
-                     "λ" -> om_type:getType(I,D),
-                            {{{F,{N,0}},{any,B1}},{{"∀",{N,0}},{any,S1}}} end end;
+                     "∀" -> {{{F,{N,0}},{any,B1}},{star,hierarchy(star(type(I,D)),star(S1))}};
+                     "λ" -> type(I,D), {{{F,{N,0}},{any,B1}},{{"∀",{N,0}},{any,S1}}} end end;
 
 erase({app,{F,A}},D) ->
     {B1,S1} = erase(F,D),
@@ -39,12 +38,14 @@ erase({app,{F,A}},D) ->
                   {B2,S2} = erase(A,D),
                   case univ(S2) of
                        true  -> {B1,S1};
-                       false -> {{app,{B1,B2}},normalize(om_type:substVar(O,N,B2))} end end.
+                       false -> {{app,{B1,B2}},normalize(om_type:subst(O,N,B2))} end end.
 
 % used
 
 hierarchy(L,R) -> om_type:hierarchy(L,R).
 normalize(X)   -> om_type:normalize(X).
-star(X)        -> om_type:getStar(X).
-univ(X)        -> om_type:isUniv(X).
+star(X)        -> om_type:star(X).
+type(X)        -> om_type:type(X).
+type(X,S)      -> om_type:type(X,S).
+univ(X)        -> om_type:univ(X).
 
