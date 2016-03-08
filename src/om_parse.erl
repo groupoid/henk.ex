@@ -60,7 +60,7 @@ rewind([{open},{var,X}|A],T,                        [{B,Y}|R])              -> {
 rewind([{open}|A],    T,                                   R)               -> {T,om:flat([R|A])};
 rewind([{C,X}|A],     T,                            [{B,Y}|R])              -> rewind2(A,T,[{app,{{C,X},{B,Y}}}|R]);
 rewind([{C,X}|A],     T,                                   R)               -> rewind2(A,T,[{C,X}|R]);
-rewind([{arrow},Y|A],T,                                 [X|R])              -> rewind2(A,T,[{func(arrow),{Y,X}}|R]);
+rewind([{arrow},Y|A], T,                                [X|R])              -> rewind2(A,T,[{func(arrow),{Y,X}}|R]);
 rewind([],            T,                                   R)               -> {T,R}.
 
 rewind2(X,T,Y) ->
