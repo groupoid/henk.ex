@@ -11,9 +11,9 @@ print(X)    -> io:format("~ts~n",[bin(X)]).
 bin(X)      -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 parse(X)    -> om_parse:expr([],om:str([],X),[]).
 extract()   -> om_extract:scan().
-type(S)     -> om_type:getType(om:term(S)).
+type(S)     -> om_type:getType(S).
 erase(X)    -> om_erase:erase(X).
-type(S,B)   -> om_type:getType(om:term(S),B).
+type(S,B)   -> om_type:getType(S,B).
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).
@@ -35,9 +35,10 @@ scan()      -> Res = [ {element(1,show(F))/=[],F} || {F} <- lists:umerge(wildcar
                Res.
 
 show(F)     -> T = string:substr(string:tokens(F,"/"),3),
-               Type = term(string:join(T,"/")),
-               mad:info("~n~ts~nTerm: ~60tp~n",
-                     [file(F),size(term_to_binary(Type))]), Type.
+               Term = term(string:join(T,"/")),
+               mad:info("~p~n~ts~nTerm: ~60tp~n", [F,file(F),size(term_to_binary(Term))]),
+               %om:type(Term),
+               Term.
 
 % system functions
 
