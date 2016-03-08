@@ -29,14 +29,14 @@ normalize({star,N})                      -> {star,N}.
 
 subst(Term,Name,Value)           -> subst(Term,Name,Value,0).
 subst({"→",        {I,O}},N,V,L) -> {"→",        {subst(I,N,V,L),subst(O,N,V,L)}};
-subst({{"∀",{F,0}},{I,O}},N,V,L) -> {{"∀",{F,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
+subst({{"∀",{N,0}},{I,O}},N,V,L) -> {{"∀",{N,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
 subst({{"∀",{F,X}},{I,O}},N,V,L) -> {{"∀",{F,X}},{subst(I,N,V,L),subst(O,N,V,L)}};
-subst({{"λ",{F,0}},{I,O}},N,V,L) -> {{"λ",{F,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
+subst({{"λ",{N,0}},{I,O}},N,V,L) -> {{"λ",{N,0}},{subst(I,N,V,L),subst(O,N,V,L+1)}};
 subst({{"λ",{F,X}},{I,O}},N,V,L) -> {{"λ",{F,X}},{subst(I,N,V,L),subst(O,N,V,L)}};
 subst({app, {F,A}},       N,V,L) -> {app,        {subst(F,N,V,L),subst(A,N,V,L)}};
-subst({var,{N,0}},N,V,0)         -> V; % index match
-subst({var,{N,I}},_,_,_)         -> {var,{N,I}};       % no match
-subst({star,N},_,_,_)            -> {star,N}.
+subst({var, {N,L}},       N,V,L) -> V;           % index match
+subst({var, {N,I}},       _,_,_) -> {var,{N,I}}; % no match
+subst({star,N},           _,_,_) -> {star,N}.
 
 eq(T,T)                                           -> true;
 eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
