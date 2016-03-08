@@ -20,20 +20,22 @@ erase({var,{N,I}},D) ->
          true  -> {none,T};
          false -> {{var,{N,I}},T} end;
 
-erase({{F,{N,X}},{I,O}},D) when ?is_fun(F) ->
+erase({{F,{N,0}},{I,O}},D) when ?is_fun(F) ->
     NI = normalize(I),
     {B1,S1} = erase(O,[{N,NI}|D]),
     case univ(NI) of
         true  -> {B1,S1};
         false -> case F of
-                     "∀" -> {{{F,{N,X}},{any,B1}},{star,hierarchy(star(om_type:getType(I,D)),star(S1))}};
-                     "λ" -> {{{F,{N,X}},{any,B1}},{{"∀",{N,X}},{any,S1}}} end end;
+                     "∀" -> {{{F,{N,0}},{any,B1}},{star,hierarchy(star(om_type:getType(I,D)),star(S1))}};
+                     "λ" -> om_type:getType(I,D),
+                            {{{F,{N,0}},{any,B1}},{{"∀",{N,0}},{any,S1}}} end end;
 
 erase({app,{F,A}},D) ->
     {B1,S1} = erase(F,D),
     case univ(S1) of
          true  -> {none,S1};
-         false -> {{"∀",{N,_}},{I,O}} = S1,
+         false -> om_type:assertFunc(S1),
+                  {{"∀",{N,0}},{I,O}} = S1,
                   {B2,S2} = erase(A,D),
                   case univ(S2) of
                        true  -> {B1,S1};
