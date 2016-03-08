@@ -12,6 +12,8 @@ bin(X)      -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 parse(X)    -> om_parse:expr([],om:str([],X),[]).
 extract()   -> om_extract:scan().
 type(S)     -> om_type:getType(om:term(S)).
+erase(X)    -> om_erase:erase(X).
+type(S,B)   -> om_type:getType(om:term(S),B).
 modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat(["priv/",Mode]).
 mode(S)     -> application:set_env(om,mode,S).

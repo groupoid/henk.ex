@@ -52,6 +52,8 @@ getType({app,{Func,Arg}},Bind)                  -> TFunc = getType(Func,Bind),  
 getType({var,{Name,I}},Bind)                    -> assertVar(Name,Bind), proplists:get_value(Name,Bind); % TODO respect index of var
 getType({star,N},Bind) -> {star,N+1}.
 
+normalize(none) -> none;
+normalize(any) -> {star,1};
 normalize({"→",{ArgType,OutType}}) -> {{"∀",{"_",0}},{normalize(ArgType),normalize(OutType)}};
 normalize({{"∀",{ArgName,0}},{ArgType,OutType}}) -> {{"∀",{ArgName,0}},{normalize(ArgType),normalize(OutType)}};
 normalize({{"λ",{ArgName,0}},{ArgType,OutTerm}}) -> {{"λ",{ArgName,0}},{normalize(ArgType),normalize(OutTerm)}};
@@ -75,15 +77,23 @@ eraseAndType({"→",{ArgType,OutType}},Bind) -> {Arg,TArg} = eraseAndType(ArgTyp
         true -> eraseAndType(OutType,Bind);
         false -> {Out,TOut} = eraseAndType(OutType,Bind), OutLevel = getStar(TOut), {{"→",{Arg,Out}},{star,hierarchy(ArgLevel,OutLevel)}}
     end;
-eraseAndType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> NormArgType = normalize(ArgType), {EOut,TOut} = eraseAndType(OutType,[{ArgName,NormArgType}|Bind]),
+eraseAndType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> 
+    NormArgType = normalize(ArgType), 
+    {EOut,TOut} = eraseAndType(OutType,[{ArgName,NormArgType}|Bind]),
     case isUniv(NormArgType) of
         true -> {EOut,TOut};
-        false -> ArgLevel  = getStar(getType(ArgType,Bind)), OutLevel = getStar(TOut), {{{"∀",{ArgName,0}},{any,EOut}},{star,hierarchy(ArgLevel,OutLevel)}}
+        false -> ArgLevel  = getStar(getType(ArgType,Bind)), 
+                 OutLevel = getStar(TOut), 
+                 {{{"∀",{ArgName,0}},{any,EOut}},{star,hierarchy(ArgLevel,OutLevel)}}
     end;
-eraseAndType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> NormArgType = normalize(ArgType), {EOut,TOut} = eraseAndType(OutTerm,[{ArgName,NormArgType}|Bind]),
+eraseAndType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) -> 
+    NormArgType = normalize(ArgType), 
+    {EOut,TOut} = eraseAndType(OutTerm,[{ArgName,NormArgType}|Bind]),
     case isUniv(NormArgType) of
         true -> {EOut,TOut};
-        false -> TArg  = getType(ArgType,Bind), ArgLevel = getStar(TArg), {{{"λ",{ArgName,0}},{any,EOut}},{{"∀",{ArgName,0}},{any,TOut}}}
+        false -> TArg  = getType(ArgType,Bind), 
+                 ArgLevel = getStar(TArg), 
+                 {{{"λ",{ArgName,0}},{any,EOut}},{{"∀",{ArgName,0}},{any,TOut}}}
     end;
 eraseAndType({app,{Func,Arg}},Bind) -> {EFunc,TFunc} = eraseAndType(Func,Bind),
     case isUniv(TFunc) of
