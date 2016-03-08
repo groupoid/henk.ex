@@ -9,6 +9,7 @@
 
 tokens(P,<<>>,                    _, {_,C}, Acc)  -> om:rev(stack(P,C,Acc));
 tokens(P,<<"--"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{c,[]},     stack(P,C,Acc));
+tokens(P,<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
 tokens(P,<<$\n,       R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L+1,{1,[]},   stack(P,C,Acc));
 tokens(P,<<X,         R/binary>>, L, {c,C}, Acc)  -> tokens(P,R,L,{c,[]},     Acc);
 tokens(P,<<$(,        R/binary>>, L, {t,C}, Acc)  -> tokens(P,R,L,{t,[$(]},   stack(P,C,Acc));
@@ -20,7 +21,6 @@ tokens(P,<<X,         R/binary>>, L, {n,{S,C}}, Acc) when ?is_num(X)  -> tokens(
 tokens(P,<<X,         R/binary>>, L, {n,{S,C}}, Acc)  -> tokens(P,R,L,{1,[]}, stack(P,{S,[C]},Acc));
 tokens(P,<<$:,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [colon  | stack(P,C,  Acc)]);
 tokens(P,<<"□"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [box    | stack(P,C,  Acc)]);
-tokens(P,<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
 tokens(P,<<"→"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [arrow  | stack(P,C,  Acc)]);
 tokens(P,<<$\\,$/,    R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);
 tokens(P,<<"∀"/utf8,  R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [pi     | stack(P,C,  Acc)]);

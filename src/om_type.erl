@@ -2,8 +2,8 @@
 -description('Type Checker').
 -compile(export_all).
 
-hierarchy(Arg,Out) -> Out.           % impredicative
-%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
+%hierarchy(Arg,Out) -> Out.           % impredicative
+hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
 type(Term) -> type(Term, []). % closed term (w/o free vars)
 type({star,N},D)              -> {star,N+1};
