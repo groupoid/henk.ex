@@ -14,7 +14,7 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                                  Erased = case om:mode() of "erased" -> om:term(Name);
                                                             _ -> V0 = erasure(F,om:term(Name),1),
                                                                  {V1,_}=om_type:eraseAndType(om:term(Name)),
-                                                                 V0 end,
+                                                                 V1 end,
                                  mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
                                  mad:info("Tree: ~tp~n",[Extract]),
@@ -49,5 +49,6 @@ ext(F,{{"∀",Name},{_,Out}},N)  -> [];
 ext(F,{"→",{_,Out}},N)         -> [];
 ext(F,{{"λ",{Name,_}},{_,Out}},N) -> {'fun', N,{clauses,[{clause,N,[{var,N,Name}],[],[ext(F,Out,N)]}]}};
 ext(F,{app,{A,B}},N)          -> {'call',N,ext(F,A,N),[ext(F,B,N)]};
-ext(F,{var,{Name,I}},N)       -> {'var', N,Name}.
+ext(F,{var,{Name,I}},N)       -> {'var', N,Name};
+ext(F,_,N)                     -> [].
 

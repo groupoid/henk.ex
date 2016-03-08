@@ -83,8 +83,8 @@ cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head)
              % mapping to erlang list
 
              list   ([])          -> 'List':'Nil'();
-             list   ([Head|Tail]) -> % (('List':'Cons'())(Head))(list(Tail)).
-                                     fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
+             list   ([Head|Tail]) ->  (('List':'Cons'())(Head))(list(Tail)).
+                                     %fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
              unlist (L)           -> ap(L,list_()).
 
 % marshaling sample

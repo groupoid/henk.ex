@@ -1,5 +1,1 @@
-\(n : #Nat ) ->
-\(a : *) ->
-\/ (Vector : #Nat -> * -> *) ->
-\/ (Cons : \/ (m : #Nat ) -> \/ (b : *) -> b -> Vector m b -> Vector (#Nat/Succ m) b) ->
-\/ (Nil : \/ (b : *) -> Vector #Nat/Zero b) -> Vector n a
+λ(a : *) → ∀(List : *) → ∀(Cons : ∀(head : a) → ∀(tail : List) → List) → ∀(Nil : List) → List
