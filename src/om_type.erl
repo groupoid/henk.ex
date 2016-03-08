@@ -72,13 +72,17 @@ toString({star,N},Str) -> "*"++integer_to_list(N)++Str.
 
 eraseAndType(Term) -> eraseAndType(Term,[]).
 
-eraseAndType({"→",{ArgType,OutType}},Bind) -> {Arg,TArg} = eraseAndType(ArgType,Bind), ArgLevel = getStar(TArg),
+eraseAndType({"→",{ArgType,OutType}},Bind) ->
+    {Arg,TArg} = eraseAndType(ArgType,Bind),
+    ArgLevel = getStar(TArg),
     case isUniv(normalize(Arg)) of
         true -> eraseAndType(OutType,Bind);
-        false -> {Out,TOut} = eraseAndType(OutType,Bind), OutLevel = getStar(TOut), {{"→",{Arg,Out}},{star,hierarchy(ArgLevel,OutLevel)}}
+        false -> {Out,TOut} = eraseAndType(OutType,Bind),
+                 OutLevel = getStar(TOut),
+                 {{"→",{Arg,Out}},{star,hierarchy(ArgLevel,OutLevel)}}
     end;
 eraseAndType({{"∀",{ArgName,0}},{ArgType,OutType}},Bind) -> 
-    NormArgType = normalize(ArgType), 
+    NormArgType = normalize(ArgType),
     {EOut,TOut} = eraseAndType(OutType,[{ArgName,NormArgType}|Bind]),
     case isUniv(NormArgType) of
         true -> {EOut,TOut};
@@ -95,10 +99,13 @@ eraseAndType({{"λ",{ArgName,0}},{ArgType,OutTerm}},Bind) ->
                  ArgLevel = getStar(TArg), 
                  {{{"λ",{ArgName,0}},{any,EOut}},{{"∀",{ArgName,0}},{any,TOut}}}
     end;
-eraseAndType({app,{Func,Arg}},Bind) -> {EFunc,TFunc} = eraseAndType(Func,Bind),
+eraseAndType({app,{Func,Arg}},Bind) ->
+    {EFunc,TFunc} = eraseAndType(Func,Bind),
     case isUniv(TFunc) of
         true-> {none,TFunc};
-        false -> assertFunc(TFunc), {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc, {EArg,TArg} = eraseAndType(Arg,Bind),
+        false -> assertFunc(TFunc),
+                 {{"∀",{ArgName,0}},{ArgType,OutType}} = TFunc,
+                 {EArg,TArg} = eraseAndType(Arg,Bind),
             case isUniv(TArg) of
                 true -> {EFunc,TFunc};
                 false -> {{app,{EFunc,EArg}},normalize(substVar(OutType,ArgName,EArg))}

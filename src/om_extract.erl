@@ -12,8 +12,8 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                                  mad:info("Ctor: ~tp~n",[Name]),
                                  om:show(string:join([X,F],"/")),
                                  Erased = case om:mode() of "erased" -> om:term(Name);
-                                                            _ -> V0 = erasure(F,om:term(Name),1),
-                                                                 {V1,_}=om_type:eraseAndType(om:term(Name)),
+                                                            _ -> %V0 = erasure(F,om:term(Name),1),
+                                                                 {V1,_}=om:erase(om:term(Name)),
                                                                  V1 end,
                                  mad:info("Erased: ~tp~n",[Erased]),
                                  Extract = extract(F,Erased,1),
@@ -22,25 +22,6 @@ extract(X)      -> Last = om:last(string:tokens(X,"/")),
                      end || F <- element(2,file:list_dir(X)), F /= "@" ] ++ [{eof,1}],
                    {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
                    file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
-
-% Erase Type Information from Normalized Files
-
-erasure(F,{{"∀",Name},{In,Out}},N)   -> []; %erasure(F,Out,N+1);
-erasure(F,{"→",{_,Out}},N)           -> []; %erasure(F,Out,N+1);
-erasure(F,{{"λ",Name},{In,Out}}=T,N) -> eraseLambda(F,{"λ",Name},erasure(F,In,N),erasure(F,Out,N),N);
-erasure(F,{app,{A,B}},N)             -> eraseApp(erasure(F,A,N),erasure(F,B,N));
-erasure(F,{var,{Name,I}},N)          -> {var,{Name,N}};
-erasure(F,_,N)                       -> [].
-
-eraseLambda(F,{"λ",Name},{"∀",_},Out,N)     -> []; %erasure(F,Out,N+1);
-eraseLambda(F,{"λ",Name},"→",Out,N)         -> []; %erasure(F,Out,N+1);
-eraseLambda(F,{"λ",Name},In,Out,N)          -> {{"λ",Name},{In,erasure(F,Out,N)}};
-eraseLambda(F,_,_,Out,N)                    -> [].
-
-eraseApp([],[]) -> [];
-eraseApp(EA,[]) -> EA;
-eraseApp([],EB) -> EB;
-eraseApp(EA,EB) -> {app,{EA,EB}}.
 
 % Erlang AST extraction
 
