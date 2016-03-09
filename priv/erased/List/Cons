@@ -1,5 +1,0 @@
-  λ (Head: *)
-→ λ (Tail: *)
-→ λ (Cons: *)
-→ λ (Nil: *)
-→ Cons Head (Tail Cons Nil)
