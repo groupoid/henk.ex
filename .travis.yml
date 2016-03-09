@@ -5,4 +5,4 @@ notifications:
   email:
     - maxim@synrc.com
 install: "./mad dep com pla bun om"
-script: "./om print type a \"#Unit/Type1\", mode setoids"
+script: "./om print type a \"#Unit/Type1\", mode setoids && ./om print type a \"#List/Cons\", mode normal"
