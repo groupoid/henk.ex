@@ -56,12 +56,11 @@ ver()        -> list_to_tuple([version,?VERSION,
                 string:join([keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]," ver. ")]).
 console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(), put(ret,0),
                 Fold = lists:foldr(fun(I,O) ->
-                      Z = string:tokens(I," "),
-                      R = rev(Z),
+                      R = rev(I),
                       Res = lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R)),
                       io:format("~tp~n",[Res]),
                       [get(ret)|O]
-                      end, [], string:tokens(string:join(S," "),",")),
+                      end, [], string:tokens(S,[","])),
                 halt(lists:sum(Fold)).
 
 % test suite
@@ -97,7 +96,6 @@ tokens(X,Y)  -> string:tokens(X,Y).
 debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
 atom(X)      -> list_to_atom(cat(X)).
 cat(X)       -> lists:concat([X]).
-last(X)      -> lists:last(X).
 keyget(X,Y)  -> proplists:get_value(X,Y).
 
 file(F) -> case file:read_file(F) of
