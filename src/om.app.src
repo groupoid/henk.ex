@@ -1,6 +1,6 @@
 {application, om,
  [
-  {description, "OM Assembler"},
+  {description, "OM CoC Intermediate λ Assembler"},
   {vsn, "1.0"},
   {registered, []},
   {applications, [kernel, stdlib]},

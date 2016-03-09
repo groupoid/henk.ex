@@ -1,12 +1,14 @@
 -module(om).
 -description('CoC Compiler').
 -behaviour(supervisor).
+-include("om.hrl").
 -behaviour(application).
 -export([init/1, start/2, stop/1]).
 -compile(export_all).
 
 % providing functions
 
+help()       -> om_help:help().
 pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
@@ -21,20 +23,21 @@ mode(S)      -> application:set_env(om,mode,S).
 mode()       -> application:get_env(om,mode,"normal").
 debug(S)     -> application:set_env(om,debug,S).
 debug()      -> application:get_env(om,debug,false).
-name(M,P,F)  -> string:join([priv(mode()),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
-str(P,F)     -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
-read(P,F)    -> om_tok:tokens(P,file(F),0,{1,[]},[]).
+name(M,[],F) -> string:join([priv(mode()),F],"/");
+name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
+str(F)       -> om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]).
+read(F)      -> om_tok:tokens([],file(F),0,{1,[]},[]).
 comp(F)      -> rev(tokens(F,"/")).
 cname(F)     -> hd(comp(F)).
 tname(F)     -> tname(F,[]).
-tname(F,S)   -> X= hd(tl(comp(F))), case X == om:mode() of true -> []; _ -> X ++ S end.
-show(F)      -> Term = parse(tname(F),cname(F)),
-                io:format("T: ~tp~n",[Term]),
-                mad:info("~p~n~tsSize: ~p~n", [F,file(F),size(term_to_binary(Term))]),
-                try om:type(Term), Term catch E:R -> io:format("~tp~n",[erlang:get_stacktrace()]), {error,{"om:show1",R}} end.
-a(F)         -> case parse(F) of {[],[A]} -> A; E -> E end.
-parse(X)     -> om_parse:expr([],om:str([],X),[]).
-parse(P,F)   -> om_parse:expr(P,read(P,name(mode(),P,F)),[]).
+tname(F,S)   -> X = hd(tl(comp(F))), case om:mode() of X -> []; _ -> X ++ S end.
+show(F)      -> Term = snd(parse(tname(F),cname(F))), mad:info("~n~ts~n~n", [bin(Term)]), Term.
+a(F)         -> snd(parse(str(F))).
+snd({error,X}) -> {error,X};
+snd({_,[X]}) -> X;
+snd({_,X})   -> X.
+parse(X)     -> om_parse:expr([],X,[]).
+parse(T,C)   -> om_parse:expr(T,read(name(mode(),T,C)),[]).
 
 % system functions
 
@@ -43,6 +46,8 @@ start()      -> start(normal,[]).
 start(_,_)   -> supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
+ver()        -> list_to_tuple([version,?VERSION,
+                string:join([keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]," ver. ")]).
 console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(), put(ret,0),
                 Fold = lists:foldr(fun(I,O) ->
                       Z = string:tokens(I," "),
@@ -87,6 +92,7 @@ debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
 atom(X)      -> list_to_atom(cat(X)).
 cat(X)       -> lists:concat([X]).
 last(X)      -> lists:last(X).
+keyget(X,Y)  -> proplists:get_value(X,Y).
 
 file(F) -> case file:read_file(F) of
                 {ok,Bin} -> Bin;

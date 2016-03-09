@@ -15,7 +15,7 @@ erase({"→",{I,O}},D) ->
 
 erase({var,{N,I}},D) ->
     om_type:assertVar(N,D),
-    T = proplists:get_value(N,D),
+    T = om:keyget(N,D),
     case univ(T) of
          true  -> {none,T};
          false -> {{var,{N,I}},T} end;
