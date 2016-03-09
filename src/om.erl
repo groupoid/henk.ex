@@ -57,7 +57,6 @@ ver(_)       -> ver().
 ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
 console(S)   -> mad_repl:load(), put(ret,0),
                 Fold = lists:foldr(fun(I,O) ->
-                      mad:info("S: ~tp~n",[I]),
                       R = rev(I),
                       Res = lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R)),
                       io:format("~tp~n",[Res]),
