@@ -32,7 +32,7 @@ show(F)      -> Term = parse(tname(F),cname(F)),
                 io:format("T: ~tp~n",[Term]),
                 mad:info("~p~n~tsSize: ~p~n", [F,file(F),size(term_to_binary(Term))]),
                 try om:type(Term), Term catch E:R -> io:format("~tp~n",[erlang:get_stacktrace()]), {error,{"om:show1",R}} end.
-a(F)         -> case parse(F) of {error,R} -> {error,R}; {[],[A]} -> A end.
+a(F)         -> case parse(F) of {[],[A]} -> A; E -> E end.
 parse(X)     -> om_parse:expr([],om:str([],X),[]).
 parse(P,F)   -> om_parse:expr(P,read(P,name(mode(),P,F)),[]).
 
