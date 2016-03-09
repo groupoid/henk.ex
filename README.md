@@ -1,6 +1,8 @@
 Om: Lambda Assembler
 ====================
 
+[![Build Status](https://travis-ci.org/groupoid/om.svg?branch=master)](https://travis-ci.org/groupoid/om)
+
 Abstract
 --------
 
