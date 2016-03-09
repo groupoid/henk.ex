@@ -81,14 +81,14 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1
                  "\\(x : (\\ (o:*) -> o) -> p ) -> o"
                ],
 
-          lists:foldl(fun(X,Acc) ->  {X,{M,_}=A} = {X,om:a(X)},
+          TT = lists:foldl(fun(X,Acc) ->  {X,{M,_}=A} = {X,om:a(X)},
                                      case M of error -> erlang:error(["test",X,"failed",A]); _ -> ok end,
-                                     io:format("case: ~tp~nterm: ~tp~n",[X,A]) end, [], T),
+                                     [{X,A}|Acc] end, [], T),
 
-          lists:foldl(fun(X,Acc) -> {X,{error,{M,A}}} = {X,om:a(X)},
-                                    io:format("case: ~tp, term: ~ts~nstack: ~tp~n",[M,X,A]) end, [], F),
+          FF =lists:foldl(fun(X,Acc) -> {X,{error,{M,A}}} = {X,om:a(X)},
+                                    [{M,X,A}|Acc] end, [], F),
 
-          ok.
+          FF ++ TT.
 
 pad(D)                         -> lists:duplicate(D,"  ").
 
