@@ -6,6 +6,14 @@
 -export([init/1, start/2, stop/1]).
 -compile(export_all).
 
+% env
+
+privdir()    -> application:get_env(om,priv,"priv").
+mode(S)      -> application:set_env(om,mode,S).
+mode()       -> application:get_env(om,mode,"normal").
+debug(S)     -> application:set_env(om,debug,atom(S)).
+debug()      -> application:get_env(om,debug,false).
+
 % providing functions
 
 help(_)      -> help().
@@ -17,13 +25,9 @@ extract()    -> om_extract:scan().
 type(S)      -> om_type:type(S).
 erase(X)     -> om_erase:erase(X).
 type(S,B)    -> om_type:type(S,B).
+modes(_)     -> modes().
 modes()      -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
-privdir()    -> application:get_env(om,priv,"priv").
-mode(S)      -> application:set_env(om,mode,S).
-mode()       -> application:get_env(om,mode,"normal").
-debug(S)     -> application:set_env(om,debug,S).
-debug()      -> application:get_env(om,debug,false).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
 str(F)       -> om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]).
@@ -34,6 +38,7 @@ tname(F)     -> tname(F,[]).
 tname(F,S)   -> X = hd(tl(comp(F))), case om:mode() of X -> []; _ -> X ++ S end.
 show(F)      -> Term = snd(parse(tname(F),cname(F))), mad:info("~n~ts~n~n", [bin(Term)]), Term.
 a(F)         -> snd(parse(str(F))).
+fst({X,_})   -> X.
 snd({error,X}) -> {error,X};
 snd({_,[X]}) -> X;
 snd({_,X})   -> X.
