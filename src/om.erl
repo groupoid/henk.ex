@@ -7,6 +7,7 @@
 
 % providing functions
 
+pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
