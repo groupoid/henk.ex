@@ -52,7 +52,7 @@ console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(),
                       io:format("~tp~n",[Res]),
                       [get(ret)|O]
                       end, [], string:tokens(string:join(S," "),",")),
-                lists:sum(Fold).
+                halt(lists:sum(Fold)).
 
 % test suite
 
