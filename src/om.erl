@@ -34,9 +34,7 @@ show(F)      -> Term = parse(tname(F),cname(F)),
                 try om:type(Term), Term catch E:R -> io:format("~tp~n",[erlang:get_stacktrace()]), {error,{"om:show1",R}} end.
 a(F)         -> case parse(F) of {error,R} -> {error,R}; {[],[A]} -> A end.
 parse(X)     -> om_parse:expr([],om:str([],X),[]).
-parse(P,F)   -> try {[],[X]} = om_parse:expr(P,read(P,name(mode(),P,F)),[]), X catch E:R ->
-                mad:info("ERROR: ~p~nfile: ~tp~n~tp~n",[F,erlang:get_stacktrace(),R]),
-                {error,{"om:parse1",F,R}} end.
+parse(P,F)   -> om_parse:expr(P,read(P,name(mode(),P,F)),[]).
 
 % system functions
 
@@ -57,9 +55,9 @@ console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(),
 
 % test suite
 
-typed(X)     -> try Y = om:type(X),  erased(X) catch E1:R1 -> {X,typed}  end.
-erased(X)    -> try A = om:erase(X), {A,[]}    catch E2:R2 -> {X,erased} end.
-parsed(F)    -> case parse(tname(F),cname(F)) of {error,R} -> {F,parsed}; X -> {X,[]} end.
+typed(X)     -> try Y = om:type(X),  {Y,[]} catch E:R -> {X,typed}  end.
+erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
+parsed(F)    -> case parse(tname(F),cname(F)) of {[],[X]} -> {X,[]}; {error,R} -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) -> {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed]).
 pass(true)   -> 'PASSED';
 pass(false)  -> 'FAILED'.
@@ -77,8 +75,8 @@ test(_)      -> All = om:all(),
                 io:format("~tp~n",[om_parse:test()]),
                 io:format("~tp~n",[All]),
                 case lists:all(fun({Mode,Status,Tests}) -> Status /= om:pass(false) end, All) of
-                     true  -> put(ret,0), 0;
-                     false -> put(ret,1), 1 end .
+                     true  -> 0;
+                     false -> put(ret,1),1 end .
 
 % relying functions
 

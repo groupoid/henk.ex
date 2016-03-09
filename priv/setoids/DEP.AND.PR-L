@@ -1,4 +1,4 @@
-\ (A : #Prop ) ->
-\ (B : A -> #Prop ) ->
-\(pair : #DEP.AND A B) ->
+\ (A : #Prop/@ ) ->
+\ (B : A -> #Prop/@ ) ->
+\(pair : #DEP.AND/@ A B) ->
 pair A (\(a : A)-> \(b : B a)-> a)

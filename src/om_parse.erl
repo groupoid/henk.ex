@@ -109,4 +109,4 @@ func(star)   -> "*";
 func(Sym)    -> Sym.
 
 ret({[],[X]}) -> X;
-ret(Y) -> Y.
+ret(Y) -> {error,Y}.
