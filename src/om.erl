@@ -73,6 +73,8 @@ scan()       -> Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F,"/"),cn
                 Passed = lists:all(fun({X,B}) -> X == [] end, Res),
                 {mode(),pass(Passed),Res}.
 test(_)      -> All = om:all(),
+                io:format("~tp~n",[om_parse:test()]),
+                io:format("~tp~n",[All]),
                 case lists:all(fun({Mode,Status,Tests}) -> Status /= om:pass(false) end, All) of
                      true  -> put(ret,0), 0;
                      false -> put(ret,1), 1 end .

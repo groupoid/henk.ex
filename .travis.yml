@@ -4,5 +4,5 @@ otp_release:
 notifications:
   email:
     - maxim@synrc.com
-install: "rebar get-deps compile"
-script: "rebar ct"
+install: "./mad dep com pla bun om"
+script: "./om test all"
