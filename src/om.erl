@@ -47,15 +47,17 @@ parse(T,C)   -> om_parse:expr(T,read(name(mode(),T,C)),[]).
 
 % system functions
 
-main(A)      -> case A of [] -> mad:main(["sh"]); A -> console(A) end.
-start()      -> start(normal,[]).
-start(_,_)   -> supervisor:start_link({local,om},om,[]).
+unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
+main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
+start()      -> unicode(), start(normal,[]).
+start(_,_)   -> mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
-ver()        -> list_to_tuple([version,?VERSION,
-                string:join([keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]," ver. ")]).
-console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(), put(ret,0),
+ver(_)       -> ver().
+ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
+console(S)   -> mad_repl:load(), put(ret,0),
                 Fold = lists:foldr(fun(I,O) ->
+                      mad:info("S: ~tp~n",[I]),
                       R = rev(I),
                       Res = lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R)),
                       io:format("~tp~n",[Res]),
