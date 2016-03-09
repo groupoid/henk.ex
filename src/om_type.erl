@@ -2,10 +2,11 @@
 -description('Type Checker').
 -compile(export_all).
 
-%hierarchy(Arg,Out) -> Out.           % impredicative
-hierarchy(Arg,Out) -> max(Arg,Out). % predicative
+hierarchy(Arg,Out) -> Out.           % impredicative
+%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
 type(Term) -> type(Term, []). % closed term (w/o free vars)
+type({box,N},D)               -> {box,N};
 type({star,N},D)              -> {star,N+1};
 type({var,{N,I}},D)           -> assertVar(N,D), proplists:get_value(N,D); % TODO respect index of var
 type({"→",{I,O}},D)           -> {star,hierarchy(star(type(I,D)),star(type(O,D)))};

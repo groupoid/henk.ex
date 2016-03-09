@@ -3,7 +3,7 @@
 -compile(export_all).
 
 prologue(Name)  -> [{attribute,1,module,Name},{attribute,1,compile,export_all}].
-scan()          -> [ extract(F) || F <- filelib:wildcard(string:join(["priv",om:mode(),"**","*"],"/")), filelib:is_dir(F) == true ].
+scan()          -> [ extract(F) || F <- filelib:wildcard(string:join([om:priv(om:mode()),"/**","*"],"/")), filelib:is_dir(F) == true ].
 extract(F,T,C)  -> case ext(F,T,C) of [] -> []; Ex -> {function,C,om:atom(F),0,[{clause,C,[],[],[Ex]}]} end.
 extract(X)      -> Last = om:last(string:tokens(X,"/")),
                    mad:info("Type: ~p at ~p~n",[Last,X]),

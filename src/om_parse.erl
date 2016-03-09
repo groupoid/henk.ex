@@ -14,8 +14,8 @@ expr(P,[close               |T], Acc)  -> om:debug("backwd: ~tp~n",[Acc]),
                                                {error,R} -> {error,R};
                                                {T1,Acc1} -> expr2(P,T1,Acc1) end;
 
-expr(P,[{remote,{X,L}}      |T], Acc)  -> expr2(P,T,[ret(om:term([],L))|Acc]);
-expr(P,[{remote,L}          |T], Acc)  -> expr2(P,T,[om:term(L)|Acc]);
+expr(P,[{remote,{X,L}}      |T], Acc)  -> expr2(P,T,[ret(om:parse([],L))|Acc]);
+expr(P,[{remote,L}          |T], Acc)  -> expr2(P,T,[om:parse(L)|Acc]);
 expr(P,[{star,I}            |T], Acc)  -> expr2(P,T,[{star,I}|Acc]);
 expr(P,[{N,X}|T],        [{a,Y}| Acc]) -> expr2(P,T,[{N,X},{a,Y}|Acc]);
 expr(P,[{N,X}|T],        [{C,Y}| Acc]) -> expr2(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
