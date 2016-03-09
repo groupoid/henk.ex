@@ -17,7 +17,7 @@ modes()     -> ["erased","girard","hurkens","normal","setoids"].
 priv(Mode)  -> lists:concat([privdir(),"/",Mode]).
 privdir()   -> application:get_env(om,priv,"priv").
 mode(S)     -> application:set_env(om,mode,S).
-mode()      -> application:get_env(om,mode,"erased").
+mode()      -> application:get_env(om,mode,"normal").
 debug(S)    -> application:set_env(om,debug,S).
 debug()     -> application:get_env(om,debug,false).
 name(M,P,F) -> string:join([priv(mode()),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").

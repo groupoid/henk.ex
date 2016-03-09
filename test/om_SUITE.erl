@@ -19,5 +19,5 @@ generic(Config) ->
     ok.
 
 parser_errors(Config) ->
-    ct:log("~tp~n",[om_parse:test()]),
+    ct:pal("~tp~n",[om_parse:test()]),
     ok.
