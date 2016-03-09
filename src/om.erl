@@ -44,8 +44,15 @@ start()      -> start(normal,[]).
 start(_,_)   -> supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
-console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(), put(return,0),
-                R=rev(S), io:format("~tp~n",[lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R))]), get(return).
+console(S)   -> io:setopts(standard_io, [{encoding, unicode}]), mad_repl:load(), put(ret,0),
+                Fold = lists:foldr(fun(I,O) ->
+                      Z = string:tokens(I," "),
+                      R = rev(Z),
+                      Res = lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R)),
+                      io:format("~tp~n",[Res]),
+                      [get(ret)|O]
+                      end, [], string:tokens(string:join(S," "),",")),
+                lists:sum(Fold).
 
 % test suite
 
@@ -67,8 +74,8 @@ scan()       -> Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F,"/"),cn
                 {mode(),pass(Passed),Res}.
 test(_)      -> All = om:all(),
                 case lists:all(fun({Mode,Status,Tests}) -> Status /= om:pass(false) end, All) of
-                     true  -> put(return,0);
-                     false -> io:format("HELLO~n"), put(return,1) end.
+                     true  -> put(ret,0), 0;
+                     false -> put(ret,1), 1 end .
 
 % relying functions
 
