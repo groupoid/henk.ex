@@ -14,7 +14,7 @@ generic(Config) ->
     mad_repl:ets_created(),
     application:set_env(om,priv,mad_repl:cwd()++"/../../priv"),
     All = om:all(),
-    ct:log("~tp~n",[All]),
+    ct:pal("~tp~n",[All]),
     true = lists:all(fun({Mode,Status,Tests}) -> Status /= om:pass(false) end, All),
     ok.
 

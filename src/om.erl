@@ -23,8 +23,9 @@ debug()     -> application:get_env(om,debug,false).
 name(M,P,F) -> string:join([priv(mode()),case P of [] -> F; _ -> P ++ "/" ++ F end],"/").
 str(P,F)    -> om_tok:tokens(P,unicode:characters_to_binary(F),0,{1,[]},[]).
 read(P,F)   -> om_tok:tokens(P,file(F),0,{1,[]},[]).
-cname(F)    -> hd(lists:reverse(string:tokens(F,"/"))).
-tname(F)    -> X= hd(tl(lists:reverse(string:tokens(F,"/")))), case X == om:mode() of true -> []; _ -> X end.
+comp(F)     -> rev(tokens(F,"/")).
+cname(F)    -> hd(comp(F)).
+tname(F)    -> X= hd(tl(comp(F))), case X == om:mode() of true -> []; _ -> X end.
 show(F)     -> Term = parse(tname(F),cname(F)),
                io:format("T: ~tp~n",[Term]),
                mad:info("~p~n~tsSize: ~p~n", [F,file(F),size(term_to_binary(Term))]),
@@ -55,7 +56,8 @@ all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]
 syscard()   -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
 wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
-scan()      -> Res = [ { flat(element(2,pipe(F))),F} || {F} <- lists:umerge(wildcard(),syscard()) ],
+scan()      -> Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F),cname(F)])}
+                    || {F} <- lists:umerge(wildcard(),syscard()) ],
                Passed = lists:all(fun({X,B}) -> X == [] end, Res),
                {mode(),pass(Passed),Res}.
 
