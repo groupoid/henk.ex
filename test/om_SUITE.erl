@@ -15,7 +15,6 @@ generic(Config) ->
     application:set_env(om,priv,mad_repl:cwd()++"/../../priv"),
     All = om:all(),
     ct:log("~tp~n",[All]),
-    io:format("~tp~n",[All]),
     true = lists:all(fun({Name,Status,Tests}) -> Status /= om:pass(false) end, All),
     ok.
 
