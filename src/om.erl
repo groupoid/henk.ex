@@ -8,6 +8,7 @@
 
 % providing functions
 
+help(_)      -> help().
 help()       -> om_help:help().
 pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
