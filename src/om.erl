@@ -26,7 +26,7 @@ type(S)      -> om_type:type(S).
 erase(X)     -> om_erase:erase(X).
 type(S,B)    -> om_type:type(S,B).
 modes(_)     -> modes().
-modes()      -> ["erased","girard","hurkens","normal","setoids"].
+modes()      -> ["girard","hurkens","normal","setoids"].
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
