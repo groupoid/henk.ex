@@ -56,7 +56,7 @@ all()       -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]
 syscard()   -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
 wildcard()  -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
-scan()      -> Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F),"/",cname(F)])}
+scan()      -> Res = [ { flat(element(2,pipe(F))),lists:concat(["/",tname(F),"/",cname(F)])}
                     || {F} <- lists:umerge(wildcard(),syscard()) ],
                Passed = lists:all(fun({X,B}) -> X == [] end, Res),
                {mode(),pass(Passed),Res}.
