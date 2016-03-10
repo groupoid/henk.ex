@@ -1,1 +1,0 @@
-http://liamoc.net/posts/2015-09-10-girards-paradox.html

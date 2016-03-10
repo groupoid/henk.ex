@@ -2,5 +2,5 @@
 -> \/ (MkSet:
       \/ (elem: *)
    -> \/ (open: elem -> Set)
-   -> Set1)
--> Set2
+   -> Set)
+-> Set

@@ -79,49 +79,55 @@ expr2(X,T,Y) ->
 %                                                      rewind2(A,T,[{app,{B,Y},{C,X}}|R]); 
 %rewind([{B,Y},{open}|A],T,R)                       -> {T,om:flat([{B,Y}|[R|A]])};
 
-%rewind([{'$',M}|A],T,[{B,Y}|R]) when ?ast(B)       -> io:format("S3: ~p~n",["MEET 2$ RETURN"]),
+%rewind([{'$',M}|A],T,[{B,Y}|R]) when ?ast(B)       -> io:format("S3: ~tp~n",["MEET 2$ RETURN"]),
 %                                                          rewind2(A,T,om:flat([{M,{B,Y}}|R]));
 %                                                          %   {T,om:flat([R|A])};
 
-%rewind([{'$',M}|A],T,[{B,Y}|R])                        -> io:format("S2: ~p~n",["CONTINUE :"]),
+%rewind([{'$',M}|A],T,[{B,Y}|R])                        -> io:format("S2: ~tp~n",["CONTINUE :"]),
                                                           %{T,om:flat([{'$',M}|[R|A]])};
 %                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
-%rewind([{':',M}|A],        T,[{B,Y}|R])                -> io:format("S1: ~p~n",[[]]),
+%rewind([{':',M}|A],        T,[{B,Y}|R])                -> io:format("S1: ~tp~n",[[]]),
 %                                                          rewind2(A,T,om:flat([{M,{B,Y}}|R]));
 
-rewind([{'$',_}|_]=A,T,[{{':',_},_}|_]=R)             -> io:format("S1: ~p~n",["CAN'T FOLD $. RETURN"]),
-                                                          %rewind2(A,T,om:flat([{M,{B,Y}}|R]));
+
+rewind([{'$',_}|_]=A,T,[{{':',_},_}|_]=R)             -> om:debug("S1: ~tp~n",["CAN'T FOLD $. RETURN"]),
                                                           {T,om:flat([R|A])};
 
-rewind([{':',_}|_]=A,T,R)                          -> io:format("S1: ~p~n",["CAN'T FOLD :. RETURN"]),
+rewind([{{':',_},_}|_]=A,T,R)                          -> om:debug("S1: ~tp~n",["CAN'T FOLD :. RETURN"]),
                                                           {T,om:flat([R|A])};
 
-rewind([{'$',M}|A],T,[{B,Y}|R])                       -> io:format("S2: ~p~n",["FOLD :"]),
-                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
+rewind([{'$',{F,M}}|A],T,[{B,Y}|R])                       -> om:debug("S2: ~tp~n",["FOLD :"]),
+                                                          rewind2(A,T,[{{':',{F,M}},{B,Y}}|R]);
 
-rewind([{B,Y},{'$',M}|A],T,R)                         -> io:format("S3: ~p~n",["BUILD :"]),
-                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
-                                                          %{T,om:flat([{{':',M},{B,Y}}|[R|A]])};
+rewind([{B,Y},{'$',M}|A],T,R)                         -> om:debug("S3: ~tp~n",["BUILD :"]),
+                                                          rewind2(A,T,[{{':',M},{B,Y}}|R]);
 
-rewind([{arrow},{{':',M},I}|_]=A,T,[{{':',_},X}|_]=R)      -> io:format("S4: ~p~n",["FOUND FUN"]),
+rewind([{C,X},{open},{B,Y}|A],T,R)                     -> om:debug("S1: ~tp~n",["FOUND (. RETURN"]),
+                                                          rewind2([{app,{{B,Y},{C,X}}}|A],T,R);
+
+rewind([{arrow},{{':',M},I}|_]=A,T,[{{':',_},X}|_]=R)      -> om:debug("S4: ~tp~n",["FOUND FUN" ]),
                                                          {T,om:flat([R|A])};
 
-rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> io:format("S5: ~p~n",["FOUND FUN"]),
+rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> om:debug("S5: ~tp~n",["FOUND FUN"]),
                                                          rewind2(A,T,[{M,{I,{C,X}}}|R]);
 
-rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> io:format("S5: ~p~n",["FOUND FUN"]),
+rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> om:debug("S5: ~tp~n",["FOUND FUN"]),
                                                          rewind2(A,T,[{M,{I,{C,X}}}|R]);
 
-rewind([{C,X},{arrow},{{':',M},I}|A],T,R)              -> io:format("S6: ~p~p~n",["FOUND FUN 2 ",{M,I,C,X}]),
-                                                          rewind2(A,T,om:flat([{M,{I,{C,X}}}|R]));
+rewind([{arrow},{B,Y}|A],T,[{C,X}|R])           -> om:debug("S5: ~tp~n",["FOUND ARROW"]),
+                                                         rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
 
-rewind([{C,X},{arrow},{B,Y}|A],T,R)                -> io:format("S7: ~p~n",["MEET [] RETURN"]),
+rewind([{C,X},{arrow},{{':',M},I}|A],T,R)              -> om:debug("S6: ~tp~tp~n",["FOUND FUN 2 ",{M,I,C,X}]),
+                                                          rewind2(A,T,[{M,{I,{C,X}}}|R]);
+
+
+rewind([{C,X},{arrow},{B,Y}|A],T,R)                -> om:debug("S7: ~tp~n",["MEET [] RETURN"]),
                                                           rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
 
-rewind([],T,R)                                         -> io:format("S7: ~p~n",["MEET [] RETURN"]),
+rewind([],T,R)                                         -> om:debug("S9: ~tp~n",["MEET [] RETURN"]),
                                                           {T,R};
 
-rewind(A,T,R)                                         -> io:format("S8: ~p~n",["CONTINUE"]),
+rewind(A,T,R)                                         -> om:debug("S8: ~tp~n",["CONTINUE"]),
                                                           {T,om:flat([R|A])}.
 
 rewind2(X,T,Y) ->
