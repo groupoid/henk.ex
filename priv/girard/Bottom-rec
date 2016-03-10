@@ -1,4 +1,3 @@
--- #Bottom-rec: \/(T: *)-> #Bottom -> T
 \(T: *)->
 \(bottom: #Bottom )->
 bottom T

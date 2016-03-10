@@ -1,4 +1,6 @@
--- #Set: *
-\/(Set: *)->
-\/(MkSet: \/(elem: *)-> \/(open: elem-> Set)-> Set)->
-Set
+   \/ (Set: *)
+-> \/ (MkSet:
+      \/ (elem: *)
+   -> \/ (open: elem -> Set)
+   -> Set1)
+-> Set2

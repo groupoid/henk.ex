@@ -1,4 +1,3 @@
--- #Set-rec: \/(Set: *)-> \/(MkSet: \/(elem: *)-> \/(open: elem -> Set)-> Set)-> #Set -> Set
 \(Set: *)->
 \(MkSet: \/(elem: *)-> \/(open: elem -> Set)-> Set)->
 \(set: #Set )->

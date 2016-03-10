@@ -1,4 +1,3 @@
--- #SigmaBarber: *
 \/(SigmaBarber: *)->
-\/(MkSigmaBarber: \/(set: #Set )-> \/(ok: #-In set set)-> SigmaBarber)->
+\/(MkSigmaBarber: \/(set: #Set )-> \/(ok: (#-In) set set)-> SigmaBarber)->
 SigmaBarber

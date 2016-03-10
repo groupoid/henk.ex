@@ -1,4 +1,3 @@
--- #MkSet: \/(elem: *)-> \/(open: elem-> #Set )-> #Set
 \(elem: *)-> 
 \(open: elem-> #Set )-> 
 \(Set: *)->

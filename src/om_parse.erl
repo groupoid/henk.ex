@@ -1,6 +1,9 @@
 -module(om_parse).
 -description('Parser').
 -compile(export_all).
+-define(arr(F), (F == lambda orelse F== pi)).
+-define(int(F), (F == ':' orelse  F == '$')).
+-define(ast(F), (F /= ':' andalso F /= '$')).
 
 %     I := #identifier
 %     O := ∅ | ( O ) |
@@ -9,28 +12,21 @@
 %          I | O → O | O O
 
 expr(P,[],                       Acc)  ->      rewind2(Acc,[],[]);
-expr(P,[close               |T], Acc)  -> om:debug("backwd: ~tp~n",[Acc]),
-                                          case rewind(Acc, T,[]) of
+expr(P,[close               |T], Acc)  -> %om:debug("backwd: ~tp~n",[Acc]),
+                                          case rewind2(Acc, T,[]) of
                                                {error,R} -> {error,R};
                                                {T1,Acc1} -> expr2(P,T1,Acc1) end;
 
-%expr(P,[{remote,{_,L}}|T], [{C,Y}|Acc]) -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc]);
-expr(P,[{remote,{_,L}}|T],        Acc)  -> expr2(P,T,[ret(om:parse([],L))|Acc]);
-expr(P,[{star,I}             |T], Acc)  -> expr2(P,T,[{star,I}|Acc]);
-expr(P,[{N,X}|T],          [{a,Y}|Acc]) -> expr2(P,T,[{N,X},{a,Y}|Acc]);
-expr(P,[{N,X}|T],          [{C,Y}|Acc]) -> expr2(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
-expr(P,[star                 |T], Acc)  -> expr2(P,T,[{star,1}|Acc]);
-expr(P,[box                  |T], Acc)  -> expr2(P,T,[{box,1}|Acc]);
-expr(P,[open                 |T], Acc)  -> expr2(P,T,[{open}|Acc]);
-expr(P,[arrow                |T], Acc)  -> expr2(P,T,[{arrow}|Acc]);
-expr(P,[lambda               |T], Acc)  -> expr2(P,T,[{lambda}|Acc]);
-expr(P,[pi                   |T], Acc)  -> expr2(P,T,[{pi}|Acc]);
-expr(P,[colon                |T], Acc)  -> expr2(P,T,[{colon}|Acc]);
-expr(P,[{var,L},colon        |T], Acc)  -> expr2(P,T,[{a,L}|Acc]);
-expr(P,[{var,L}              |T], Acc)  -> expr2(P,T,[{var,L}|Acc]).
+expr(P,[F,open,{var,L},colon   |T], Acc)  when ?arr(F)  -> expr2(P,T,[{'$',{func(F),L}}|Acc]);
+expr(P,[{remote,{_,L}}|T],   [{C,Y}|Acc]) when C /= '$' -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc]);
+expr(P,[{remote,{_,L}}         |T], Acc)                -> expr2(P,T,[ret(om:parse([],L))|Acc]);
+expr(P,[{N,X}|T],            [{C,Y}|Acc]) when C /= '$' -> expr2(P,T,[{app,{{C,Y},{N,X}}}|Acc]);
+expr(P,[box                    |T], Acc)                -> expr2(P,T,[{box,1}|Acc]);
+expr(P,[{N,X}                  |T], Acc)                -> expr2(P,T,[{N,X}|Acc]);
+expr(P,[X                      |T], Acc)                -> expr2(P,T,[{X}|Acc]).
 
 expr2(X,T,Y) ->
-    om:debug("forwrd: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
+    %om:debug("forwrd: ~tp -- ~tp~n",[lists:sublist(T,3),lists:sublist(Y,2)]),
     expr(X,T,Y).
 
 % During forward pass we stack applications (except typevars), then
@@ -47,24 +43,89 @@ expr2(X,T,Y) ->
 %                  lambda: arrow(app(arg(x),A),B)
 %
 
--define(arr(F), F == lambda; F== pi).
 
-rewind([],            T,[{"→",    {{app,X},Y}}            |R])              -> {error,{"parser1",{X,Y}}};
-rewind([{F}|A],       T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
-rewind([{F}|A],       T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),{L,M}},{X,Y}}|R]);
-rewind([{open},{F}|A],T,[{"→",{{L,{{app,{{a,M},C}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
-rewind([{open},{F}|A],T,[{"→",    {{app,{{a,{L,M}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),{L,M}},{X,Y}}|[R|A]])};
-rewind([{open},{a,Z}|A],T,               [{I, {{app,X},Y}}|R])              -> {error,{"parser4",{Z,I,X,Y}}};
-rewind([{open},{a,Z}|A],T,                        [{app,X}|R])              -> {error,{"parser3",{Z,X}}};
-rewind([{open},{var,X}|A],T,                        [{B,Y}|R])              -> {T,om:flat([{app,{{var,X},{B,Y}}}|[R|A]])};
-rewind([{open}|A],    T,                                   R)               -> {T,om:flat([R|A])};
-rewind([{C,X}|A],     T,                            [{B,Y}|R])              -> rewind2(A,T,[{app,{{C,X},{B,Y}}}|R]);
-rewind([{C,X}|A],     T,                                   R)               -> rewind2(A,T,[{C,X}|R]);
-rewind([{arrow},Y|A], T,                                [X|R])              -> rewind2(A,T,[{func(arrow),{Y,X}}|R]);
-rewind([],            T,                                   R)               -> {T,R}.
+%rewind([],            T,[{"→",    {{app,X},Y}}            |R])              -> {error,{"parser1",{X,Y}}};
+%rewind([{F},{open},{'$',M}|A],T, [{C,Y}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
+%rewind([{F}|A],       T,[{"→",{{L,{{app,{{'$',M},C}},X}},Y}}|R]) when ?arr(F) -> {error,{"parser2",{M,C,X,Y}}};
+%rewind([{F}|A],       T,[{"→",    {{app,{{'$',{L,M}},X}},Y}}|R]) when ?arr(F) -> rewind2(A,T,[{{func(F),{L,M}},{X,Y}}|R]);
+%rewind([{open},{F}|A],T,[{"→",{{L,{{app,{{'$',M},C}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),M},{{L,{C,X}},Y}}|[R|A]])};
+%rewind([{open},{F}|A],T,[{"→",    {{app,{{'$',{L,M}},X}},Y}}|R]) when ?arr(F) -> {T,om:flat([{{func(F),{L,M}},{X,Y}}|[R|A]])};
+%rewind([{open},{F}|A],T,[{app,{{'$',M},X}}|R])                   when ?arr(F) -> {T,om:flat([{{func(F),M},X}|[R|A]])};
+%rewind([{open},{'$',Z}|A],T,               [{I, {{app,X},Y}}|R])              -> {error,{"parser4",{Z,X,Y}}};
+%rewind([{open},{'$',Z}|A],T,                        [{app,X}|R])              -> {error,{"parser3",{Z,X}}};
+%rewind([{C,X}|A],     T,                            [{B,Y}|R])              -> rewind2(A,T,[{app,{{C,X},{B,Y}}}|R]);
+%rewind([{C,X}|A],     T,                                   R)               -> rewind2(A,T,[{C,X}|R]);
+%rewind([{open},{var,X}|A],T,                        [{B,Y}|R])              -> {T,om:flat([{app,{{var,X},{B,Y}}}|[R|A]])};
+%rewind([{open}|A],    T,                                   R)               -> {T,om:flat([R|A])};
+%rewind([{arrow},{C,X}|A], T,                        [{B,Y}|R])              -> rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
+%rewind([],            T,                                   R)               -> {T,R}.
+
+%rewind([{'$',M},{arrow}|A],T,[{B,Y}|R])            -> {T,om:flat([{{':',M},{B,Y}}|[R|A]])};
+%rewind([{'$',M}|A],        T,[{B,Y}|R])            -> {T,om:flat([{{':',M},{B,Y}}|[R|A]])};
+%rewind([{':',M}|A],        T,[{B,Y}|R])            -> {T,om:flat([{M,{B,Y}}|[R|A]])};
+%rewind([{B,Y},{'$',M}|A],T,R)                      -> io:format("Fold~n"),
+%                                                      {T,om:flat([{{':',M},{B,Y}}|[R|A]])};
+%rewind([{C,X},{arrow},{'$',M}|A],T,R)              -> {T,om:flat([{{':',M},{C,X}}|[R|A]])};
+%                                                      %rewind2(A,T,[{{':',M},{C,X}}|R]);
+%rewind([{C,X},{arrow},{{':',M},I}|A],T,R)          -> %{T,om:flat([{M,{I,{C,X}}}|[R|A]])};
+%                                                      rewind2(A,T,[{M,{I,{C,X}}}|R]);
+%rewind([{arrow},{{':',M},I}|A],T,[{B,Y}|R])        -> rewind2(A,T,[{M,{I,{B,Y}}}|R]);
+%                                                      %{T,om:flat([{M,{I,{B,Y}}}|[R|A]])};
+%rewind([{arrow},{B,Y}|A],T,[{C,X}|R])              -> rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
+%rewind([{C,X},{arrow},{B,Y}|A],T,R)                -> rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
+%rewind([{C,X},{open},{B,Y},{'$',M}|A],T,R) when ?ast(C) -> {T,om:flat([{{':',M},{app,{B,Y},{C,X}}}|[R|A]])};
+%rewind([{C,X},{open},{B,Y}|A],T,R) when ?ast(C)    -> io:format("App~n"),
+                                                      %{T,om:flat([{app,{B,Y},{C,X}}|[R|A]])};
+%                                                      rewind2(A,T,[{app,{B,Y},{C,X}}|R]); 
+%rewind([{B,Y},{open}|A],T,R)                       -> {T,om:flat([{B,Y}|[R|A]])};
+
+%rewind([{'$',M}|A],T,[{B,Y}|R]) when ?ast(B)       -> io:format("S3: ~p~n",["MEET 2$ RETURN"]),
+%                                                          rewind2(A,T,om:flat([{M,{B,Y}}|R]));
+%                                                          %   {T,om:flat([R|A])};
+
+%rewind([{'$',M}|A],T,[{B,Y}|R])                        -> io:format("S2: ~p~n",["CONTINUE :"]),
+                                                          %{T,om:flat([{'$',M}|[R|A]])};
+%                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
+%rewind([{':',M}|A],        T,[{B,Y}|R])                -> io:format("S1: ~p~n",[[]]),
+%                                                          rewind2(A,T,om:flat([{M,{B,Y}}|R]));
+
+rewind([{'$',_}|_]=A,T,[{{':',_},_}|_]=R)             -> io:format("S1: ~p~n",["CAN'T FOLD $. RETURN"]),
+                                                          %rewind2(A,T,om:flat([{M,{B,Y}}|R]));
+                                                          {T,om:flat([R|A])};
+
+rewind([{':',_}|_]=A,T,R)                          -> io:format("S1: ~p~n",["CAN'T FOLD :. RETURN"]),
+                                                          {T,om:flat([R|A])};
+
+rewind([{'$',M}|A],T,[{B,Y}|R])                       -> io:format("S2: ~p~n",["FOLD :"]),
+                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
+
+rewind([{B,Y},{'$',M}|A],T,R)                         -> io:format("S3: ~p~n",["BUILD :"]),
+                                                          rewind2(A,T,om:flat([{{':',M},{B,Y}}|R]));
+                                                          %{T,om:flat([{{':',M},{B,Y}}|[R|A]])};
+
+rewind([{arrow},{{':',M},I}|_]=A,T,[{{':',_},X}|_]=R)      -> io:format("S4: ~p~n",["FOUND FUN"]),
+                                                         {T,om:flat([R|A])};
+
+rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> io:format("S5: ~p~n",["FOUND FUN"]),
+                                                         rewind2(A,T,[{M,{I,{C,X}}}|R]);
+
+rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R])           -> io:format("S5: ~p~n",["FOUND FUN"]),
+                                                         rewind2(A,T,[{M,{I,{C,X}}}|R]);
+
+rewind([{C,X},{arrow},{{':',M},I}|A],T,R)              -> io:format("S6: ~p~p~n",["FOUND FUN 2 ",{M,I,C,X}]),
+                                                          rewind2(A,T,om:flat([{M,{I,{C,X}}}|R]));
+
+rewind([{C,X},{arrow},{B,Y}|A],T,R)                -> io:format("S7: ~p~n",["MEET [] RETURN"]),
+                                                          rewind2(A,T,[{func(arrow),{{B,Y},{C,X}}}|R]);
+
+rewind([],T,R)                                         -> io:format("S7: ~p~n",["MEET [] RETURN"]),
+                                                          {T,R};
+
+rewind(A,T,R)                                         -> io:format("S8: ~p~n",["CONTINUE"]),
+                                                          {T,om:flat([R|A])}.
 
 rewind2(X,T,Y) ->
-    om:debug("rewind: ~tp -- ~tp~n",[lists:sublist(X,2),lists:sublist(Y,1)]),
+    om:debug("rewind A: ~tp~nrewind R: ~tp~n",[lists:sublist(X,14),lists:sublist(Y,2)]),
     rewind(X,T,Y).
 
 test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1

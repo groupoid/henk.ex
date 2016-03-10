@@ -42,15 +42,15 @@ fst({X,_})   -> X.
 snd({error,X}) -> {error,X};
 snd({_,[X]}) -> X;
 snd({_,X})   -> X.
-parse(X)     -> om_parse:expr([],X,[]).
-parse(T,C)   -> om_parse:expr(T,read(name(mode(),T,C)),[]).
+parse(X)     -> om_parse:expr2([],X,[]).
+parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[]).
 
 % system functions
 
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
-start()      -> unicode(), start(normal,[]).
-start(_,_)   -> mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
+start()      -> start(normal,[]).
+start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().

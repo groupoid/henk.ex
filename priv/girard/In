@@ -1,4 +1,3 @@
--- #In: #Set -> #Set -> *
 \(a: #Set )->
 \(b: #Set )->
 #DepSet (#SigmaIn a) b

@@ -1,4 +1,3 @@
--- #DepSet: \/(Arg: \/(elem: *)-> \/(open: elem -> #Set )-> *)-> #Set -> *
 \(Arg: \/(elem: *)-> \/(open: elem -> #Set )-> *)->
 \(set: #Set )->
 \/(DepSet: #Set -> *)->

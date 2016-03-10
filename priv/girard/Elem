@@ -1,4 +1,3 @@
--- #Elem: #Set -> *
 \(set: #Set )->
 \/(Elem: #Set -> *)->
 \/(MkElem: 
