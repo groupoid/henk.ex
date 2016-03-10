@@ -9,6 +9,11 @@
 %          * | λ ( I : O ) → O |
 %          I | O → O | O O
 
+% During forward pass we stack applications, then
+% on reaching close paren ")" we perform backward pass and stack arrows,
+% until neaarest unstacked open paren "(" appeared (then we just return
+% control to the forward pass).
+
 expr(P,[],                       Acc)  ->      rewind2(Acc,[],[]);
 expr(P,[close               |T], Acc)  -> case rewind2(Acc, T,[]) of
                                                {error,R} -> {error,R};
@@ -22,30 +27,11 @@ expr(P,[box                    |T], Acc)                -> expr2(P,T,[{box,1}|Ac
 expr(P,[{N,X}                  |T], Acc)                -> expr2(P,T,[{N,X}|Acc]);
 expr(P,[X                      |T], Acc)                -> expr2(P,T,[{X}|Acc]).
 
-expr2(X,T,Y) ->
-    %om:debug("forwrd: ~tp -- ~tp~n",[lists:sublist(T,3),lists:sublist(Y,2)]),
-    expr(X,T,Y).
-
-% During forward pass we stack applications (except typevars), then
-% on reaching close paren ")" we perform backward pass and stack arrows,
-% until neaarest unstacked open paren "(" appeared (then we just return
-% control to the forward pass).
-
-% We need to preserve applies to typevars as they should
-% be processes lately on rewind pass, so we have just typevars bypassing rule.
-% On the rewind pass we stack lambdas by matching arrow/apply signatures
-% where typevar(x) is an introduction of variable "x" to the Gamma context.
-%
-%                   apply: (A->B) x A -> B
-%                  lambda: arrow(app(arg(x),A),B)
-%
-
-trail(I,S) -> om:debug("~p: FOUND ~tp~n",[I,S]).
-
 rewind([{{':',_},_}|_]=A,T,R)               -> trail(1, ": RET"),   {T,om:flat([R|A])};
 rewind([{'$',M}|A],T,[{B,Y}|R])             -> trail(2, ": 1"),     rewind2([{{':',M},{B,Y}}|A],T,R);
 rewind([{B,Y},{'$',M}|A],T,R)               -> trail(3, ": 2"),     rewind2([{{':',M},{B,Y}}|A],T,R);
 rewind([{C,X},{open},{B,Y}|A],T,R)          -> trail(4, "("),       rewind2([{app,{{B,Y},{C,X}}}|A],T,R);
+rewind([{C,X},{open}|A],T,R)                -> trail(4, "("),       rewind2([{C,X}],T,R);
 rewind([{arrow},{{':',M},I}|A],T,[{C,X}|R]) -> trail(5, "FUN"),     rewind2([{M,{I,{C,X}}}|A],T,R);
 rewind([{C,X},{arrow},{{':',M},I}|A],T,R)   -> trail(7, "FUN 2"),   rewind2([{M,{I,{C,X}}}|A],T,R);
 rewind([{arrow},{B,Y}|A],T,[{C,X}|R])       -> trail(6, "ARROW"),   rewind2([{func(arrow),{{B,Y},{C,X}}}|A],T,R);
@@ -53,9 +39,9 @@ rewind([{C,X},{arrow},{B,Y}|A],T,R)         -> trail(8, "ARROW 2"), rewind2([{fu
 rewind([],T,R)                              -> trail(10,"[] RET"),  {T,R};
 rewind(A,T,R)                               -> trail(11,"CONT"),    {T,om:flat([R|A])}.
 
-rewind2(X,T,Y) ->
-    om:debug("rewind A: ~tp~nrewind R: ~tp~n",[lists:sublist(X,14),lists:sublist(Y,2)]),
-    rewind(X,T,Y).
+trail(I,S)     -> om:debug("~p: FOUND ~tp~n",[I,S]).
+expr2(X,T,Y)   -> om:debug("forwrd: ~tp -- ~tp~n",[lists:sublist(T,3),lists:sublist(Y,2)]), expr(X,T,Y).
+rewind2(X,T,Y) -> om:debug("rewind: ~tp -- ~tp~n",[lists:sublist(X,3),lists:sublist(Y,2)]), rewind(X,T,Y).
 
 test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1
                 "\\ (x : ( err (o:*) -> o ) -> p ) -> o",    % parser3
