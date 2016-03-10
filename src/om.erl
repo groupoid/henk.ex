@@ -68,10 +68,10 @@ console(S)   -> mad_repl:load(), put(ret,0),
 
 typed(X)     -> try Y = om:type(X),  {Y,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
-parsed(F)    -> case parse(tname(F),cname(F)) of {[],[X]} -> {X,[]}; {error,R} -> {F,parsed} end.
+parsed(F)    -> case parse(tname(F),cname(F)) of {[],[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) -> {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed]).
-pass(true)   -> 'PASSED';
-pass(false)  -> 'FAILED'.
+pass(0)      -> "PASSED";
+pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
 all()        -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
 syscard()    -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
@@ -80,7 +80,7 @@ wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
 scan(_)      -> scan().
 scan()       -> Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F,"/"),cname(F)])}
                      || {F} <- lists:umerge(wildcard(),syscard()) ],
-                Passed = lists:all(fun({X,B}) -> X == [] end, Res),
+                Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
                 {mode(),pass(Passed),Res}.
 test(_)      -> All = om:all(),
                 io:format("~tp~n",[om_parse:test()]),

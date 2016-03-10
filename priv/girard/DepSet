@@ -1,8 +1,12 @@
-\(Arg: \/(elem: *)-> \/(open: elem -> #Set )-> *)->
-\(set: #Set )->
-\/(DepSet: #Set -> *)->
-\/(MkDepSet: 
-    \/(elem: *)-> \/(open: elem-> #Set )-> 
-    \/(arg: Arg elem open)->
-    DepSet (#MkSet elem open))->
-DepSet set
+   \  (Arg:
+      \/ (elem: *)
+   -> \/ (open: elem -> #Set )
+   -> *)
+-> \  (set: #Set )
+-> \/ (DepSet: #Set -> *)
+-> \/ (MkDepSet:
+      \/ (elem: *)
+   -> \/ (open: elem-> #Set )
+   -> \/(arg: Arg elem open)
+   -> DepSet (#MkSet elem open))
+-> DepSet set
