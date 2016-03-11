@@ -5,8 +5,8 @@
 
 expr(P,[],                         A,{V,D}) ->      rewind2(A,{V,D},[]);
 expr(P,[close                 |T], A,{V,D}) -> case rewind2(A,{D,D},[]) of
-                                                {error,R} -> {error,R};
-                                                {{V1,D1},Acc1} -> expr2(P,T,Acc1,{V1,D1}) end;
+                                                 {error,R}    -> {error,R};
+                                                 {{V1,D1},A1} -> expr2(P,T,A1,{V1,D1}) end;
 expr(P,[F,open,{var,L},colon  |T], Acc, {V,D}) when ?arr(F)   -> expr2(P,T,[{'$',{func(F),L}}|Acc],{V,D+1});
 expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when C /= '$'  -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc],{V,D});
 expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr2(P,T,[ret(om:parse([],L))|Acc],{V,D});
@@ -16,13 +16,13 @@ expr(P,[{N,X}                 |T], Acc, {V,D})                -> expr2(P,T,[{N,X
 expr(P,[open                  |T], Acc, {V,D})                -> expr2(P,T,[{open}|Acc],{V,D+1});
 expr(P,[X                     |T], Acc, {V,D})                -> expr2(P,T,[{X}|Acc],{V,D}).
 
-rewind([{{':',_},_}|_]=A,{V,D},R)                -> trail(1, ": RET"),   {{V,D-1},om:flat([R|A])};
-rewind([{'$',M}|A],{V,D},[{B,Y}|R])              -> trail(2, ": 1"),     rewind2([{{':',M},{B,Y}}|A],{V,D},R);
+rewind([{{':',_},_}|_]=A,       {V,D},       R)  -> trail(1, ": RET"),   {{V,D-1},om:flat([R|A])};
+rewind([{'$',M}|A],             {V,D},[{B,Y}|R]) -> trail(2, ": 1"),     rewind2([{{':',M},{B,Y}}|A],{V,D},R);
 rewind([{B,Y},{'$',M}|A],{V,D},R) when V == D    -> trail(3, "$ -> :"),  rewind2([{{':',M},{B,Y}}|A],{V,D},R);
-rewind([{B,Y},{'$',M}|_]=A,{V,D},R)              -> trail(4, "$ RET"),   {{V,D},om:flat([A|R])};
+rewind([{B,Y},{'$',M}|_]=A,     {V,D},       R)  -> trail(4, "$ RET"),   {{V,D},  om:flat([A|R])};
 rewind([{C,X},{open},{{':',M},I}|A],{V,D},   R)  -> trail(5, "("),       {{V,D-1},om:flat([{C,X},{{':',M},I}|[R|A]])};
 rewind([{C,X},{open},{'$',M}|A],{V,D},       R)  -> trail(6, "("),       {{V,D-1},om:flat([{C,X},{'$',M}    |[R|A]])};
-rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D},om:flat([{C,X},{open}     |[R|A]])};
+rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D},  om:flat([{C,X},{open}     |[R|A]])};
 rewind([{C,X},{open},{B,Y}  |A],{V,D},       R)  -> trail(8, "("),       {{V,D-1},om:flat([{app,{{B,Y},{C,X}}}|[R|A]])};
 rewind([{arrow},{{':',M},I} |A],{V,D},[{C,X}|R]) -> trail(9, "FUN"),     rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{C,X},{arrow},{{':',M},I}|A],{V,D}, R)   -> trail(10, "FUN 2"),  rewind2([{M,{I,{C,X}}}|A],{V,D},R);
@@ -75,14 +75,14 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1
 pad(D)                         -> lists:duplicate(D,"  ").
 
 print(any,D)                   -> ["any"];
-print({var,{N,I}},D)           -> [ om:cat(N) ];
-print({star,N},D)              -> [ "*",om:cat(N) ];
+print({var,{N,I}},D)           -> [ om:cat([N]) ];
+print({star,N},D)              -> [ "*",om:cat([N]) ];
 print({"→",{I,O}},D)           -> [ "(", print(I,D+1),"\n",pad(D),"→ ",print(O,D), ")\n" ];
 print({app,{I,O}},D)           -> [ "(",print(I,D)," ",print(O,D),")" ];
-print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ",om:cat(N),"\n",pad(D),"→ ",print(O,D),")" ];
-print({{"∀",{N,_}},{I,O}},D)   -> [ "( ∀ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ];
-print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ",om:cat(N),"\n",pad(D),"→ ",print(O,D),")" ];
-print({{"λ",{N,_}},{I,O}},D)   -> [ "( λ (",om:cat(N),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
+print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
+print({{"∀",{N,_}},{I,O}},D)   -> [ "( ∀ (",om:cat([N]),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ];
+print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
+print({{"λ",{N,_}},{I,O}},D)   -> [ "( λ (",om:cat([N]),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
 
 func(lambda) -> "λ";
 func(pi)     -> "∀";
