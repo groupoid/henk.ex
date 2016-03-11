@@ -22,6 +22,7 @@ pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
+extract(X)   -> om_extract:extract(X).
 type(S)      -> om_type:type(S).
 erase(X)     -> om_erase:erase(X).
 type(S,B)    -> om_type:type(S,B).
@@ -73,7 +74,7 @@ pipe(L)      -> lists:foldl(fun(X,{A,D}) -> {N,E}=?MODULE:X(A), {N,[E|D]} end,{L
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
-all()        -> lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
+all()        -> om:debug(false), lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
 syscard()    -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
 wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                 lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).

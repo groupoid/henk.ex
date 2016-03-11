@@ -2,25 +2,22 @@
 -description('Extractor').
 -compile(export_all).
 
-prologue(Name)  -> [{attribute,1,module,Name},{attribute,1,compile,export_all}].
-scan()          -> [ extract(F) || F <- filelib:wildcard(string:join([om:priv(om:mode()),"/**","*"],"/")), filelib:is_dir(F) == true ].
-extract(F,T,C)  -> case ext(F,T,C) of [] -> []; Ex -> {function,C,om:atom(F),0,[{clause,C,[],[],[Ex]}]} end.
-extract(X)      -> Last = om:last(string:tokens(X,"/")),
-                   mad:info("Type: ~p at ~p~n",[Last,X]),
-                   Forms = prologue(om:atom(Last))
-                      ++ [ begin Name = string:join([Last,F],"/"),
-                                 mad:info("Ctor: ~tp~n",[Name]),
-                                 om:show(string:join([X,F],"/")),
-                                 {Erased,_} = om:erase(om:term(Name)),
-                                 mad:info("Erased: ~tp~n",[Erased]),
-                                 Extract = extract(F,Erased,1),
-                                 mad:info("Tree: ~tp~n",[Extract]),
-                                 Extract
-                     end || F <- element(2,file:list_dir(X)), F /= "@" ] ++ [{eof,1}],
-                   {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
-                   file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
+prologue(X) -> [{attribute,1,module,X},{attribute,1,compile,export_all}].
+scan()      -> [ extract(X) || X <- filelib:wildcard(om:name([],"/**","*")), filelib:is_dir(X) == true ].
+extract(X)  -> save ( prologue(om:atom(om:cname(X)))
+                 ++ [ extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
+                 || F <- element(2,file:list_dir(X)) ]
+                 ++ [{eof,1}] ).
+
+save(Forms) -> om:debug("Forms: ~p~n",[Forms]),
+               {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
+               file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
 
 % Erlang AST extraction
+
+extract(F,T,C) -> case ext(F,T,C) of
+                       [] -> [];
+                       Ex -> {function,C,om:atom(F),0,[{clause,C,[],[],[Ex]}]} end.
 
 ext(F,[],N)                       -> [];
 ext(F,{{"∀",Name},{_,Out}},N)     -> [];

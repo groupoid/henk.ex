@@ -217,14 +217,14 @@ Parse raw expressions:
 Extract Erlang Modules:
 
 ```erlang
-> om:mode("erased").
+> om:extract("priv/normal/List").
 ok
+Active: module loaded: {reloaded,'List'}
+> om:mode("normal").
 > om:extract().
-Active: module loaded: {loaded_new,'Bool'}
-Active: module loaded: {loaded_new,'List'}
-Active: module loaded: {loaded_new,'Nat'}
-Active: module loaded: {loaded_new,'Prod'}
-Active: module loaded: {loaded_new,'Ret'}
+ok
+Active: module loaded: {reloaded,'Bool'}
+Active: module loaded: {reloaded,'List'}
 ```
 
 ### main
