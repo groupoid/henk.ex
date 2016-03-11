@@ -16,13 +16,13 @@ expr(P,[{N,X}                 |T], Acc, {V,D})                -> expr2(P,T,[{N,X
 expr(P,[open                  |T], Acc, {V,D})                -> expr2(P,T,[{open}|Acc],{V,D+1});
 expr(P,[X                     |T], Acc, {V,D})                -> expr2(P,T,[{X}|Acc],{V,D}).
 
-rewind([{{':',_},_}|_]=A,       {V,D},       R)  -> trail(1, ": RET"),   {{V,D-1},om:flat([R|A])};
+rewind([{{':',_},_}|_]=A,       {V,D},       R)  -> trail(1, ": RET"),   {{V,D},om:flat([R|A])};
 rewind([{'$',M}|A],             {V,D},[{B,Y}|R]) -> trail(2, ": 1"),     rewind2([{{':',M},{B,Y}}|A],{V,D},R);
 rewind([{B,Y},{'$',M}|A],{V,D},R) when V == D    -> trail(3, "$ -> :"),  rewind2([{{':',M},{B,Y}}|A],{V,D},R);
 rewind([{B,Y},{'$',M}|_]=A,     {V,D},       R)  -> trail(4, "$ RET"),   {{V,D},  om:flat([A|R])};
 rewind([{C,X},{open},{{':',M},I}|A],{V,D},   R)  -> trail(5, "("),       {{V,D-1},om:flat([{C,X},{{':',M},I}|[R|A]])};
 rewind([{C,X},{open},{'$',M}|A],{V,D},       R)  -> trail(6, "("),       {{V,D-1},om:flat([{C,X},{'$',M}    |[R|A]])};
-rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D},  om:flat([{C,X},{open}     |[R|A]])};
+rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D-1},om:flat([{C,X},{open}     |[R|A]])};
 rewind([{C,X},{open},{B,Y}  |A],{V,D},       R)  -> trail(8, "("),       {{V,D-1},om:flat([{app,{{B,Y},{C,X}}}|[R|A]])};
 rewind([{arrow},{{':',M},I} |A],{V,D},[{C,X}|R]) -> trail(9, "FUN"),     rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{C,X},{arrow},{{':',M},I}|A],{V,D}, R)   -> trail(10, "FUN 2"),  rewind2([{M,{I,{C,X}}}|A],{V,D},R);
@@ -92,4 +92,3 @@ func(Sym)    -> Sym.
 
 ret({_,[X]}) -> X;
 ret(Y) -> Y.
-%io:format("Y: ~p~n",[Y]), {error,Y}.
