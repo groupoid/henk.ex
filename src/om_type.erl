@@ -5,6 +5,7 @@
 hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
+type2(T) -> om:debug("type: T = ~tp~n -------------------------~n", [om:bin(T)]), type(T).
 type2(T,D) -> om:debug("type: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]), type(T,D).
 
 type(Term) -> type(Term, []). % closed term (w/o free vars)
