@@ -5,8 +5,12 @@
 hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
-type2(T) -> om:debug("type: T = ~tp~n -------------------------~n", [om:bin(T)]), type(T).
-type2(T,D) -> om:debug("type: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]), type(T,D).
+type2(T) ->
+    %om:debug("type: T = ~tp~n -------------------------~n", [om:bin(T)]),
+    type(T).
+type2(T,D) ->
+    %om:debug("type: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
+    type(T,D).
 
 type(Term) -> type(Term, []). % closed term (w/o free vars)
 type({box,N},D)               -> {box,N};
@@ -21,7 +25,9 @@ type({app,{F,A}},D)           -> T = type2(F,D),
                                  eq(I,type2(A,D)),
                                  normalize2(subst(O,N,A)).
 
-normalize2(T) -> NT=normalize(T), om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]), NT.
+normalize2(T) -> NT=normalize(T),
+    %om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
+    NT.
 
 normalize(none)                          -> none;
 normalize(any)                           -> {star,1};
