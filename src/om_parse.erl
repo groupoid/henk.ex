@@ -4,9 +4,9 @@
 -define(arr(F), (F == lambda orelse F== pi)).
 
 expr(P,[],                       Acc) ->      rewind2(Acc,[],[]);
-expr(P,[close               |T], Acc) -> case rewind2(Acc, T,[]) of
+expr(P,[close               |T], Acc) -> case rewind2(Acc,[],[]) of
                                               {error,R} -> {error,R};
-                                              {T1,Acc1} -> expr2(P,T1,Acc1) end;
+                                              {__,Acc1} -> expr2(P,T,Acc1) end;
 
 expr(P,[F,open,{var,L},colon  |T], Acc)  when ?arr(F)   -> expr2(P,T,[{'$',{func(F),L}}|Acc]);
 expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc]) when C /= '$'  -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc]);
@@ -19,11 +19,10 @@ expr(P,[X                     |T], Acc)                 -> expr2(P,T,[{X}|Acc]).
 rewind([{{':',_},_}|_]=A,       T,       R)  -> trail(1, ": RET"),   {T,om:flat([R|A])};
 rewind([{'$',M}             |A],T,[{B,Y}|R]) -> trail(2, ": 1"),     rewind2([{{':',M},{B,Y}}|A],T,R);
 rewind([{B,Y},{'$',M}       |A],T,       R)  -> trail(3, ": 2"),     rewind2([{{':',M},{B,Y}}|A],T,R);
-%rewind([{C,X},{open},{'$',Y}|A],T,       R)  -> trail(4, "("),       {T,om:flat([R|[{C,X},{'$',Y}|A]])};
 rewind([{C,X},{open},{B,Y}  |A],T,       R)  -> trail(4, "("),       rewind2([{app,{{B,Y},{C,X}}}|A],T,R);
 rewind([{C,X},{open}        |A],T,       R)  -> trail(4, "("),       rewind2([{C,X}],T,R);
 rewind([{arrow},{{':',M},I} |A],T,[{C,X}|R]) -> trail(5, "FUN"),     rewind2([{M,{I,{C,X}}}|A],T,R);
-rewind([{C,X},{arrow},{{':',M},I}|A],T, R)  -> trail(7, "FUN 2"),   rewind2([{M,{I,{C,X}}}|A],T,R);
+rewind([{C,X},{arrow},{{':',M},I}|A],T, R)   -> trail(7, "FUN 2"),   rewind2([{M,{I,{C,X}}}|A],T,R);
 rewind([{arrow},{B,Y}       |A],T,[{C,X}|R]) -> trail(6, "ARROW"),   rewind2([{func(arrow),{{B,Y},{C,X}}}|A],T,R);
 rewind([{C,X},{arrow},{B,Y} |A],T,       R)  -> trail(8, "ARROW 2"), rewind2([{func(arrow),{{B,Y},{C,X}}}|A],T,R);
 rewind([],                      T,       R)  -> trail(10,"[] RET"),  {T,R};
