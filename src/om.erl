@@ -71,7 +71,7 @@ typed(X)     -> try Y = om:type(X),  {Y,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse(tname(F),cname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
-    %io:format("start ~tp ~tp ...",[X,A]), 
+    %io:format("~n start ~tp ~tp ...~n",[X,A]), 
     {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed]).
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
