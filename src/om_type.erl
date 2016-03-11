@@ -13,21 +13,24 @@ type({box,N},D)               -> {box,N};
 type({star,N},D)              -> {star,N+1};
 type({var,{N,I}},D)           -> assertVar(N,D), proplists:get_value(N,D); % TODO respect index of var
 type({"→",{I,O}},D)           -> {star,hierarchy(star(type2(I,D)),star(type2(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type2(I,D)),star(type2(O,[{N,normalize(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> star(type2(I,D)), NI = normalize(I), {{"∀",{N,0}},{NI,type2(O,[{N,NI}|D])}};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type2(I,D)),star(type2(O,[{N,normalize2(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> star(type2(I,D)), NI = normalize2(I), {{"∀",{N,0}},{NI,type2(O,[{N,NI}|D])}};
 type({app,{F,A}},D)           -> T = type2(F,D),
                                  assertFunc(T),
                                  {{"∀",{N,0}},{I,O}} = T,
                                  eq(I,type2(A,D)),
-                                 normalize(subst(O,N,A)).
+                                 normalize2(subst(O,N,A)).
+
+normalize2(T) -> NT=normalize(T), om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]), NT.
 
 normalize(none)                          -> none;
 normalize(any)                           -> {star,1};
 normalize({"→",        {I,O}})           -> {{"∀",{'_',0}},{normalize(I),normalize(O)}};
 normalize({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {normalize(I),normalize(O)}};
 normalize({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {normalize(I),normalize(O)}};
-normalize({app,{{{"λ",{N,0}},{I,O}},A}}) -> normalize(subst(O,N,A));
-normalize({app,{F,A}})                   -> {app,          {normalize(F),normalize(A)}};
+normalize({app,{F,A}})                   -> NF=normalize(F),case NF of
+    {{"λ",{N,0}},{I,O}} -> normalize(subst(O,N,A));
+    _ -> {app,{NF,normalize(A)}} end; % be lazy
 normalize({var,{N,I}})                   -> {var,{N,I}};
 normalize({star,N})                      -> {star,N}.
 
