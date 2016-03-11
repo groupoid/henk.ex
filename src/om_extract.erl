@@ -7,7 +7,7 @@ scan() -> [ extract(X) || X <- filelib:wildcard(om:name([],"/**","*")), filelib:
 % Erlang AST extraction
 
 extract(X)  -> save( [{attribute,1,module,om:atom(om:cname(X))},
-                      {attribute,1,compile,export_all}].
+                      {attribute,1,compile,export_all}]
                   ++ [ extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
                        || F <- om:snd(file:list_dir(X)) ]
                   ++ [{eof,1}] ).
