@@ -5,17 +5,19 @@
 hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
+type2(T,D) -> om:debug("type: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]), type(T,D).
+
 type(Term) -> type(Term, []). % closed term (w/o free vars)
 type({box,N},D)               -> {box,N};
 type({star,N},D)              -> {star,N+1};
 type({var,{N,I}},D)           -> assertVar(N,D), proplists:get_value(N,D); % TODO respect index of var
-type({"→",{I,O}},D)           -> {star,hierarchy(star(type(I,D)),star(type(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type(I,D)),star(type(O,[{N,normalize(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> star(type(I,D)), NI = normalize(I), {{"∀",{N,0}},{NI,type(O,[{N,NI}|D])}};
-type({app,{F,A}},D)           -> T = type(F,D),
+type({"→",{I,O}},D)           -> {star,hierarchy(star(type2(I,D)),star(type2(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type2(I,D)),star(type2(O,[{N,normalize(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> star(type2(I,D)), NI = normalize(I), {{"∀",{N,0}},{NI,type2(O,[{N,NI}|D])}};
+type({app,{F,A}},D)           -> T = type2(F,D),
                                  assertFunc(T),
                                  {{"∀",{N,0}},{I,O}} = T,
-                                 eq(I,type(A,D)),
+                                 eq(I,type2(A,D)),
                                  normalize(subst(O,N,A)).
 
 normalize(none)                          -> none;
