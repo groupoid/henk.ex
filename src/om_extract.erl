@@ -2,18 +2,19 @@
 -description('Extractor').
 -compile(export_all).
 
-prologue(X) -> [{attribute,1,module,X},{attribute,1,compile,export_all}].
-scan()      -> [ extract(X) || X <- filelib:wildcard(om:name([],"/**","*")), filelib:is_dir(X) == true ].
-extract(X)  -> save ( prologue(om:atom(om:cname(X)))
-                 ++ [ extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
-                 || F <- om:snd(file:list_dir(X)) ]
-                 ++ [{eof,1}] ).
-
-save(Forms) -> om:debug("Forms: ~p~n",[Forms]),
-               {ok,Name,Bin} = compile:forms(lists:flatten([Forms])),
-               file:write_file(lists:concat([ebin,"/",Name,".beam"]),Bin).
+scan() -> [ extract(X) || X <- filelib:wildcard(om:name([],"/**","*")), filelib:is_dir(X) == true ].
 
 % Erlang AST extraction
+
+extract(X)  -> save( [{attribute,1,module,om:atom(om:cname(X))},
+                      {attribute,1,compile,export_all}].
+                  ++ [ extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
+                       || F <- om:snd(file:list_dir(X)) ]
+                  ++ [{eof,1}] ).
+
+save(Forms) -> om:debug("Forms: ~p~n",[Forms]),
+               {ok,Name,Bin} = compile:forms(om:flat(Forms)),
+               file:write_file(om:cat([ebin,"/",Name,".beam"]),Bin).
 
 extract(F,T,C) -> case ext(F,T,C) of
                        [] -> [];

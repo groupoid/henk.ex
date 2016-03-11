@@ -96,8 +96,8 @@ rev(X)       -> lists:reverse(X).
 flat(X)      -> lists:flatten(X).
 tokens(X,Y)  -> string:tokens(X,Y).
 debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
-atom(X)      -> list_to_atom(cat(X)).
-cat(X)       -> lists:concat([X]).
+atom(X)      -> list_to_atom(cat([X])).
+cat(X)       -> lists:concat(X).
 keyget(X,Y)  -> proplists:get_value(X,Y).
 
 file(F) -> case file:read_file(F) of
