@@ -6,7 +6,7 @@ prologue(X) -> [{attribute,1,module,X},{attribute,1,compile,export_all}].
 scan()      -> [ extract(X) || X <- filelib:wildcard(om:name([],"/**","*")), filelib:is_dir(X) == true ].
 extract(X)  -> save ( prologue(om:atom(om:cname(X)))
                  ++ [ extract(F,om:fst(om:erase(om:snd(om:parse(om:read(X++"/"++F))))),1)
-                 || F <- element(2,file:list_dir(X)) ]
+                 || F <- om:snd(file:list_dir(X)) ]
                  ++ [{eof,1}] ).
 
 save(Forms) -> om:debug("Forms: ~p~n",[Forms]),
