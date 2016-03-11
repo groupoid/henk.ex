@@ -43,7 +43,7 @@ wget install:
 $ brew install erlang
 $ wget https://github.com/groupoid/om/releases/download/0.3/om
 $ chmod +x om
-$ ./om sh
+$ ./om
 ```
 
 Session example with Om:
