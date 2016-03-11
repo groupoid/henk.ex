@@ -4,7 +4,7 @@ forall(UnitElProp : UnitElType -> Prop ) ->
 forall(UnitEqu :
     forall (a : UnitElType)->forall(aok : UnitElProp a)->
     forall (b : UnitElType)->forall(bok : UnitElProp b)->
-    #Unit/Prop )->
+    Prop )->
 forall(UnitEquRefl :
     forall(a : UnitElType)->forall(aok: UnitElProp a)->
     UnitEqu a aok a aok)->
