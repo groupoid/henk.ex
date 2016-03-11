@@ -24,6 +24,7 @@ rewind([{C,X},{open},{{':',M},I}|A],{V,D},   R)  -> trail(5, "("),       {{V,D-1
 rewind([{C,X},{open},{'$',M}|A],{V,D},       R)  -> trail(6, "("),       {{V,D-1},om:flat([{C,X},{'$',M}    |[R|A]])};
 rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D-1},om:flat([{C,X},{open}     |[R|A]])};
 rewind([{C,X},{open},{B,Y}  |A],{V,D},       R)  -> trail(8, "("),       {{V,D-1},om:flat([{app,{{B,Y},{C,X}}}|[R|A]])};
+rewind([{C,X},{open}|A],{V,D},               R)  -> trail(8, "("),       {{V,D-1},om:flat([{C,X}|[R|A]])};
 rewind([{arrow},{{':',M},I} |A],{V,D},[{C,X}|R]) -> trail(9, "FUN"),     rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{C,X},{arrow},{{':',M},I}|A],{V,D}, R)   -> trail(10, "FUN 2"),  rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{arrow},{B,Y}       |A],{V,D},[{C,X}|R]) -> trail(11, "ARROW"),  rewind2([{func(arrow),{{B,Y},{C,X}}}|A],{V,D},R);
