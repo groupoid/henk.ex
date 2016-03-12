@@ -1,12 +1,12 @@
-λ(a : *) → λ(b : *) → λ(m : ∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO)
-→ ∀(PutLine_ : #String/@  → IO → IO) → ∀(Pure_ : a → IO) → IO) → λ(f : a → ∀(IO : *)
-→ ∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@  → IO → IO)
-→ ∀(Pure_ : b → IO) → IO) → m (∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO)
-→ ∀(PutLine_ : #String/@  → IO → IO) → ∀(Pure_ : b → IO) → IO) (λ(_ : #String/@
-→ ∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@
-→ IO → IO) → ∀(Pure_ : b → IO) → IO) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO)
-→ λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : b → IO) → GetLine_ (λ(_ : #String/@ )
-→ _@1 _ IO GetLine_ PutLine_ Pure_)) (λ(_ : #String/@ ) → λ(_ : ∀(IO : *) →
-∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@  → IO → IO) →
-∀(Pure_ : b → IO) → IO) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO)
-→ λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : b → IO) → PutLine_ _@1 (_ IO GetLine_ PutLine_ Pure_)) (λ(r : a) → f r (∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@  → IO → IO) → ∀(Pure_ : b → IO) → IO) (λ(_ : #String/@  → ∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@  → IO → IO) → ∀(Pure_ : b → IO) → IO) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : b → IO) → GetLine_ (λ(_ : #String/@ ) → _@1 _ IO GetLine_ PutLine_ Pure_)) (λ(_ : #String/@ ) → λ(_ : ∀(IO : *) → ∀(GetLine_ : (#String/@  → IO) → IO) → ∀(PutLine_ : #String/@  → IO → IO) → ∀(Pure_ : b → IO) → IO) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : b → IO) → PutLine_ _@1 (_ IO GetLine_ PutLine_ Pure_)) (λ(_ : b) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : b → IO) → Pure_ _))
+λ(a : *) → λ(b : *) → λ(m : ∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO)
+→ ∀(PutLine_x : #String/@  → IO → IO) → ∀(Pure_x : a → IO) → IO) → λ(f : a → ∀(IO : *)
+→ ∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@  → IO → IO)
+→ ∀(Pure_x : b → IO) → IO) → m (∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO)
+→ ∀(PutLine_x : #String/@  → IO → IO) → ∀(Pure_x : b → IO) → IO) (λ(_x : #String/@
+→ ∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@
+→ IO → IO) → ∀(Pure_x : b → IO) → IO) → λ(IO : *) → λ(GetLine_x : (#String/@  → IO) → IO)
+→ λ(PutLine_x : #String/@  → IO → IO) → λ(Pure_x : b → IO) → GetLine_x (λ(_x : #String/@ )
+→ _x@1 _x IO GetLine_x PutLine_x Pure_x)) (λ(_x : #String/@ ) → λ(_x : ∀(IO : *) →
+∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@  → IO → IO) →
+∀(Pure_x : b → IO) → IO) → λ(IO : *) → λ(GetLine_x : (#String/@  → IO) → IO)
+→ λ(PutLine_x : #String/@  → IO → IO) → λ(Pure_x : b → IO) → PutLine_x _x@1 (_x IO GetLine_x PutLine_x Pure_x)) (λ(r : a) → f r (∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@  → IO → IO) → ∀(Pure_x : b → IO) → IO) (λ(_x : #String/@  → ∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@  → IO → IO) → ∀(Pure_x : b → IO) → IO) → λ(IO : *) → λ(GetLine_x : (#String/@  → IO) → IO) → λ(PutLine_x : #String/@  → IO → IO) → λ(Pure_x : b → IO) → GetLine_x (λ(_x : #String/@ ) → _x@1 _x IO GetLine_x PutLine_x Pure_x)) (λ(_x : #String/@ ) → λ(_x : ∀(IO : *) → ∀(GetLine_x : (#String/@  → IO) → IO) → ∀(PutLine_x : #String/@  → IO → IO) → ∀(Pure_x : b → IO) → IO) → λ(IO : *) → λ(GetLine_x : (#String/@  → IO) → IO) → λ(PutLine_x : #String/@  → IO → IO) → λ(Pure_x : b → IO) → PutLine_x _x@1 (_x IO GetLine_x PutLine_x Pure_x)) (λ(_x : b) → λ(IO : *) → λ(GetLine_x : (#String/@  → IO) → IO) → λ(PutLine_x : #String/@  → IO → IO) → λ(Pure_x : b → IO) → Pure_x _x))

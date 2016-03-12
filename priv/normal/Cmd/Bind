@@ -1,4 +1,4 @@
-λ(f : * → *) → λ(a : *) → λ(b : *) → λ(_ : f b) → λ(_ : b → ∀(Cmd : *)
+λ(f : * → *) → λ(a : *) → λ(b : *) → λ(_x : f b) → λ(_x : b → ∀(Cmd : *)
 → ∀(Bind : ∀(b : *) → f b → (b → Cmd) → Cmd) → ∀(Pure : ∀(r : a) → Cmd)
 → Cmd) → λ(Cmd : *) → λ(Bind : ∀(b : *) → f b → (b → Cmd) → Cmd) → λ(Pure
-: ∀(r : a) → Cmd) → Bind b _@1 (λ(_ : b) → _@1 _@0 Cmd Bind Pure)
+: ∀(r : a) → Cmd) → Bind b _x@1 (λ(_x : b) → _x@1 _x@0 Cmd Bind Pure)
