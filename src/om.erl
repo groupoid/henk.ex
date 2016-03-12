@@ -26,13 +26,9 @@ extract(X)   -> om_extract:extract(X).
 normalize(T) -> om_type:normalize(T).
 eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
-type(T,C)    -> case cache(types,{T,C}) of
-                     undefined -> cache(types,{T,C},om_type:type(T,C));
-                     X -> X end.
+type(T,C)    -> om_type:type(T,C).
 erase(X)     -> erase(X,[]).
-erase(T,C)   -> case cache(erased,{T,C}) of
-                     undefined -> cache(erased,{T,C},om_erase:erase(T,C));
-                     X -> X end.
+erase(T,C)   -> om_erase:erase(T,C).
 modes(_)     -> modes().
 modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
@@ -51,9 +47,7 @@ snd({error,X}) -> {error,X};
 snd({_,[X]}) -> X;
 snd({_,X})   -> X.
 parse(X)     -> om_parse:expr2([],X,[],{0,0}).
-parse(T,C)   -> case cache(terms,{T,C}) of
-                     undefined -> cache(terms,{T,C},om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}));
-                     X -> X end.
+parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
 
 % system functions
 
@@ -120,7 +114,6 @@ keyget(K,D,I)  -> lists:nth(I+1,proplists:get_all_values(K,D)).
 hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
-
 file(F) -> case file:read_file(F) of
                 {ok,Bin} -> Bin;
                 {error,_} -> mad(F) end.
@@ -128,15 +121,3 @@ file(F) -> case file:read_file(F) of
 mad(F)  -> case mad_repl:load_file(F) of
                 {ok,Bin} -> Bin;
                 {error,_} -> <<>> end.
-
-cache(Table, Key, undefined)   -> ets:delete(Table,Key), undefined;
-cache(Table, Key, Value)       -> ets:insert(Table,{Key,infinity,Value}), Value.
-cache(Table, Key, Value, Till) -> ets:insert(Table,{Key,Till,Value}), Value.
-cache(Table, Key) ->
-    Res = ets:lookup(Table,Key),
-    Val = case Res of [] -> undefined; [Value] -> Value; Values -> Values end,
-    case Val of undefined -> undefined;
-                {_,infinity,X} -> X;
-                {_,Expire,X} -> case Expire < calendar:local_time() of
-                                  true ->  ets:delete(Table,Key), undefined;
-                                  false -> X end end.

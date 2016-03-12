@@ -1,4 +1,3 @@
-(   \  (a: #Set)
+   \  (a: #Set)
 -> \  (b: #Set)
 -> #NOT (#In a b)
-)
