@@ -23,11 +23,11 @@ print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
 extract(X)   -> om_extract:extract(X).
-type(S)      -> om_type:type2(S).
+type(S)      -> om_type:type(S).
 erase(X)     -> om_erase:erase(X).
-type(S,B)    -> om_type:type2(S,B).
+type(S,B)    -> om_type:type(S,B).
 modes(_)     -> modes().
-modes()      -> ["girard","hurkens","hurkens-src","normal","setoids"].
+modes()      -> ["hurkens","normal","setoids"]. % ++ ["girard","hurkens-src"].
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
@@ -83,13 +83,14 @@ wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
 scan(_)      -> scan().
 scan()       -> om:debug(false),
                 Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F,"/"),cname(F)])}
-                     || {F} <- lists:umerge(wildcard(),syscard()) ],
+                     || {F} <- lists:umerge(wildcard(),syscard()),
+                        lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
                 {mode(),pass(Passed),Res}.
 test(_)      -> All = om:all(),
-                io:format("~tp~n",[om_parse:test()]),
+                %io:format("~tp~n",[om_parse:test()]),
                 io:format("~tp~n",[All]),
-                case lists:all(fun({Mode,Status,Tests}) -> Status /= om:pass(false) end, All) of
+                case lists:all(fun({Mode,Status,Tests}) -> Status == om:pass(0) end, All) of
                      true  -> 0;
                      false -> put(ret,1),1 end .
 

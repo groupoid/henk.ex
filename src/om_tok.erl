@@ -7,10 +7,9 @@
                      C==$&;  C==$|;  C>=$0,  C=<$9;
                      C==$@;  C==$#;  C==$_;  C==$/;
                      C==$-;  C==$+;  C==$[;  C==$];
-                     C==$<;  C==$>;  C==$=).
+                     C==$<;  C==$>;  C==$=;  C==$.).
 -define(is_termi(C), C==$!;  C==$$;  C==$%;  C==$:;
-                     C==$;;  C==$(;  C==$~;  C==$);
-                     C==$^).
+                     C==$;;  C==$~;  C==$^;  C==$?).
 
 tokens(P,<<>>,                    _, {_,C}, Acc)  -> om:rev(stack(P,C,Acc));
 tokens(P,<<"--"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{c,[]},     stack(P,C,Acc));
