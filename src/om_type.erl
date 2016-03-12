@@ -5,7 +5,7 @@
 type2(T,D) ->
     om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
     R=type(T,D),
-    om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
+    om:debug("type!: ~tp :~n ~tp ~n....................~n",[om:bin(T), om:bin(R)]),
     R.
 
 type({box,N},_)               -> {star,3};
@@ -17,7 +17,7 @@ type({{"λ",{N,0}},{I,O}},D)   -> star(om:type(I,D)), NI = om:normalize(I), {{"�
 type({app,{F,A}},D)           -> T = om:type(F,D),
                                  assertFunc(T),
                                  {{"∀",{N,0}},{I,O}} = T,
-                                 eq(I,om:type(A,D)),
+                                 om:eq(I,om:type(A,D)),
                                  om:normalize(subst(O,N,A)).
 
 normalize2(T) -> NT=normalize(T),
@@ -51,10 +51,14 @@ subst({var, {N,L}},       N,V,L) -> V;           % index match
 subst({var, {N,I}},       N,V,L) when I>L -> {var, {N,I-1}}; % unshift
 subst(T,       _,_,_)            -> T.
 
+eq2(X,Y) ->
+    om:debug("eq?: X = ~tp~n // Y = ~tp~n.................~n",[om:bin(X),om:bin(Y)]),
+    eq(X,Y).
+
 eq(T,T)                                           -> true;
 %eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
-eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
-eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
+eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
+eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
 eq(A,B)                                           -> erlang:error(["==", A, B]).
 
