@@ -24,6 +24,7 @@ bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
 extract(X)   -> om_extract:extract(X).
 normalize(T) -> om_type:normalize(T).
+eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
 type(T,C)    -> case cache(types,{T,C}) of
                      undefined -> cache(types,{T,C},om_type:type(T,C));
