@@ -25,9 +25,13 @@ extract()    -> om_extract:scan().
 extract(X)   -> om_extract:extract(X).
 normalize(T) -> om_type:normalize(T).
 type(S)      -> type(S,[]).
-type(S,B)    -> om_type:type(S,B).
+type(T,C)    -> case cache(types,{T,C}) of
+                     undefined -> cache(types,{T,C},om_type:type(T,C));
+                     X -> X end.
 erase(X)     -> erase(X,[]).
-erase(X,D)   -> om_erase:erase(X,D).
+erase(T,C)   -> case cache(erased,{T,C}) of
+                     undefined -> cache(erased,{T,C},om_erase:erase(T,C));
+                     X -> X end.
 modes(_)     -> modes().
 modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
@@ -46,16 +50,20 @@ snd({error,X}) -> {error,X};
 snd({_,[X]}) -> X;
 snd({_,X})   -> X.
 parse(X)     -> om_parse:expr2([],X,[],{0,0}).
-parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
+parse(T,C)   -> case cache(terms,{T,C}) of
+                     undefined -> cache(terms,{T,C},om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}));
+                     X -> X end.
 
 % system functions
 
+opt()        -> [ set, named_table, { keypos, 1 }, public ].
+tables()     -> [ terms, types, erased ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
 start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
-init([])     -> mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
+init([])     -> [ ets:new(T,opt()) || T <- tables() ], mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
 ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
 console(S)   -> mad_repl:load(), put(ret,0),
@@ -117,3 +125,15 @@ file(F) -> case file:read_file(F) of
 mad(F)  -> case mad_repl:load_file(F) of
                 {ok,Bin} -> Bin;
                 {error,_} -> <<>> end.
+
+cache(Table, Key, undefined)   -> ets:delete(Table,Key), undefined;
+cache(Table, Key, Value)       -> ets:insert(Table,{Key,infinity,Value}), Value.
+cache(Table, Key, Value, Till) -> ets:insert(Table,{Key,Till,Value}), Value.
+cache(Table, Key) ->
+    Res = ets:lookup(Table,Key),
+    Val = case Res of [] -> undefined; [Value] -> Value; Values -> Values end,
+    case Val of undefined -> undefined;
+                {_,infinity,X} -> X;
+                {_,Expire,X} -> case Expire < calendar:local_time() of
+                                  true ->  ets:delete(Table,Key), undefined;
+                                  false -> X end end.
