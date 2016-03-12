@@ -28,7 +28,7 @@ normalize(T) -> om_type:normalize2(T).
 erase(X)     -> om_erase:erase(X).
 type(S,B)    -> om_type:type2(S,B).
 modes(_)     -> modes().
-modes()      -> ["hurkens","normal","setoids","hurkens-src"]. % ++ ["girard"]
+modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
@@ -68,7 +68,7 @@ console(S)   -> mad_repl:load(), put(ret,0),
 
 % test suite
 
-typed(X)     -> try Y = om:type(X),  {Y,[]} catch E:R -> {X,typed}  end.
+typed(X)     -> try Y = om:type(X),  erased(Y) catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse(tname(F),cname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
