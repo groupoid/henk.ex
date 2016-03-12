@@ -68,7 +68,7 @@ console(S)   -> mad_repl:load(), put(ret,0),
 
 % test suite
 
-typed(X)     -> try Y = om:type(X),  {Y,[]} catch E:R -> {X,typed}  end.
+typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse(tname(F),cname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
