@@ -1,1 +1,0 @@
-λ(a : *) → λ(cmd : #Cmd/@  #FIO/@  a) → cmd (#FIO/@  a) (λ(b : *) → #FIO/[>>=]  b a) (#FIO/pure a)

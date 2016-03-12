@@ -53,7 +53,8 @@ parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
 
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ terms, types, erased ].
-boot()       -> [ ets:new(T,opt()) || T <- tables() ].
+boot()       -> [ ets:new(T,opt()) || T <- tables() ],
+                [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
