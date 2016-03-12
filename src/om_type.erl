@@ -15,7 +15,7 @@ type2(T,D) ->
 type(Term) -> type(Term, []). % closed term (w/o free vars)
 type({box,N},D)               -> {box,N};
 type({star,N},D)              -> {star,N+1};
-type({var,{N,I}},D)           -> assertVar(N,D), lists:nth(I+1,proplists:get_all_values(N,D)); % TODO respect index of var
+type({var,{N,I}},D)           -> assertVar(N,D), lists:nth(I+1,proplists:get_all_values(N,D));
 type({"→",{I,O}},D)           -> {star,hierarchy(star(type2(I,D)),star(type2(O,D)))};
 type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type2(I,D)),star(type2(O,[{N,normalize2(I)}|D])))};
 type({{"λ",{N,0}},{I,O}},D)   -> star(type2(I,D)), NI = normalize2(I), {{"∀",{N,0}},{NI,type2(O,[{N,NI}|D])}};
@@ -37,8 +37,7 @@ normalize({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {normalize(I),norma
 normalize({app,{F,A}})                   -> NF=normalize(F),case NF of
     {{"λ",{N,0}},{I,O}} -> normalize(subst(O,N,A));
     _ -> {app,{NF,normalize(A)}} end; % be lazy
-normalize({var,{N,I}})                   -> {var,{N,I}};
-normalize({star,N})                      -> {star,N}.
+normalize(T)                             -> T.
 
 shift({var,{N,I}},N,P) when I>=P -> {var,{N,I+1}};
 shift({{"∀",{N,0}},{I,O}},N,P)  -> {{"∀",{N,0}},{shift(I,N,P),shift(O,N,P+1)}};
@@ -54,6 +53,7 @@ subst({{"λ",{N,0}},{I,O}},N,V,L) -> {{"λ",{N,0}},{subst(I,N,V,L),subst(O,N,shi
 subst({{"λ",{F,X}},{I,O}},N,V,L) -> {{"λ",{F,X}},{subst(I,N,V,L),subst(O,N,shift(V,F,0),L)}};
 subst({app, {F,A}},       N,V,L) -> {app,        {subst(F,N,V,L),subst(A,N,V,L)}};
 subst({var, {N,L}},       N,V,L) -> V;           % index match
+subst({var, {N,I}},       N,V,L) when I>L -> {var, {N,I-1}}; % unshift
 subst(T,       _,_,_)            -> T.
 
 eq(T,T)                                           -> true;
