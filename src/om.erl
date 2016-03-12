@@ -59,15 +59,17 @@ parse(T,C)   -> case cache(terms,{T,C}) of
 
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ terms, types, erased ].
+boot()       -> [ ets:new(T,opt()) || T <- tables() ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
 start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
-init([])     -> [ ets:new(T,opt()) || T <- tables() ], mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
+init([])     -> boot(), mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
 ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
-console(S)   -> mad_repl:load(), put(ret,0),
+console(S)   -> boot(),
+                mad_repl:load(), put(ret,0),
                 Fold = lists:foldr(fun(I,O) ->
                       R = rev(I),
                       Res = lists:foldl(fun(X,A) -> om:(atom(X))(A) end,hd(R),tl(R)),

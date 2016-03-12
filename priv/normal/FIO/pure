@@ -1,0 +1,1 @@
+λ(a : *) → λ(_x : a) → λ(FIO : *) → λ(GetLine_ : (#String/@  → FIO) → FIO) → λ(PutLine_ : #String/@  → FIO → FIO) → λ(Pure_ : a → FIO) → Pure_ _x

@@ -1,0 +1,19 @@
+λ(a : *) → λ(b : *) → λ(m : ∀(FIO : *) → ∀(GetLine_ : (#String/@ → FIO) → FIO) → ∀(PutLine_ :
+#String/@  → FIO → FIO) → ∀(Pure_ : a → FIO) → FIO) → λ(f : a → ∀(FIO : *) → ∀(GetLine_ : (#String/@
+→ FIO) → FIO) → ∀(PutLine_ : #String/@  → FIO → FIO) → ∀(Pure_ : b → FIO) → FIO) → m (∀(FIO : *) →
+∀(GetLine_ : (#String/@  → FIO) → FIO) → ∀(PutLine_ : #String/@  → FIO → FIO) → ∀(Pure_ : b → FIO) → FIO)
+(λ(_x : #String/@  → ∀(FIO : *) → ∀(GetLine_ : (#String/@  → FIO) → FIO) → ∀(PutLine_ : #String/@  → FIO → FIO) →
+∀(Pure_ : b → FIO) → FIO) → λ(FIO : *) → λ(GetLine_ : (#String/@  → FIO) → FIO) → λ(PutLine_ : #String/@  → FIO → FIO)
+→ λ(Pure_ : b → FIO) → GetLine_ (λ(_x : #String/@ ) → _x@1 _x FIO GetLine_ PutLine_ Pure_))
+(λ(_x : #String/@ ) → λ(_x : ∀(FIO : *) → ∀(GetLine_ : (#String/@  → FIO) → FIO) → ∀(PutLine_ :
+#String/@  → FIO → FIO) → ∀(Pure_ : b → FIO) → FIO) → λ(FIO : *) → λ(GetLine_ : (#String/@  → FIO)
+→ FIO) → λ(PutLine_ : #String/@  → FIO → FIO) → λ(Pure_ : b → FIO) → PutLine_ _x@1 (_x FIO GetLine_ PutLine_ Pure_))
+(λ(r : a) → f r (∀(FIO : *) → ∀(GetLine_ : (#String/@  → FIO) → FIO) → ∀(PutLine_ : #String/@  → FIO → FIO) →
+∀(Pure_ : b → FIO) → FIO) (λ(_x : #String/@  → ∀(FIO : *) → ∀(GetLine_ : (#String/@  → FIO) → FIO) →
+∀(PutLine_ : #String/@  → FIO → FIO) → ∀(Pure_ : b → FIO) → FIO) → λ(FIO : *) → λ(GetLine_ : (#String/@  → FIO) → FIO)
+→ λ(PutLine_ : #String/@  → FIO → FIO) → λ(Pure_ : b → FIO) → GetLine_ (λ(_x : #String/@ )
+→ _x@1 _x FIO GetLine_ PutLine_ Pure_)) (λ(_x : #String/@ ) → λ(_x : ∀(FIO : *) →
+∀(GetLine_ : (#String/@  → FIO) → FIO) → ∀(PutLine_ : #String/@  → FIO → FIO) → ∀(Pure_ : b → FIO) → FIO) → λ(FIO : *)
+→ λ(GetLine_ : (#String/@  → FIO) → FIO) → λ(PutLine_ : #String/@  → FIO → FIO) → λ(Pure_ : b → FIO) → PutLine_
+_x@1 (_x FIO GetLine_ PutLine_ Pure_)) (λ(_x : b) → λ(FIO : *) → λ(GetLine_ : (#String/@  → FIO) → FIO) →
+λ(PutLine_ : #String/@  → FIO → FIO) → λ(Pure_ : b → FIO) → Pure_ _x))

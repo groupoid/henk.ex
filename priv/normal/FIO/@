@@ -1,0 +1,5 @@
+  λ (a : *)
+→ ∀ (FIO : *)
+→ ∀ (GetLine_ : (#String/@  → FIO) → FIO)
+→ ∀ (PutLine_ : #String/@  → FIO → FIO)
+→ ∀ (Pure_ : a → FIO) → FIO
