@@ -23,9 +23,10 @@ print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
 extract(X)   -> om_extract:extract(X).
-type(S)      -> om_type:type2(S).
+type(S)      -> type(S,[]).
 normalize(T) -> om_type:normalize2(T).
-erase(X)     -> om_erase:erase(X).
+erase(X)     -> erase(X,[]).
+erase(X,D)   -> om_erase:erase2(X,D).
 type(S,B)    -> om_type:type2(S,B).
 modes(_)     -> modes().
 modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["girard"]
@@ -73,7 +74,7 @@ erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse(tname(F),cname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
     %io:format("~n start ~tp ~tp ...~n",[X,A]),
-    {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed]).
+    {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed,erased]).
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
@@ -103,7 +104,11 @@ tokens(X,Y)  -> string:tokens(X,Y).
 debug(S,A)   -> case om:debug() of true -> io:format(S,A); false -> ok end.
 atom(X)      -> list_to_atom(cat([X])).
 cat(X)       -> lists:concat(X).
-keyget(X,Y)  -> proplists:get_value(X,Y).
+keyget(K,D)  -> proplists:get_value(K,D).
+keyget(K,D,I)  -> lists:nth(I+1,proplists:get_all_values(K,D)).
+hierarchy(Arg,Out) -> Out.           % impredicative
+%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
+
 
 file(F) -> case file:read_file(F) of
                 {ok,Bin} -> Bin;

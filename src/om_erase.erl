@@ -3,49 +3,49 @@
 
 -define(is_fun(F), F == "∀"; F== "λ").
 
-erase(Term)          -> erase(Term,[]).
-erase({star,N},_)    -> {none,{star,N+1}};
+erase2(T,D) ->
+    om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
+    {E,R} = erase(T,D),
+    om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
+    {E,R}.
 
-erase({"→",{I,O}},D) ->
-    {B1,S1} = erase(I,D),
-     case univ(normalize(B1)) of
-         true  -> erase(O,D);
-         false -> {B2,S2} = erase(O,D),
-                  {{"→",{B1,B2}},{star,hierarchy(star(S1),star(S2))}} end;
+erase({star,N},_)    -> {none,{star,N+1}};
 
 erase({var,{N,I}},D) ->
     om_type:assertVar(N,D),
-    T = om:keyget(N,D),
+    T = om:keyget(N,D,I),
     case univ(T) of
          true  -> {none,T};
          false -> {{var,{N,I}},T} end;
 
-erase({{F,{N,0}},{I,O}},D) when ?is_fun(F) ->
-    NI = normalize(I),
-    {B1,S1} = erase(O,[{N,NI}|D]),
+erase({"→",{I,O}},D) -> {none,{star,om:hierarchy(star(om:type(I,D)),star(om:type(O,D)))}};
+
+erase({{"∀",{N,0}},{I,O}},D)   -> {none,{star,om:hierarchy(star(om:type(I,D)),star(om:type(O,[{N,om:normalize(I)}|D])))}};
+
+erase({{"λ",{N,0}},{I,O}},D) ->
+    star(om:type(I,D)),
+    NI = om:normalize(I),
+    {B1,S1} = erase2(O,[{N,NI}|D]),
+    T = {{"∀",{N,0}},{NI,S1}},
     case univ(NI) of
-        true  -> {B1,S1};
-        false -> case F of
-                     "∀" -> {{{F,{N,0}},{any,B1}},{star,hierarchy(star(type(I,D)),star(S1))}};
-                     "λ" -> type(I,D), {{{F,{N,0}},{any,B1}},{{"∀",{N,0}},{any,S1}}} end end;
+        true  -> {B1,T};
+        false -> {{{"λ",{N,0}},{any,B1}},T} end;
 
 erase({app,{F,A}},D) ->
-    {B1,S1} = erase(F,D),
+    {B1,S1} = erase2(F,D),
+    {B2,S2} = erase2(A,D),
+    om_type:assertFunc(S1),
+    {{"∀",{N,0}},{I,O}} = S1,
+    om_type:eq(I,S2),
+    T=om:normalize(om_type:subst(O,N,A)),
     case univ(S1) of
-         true  -> {none,S1};
-         false -> om_type:assertFunc(S1),
-                  {{"∀",{N,0}},{I,O}} = S1,
-                  {B2,S2} = erase(A,D),
-                  case univ(S2) of
-                       true  -> {B1,S1};
-                       false -> {{app,{B1,B2}},normalize(om_type:subst(O,N,B2))} end end.
+         true  -> {none,T};
+         false -> case univ(S2) of
+                       true  -> {B1,T};
+                       false -> {{app,{B1,B2}},T} end end.
 
-% used
+univ({star,N})        -> true;
+univ({{"∀",N},{I,O}}) -> univ(O);
+univ(_)               -> false.
 
-hierarchy(L,R) -> om_type:hierarchy(L,R).
-normalize(X)   -> om_type:normalize(X).
 star(X)        -> om_type:star(X).
-type(X)        -> om_type:type(X).
-type(X,S)      -> om_type:type(X,S).
-univ(X)        -> om_type:univ(X).
-

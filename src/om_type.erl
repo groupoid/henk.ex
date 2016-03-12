@@ -2,35 +2,30 @@
 -description('Type Checker').
 -compile(export_all).
 
-hierarchy(Arg,Out) -> Out.           % impredicative
-%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
-
-type2(T) -> type(T,[]).
 type2(T,D) ->
-    %om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
+    om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
     R=type(T,D),
-    %om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
+    om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
     R.
 
-type(Term) -> type(Term, []). % closed term (w/o free vars)
 type({box,N},D)               -> {box,N};
 type({star,N},D)              -> {star,N+1};
-type({var,{N,I}},D)           -> assertVar(N,D), lists:nth(I+1,proplists:get_all_values(N,D));
-type({"→",{I,O}},D)           -> {star,hierarchy(star(type2(I,D)),star(type2(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type2(I,D)),star(type2(O,[{N,normalize2(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> star(type2(I,D)), NI = normalize2(I), {{"∀",{N,0}},{NI,type2(O,[{N,NI}|D])}};
-type({app,{F,A}},D)           -> T = type2(F,D),
+type({var,{N,I}},D)           -> assertVar(N,D), om:keyget(N,D,I);
+type({"→",{I,O}},D)           -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,[{N,om:normalize(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> star(om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
+type({app,{F,A}},D)           -> T = om:type(F,D),
                                  assertFunc(T),
                                  {{"∀",{N,0}},{I,O}} = T,
-                                 eq(I,type2(A,D)),
-                                 normalize2(subst(O,N,A)).
+                                 eq(I,om:type(A,D)),
+                                 om:normalize(subst(O,N,A)).
 
 normalize2(T) -> NT=normalize(T),
-    %om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
+    om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
     NT.
 
 normalize(none)                          -> none;
-normalize(any)                           -> {star,1};
+normalize(any)                           -> any;
 normalize({"→",        {I,O}})           -> {{"∀",{'_',0}},{normalize(I),normalize(O)}};
 normalize({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {normalize(I),normalize(O)}};
 normalize({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {normalize(I),normalize(O)}};
@@ -56,19 +51,15 @@ subst({var, {N,L}},       N,V,L) -> V;           % index match
 subst({var, {N,I}},       N,V,L) when I>L -> {var, {N,I-1}}; % unshift
 subst(T,       _,_,_)            -> T.
 
-eq(T,T)                                           -> true;
 eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
 eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
 eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
 eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
+eq(T,T)                                           -> true;
 eq(A,B)                                           -> erlang:error(["==", A, B]).
 
 star({star,N})        -> N;
 star(_)               -> erlang:error("*").
-
-univ({star,N})        -> true;
-univ({{"∀",N},{I,O}}) -> univ(O);
-univ(_)               -> false.
 
 assertFunc({{"∀",N},{I,O}}) -> true;
 assertFunc(T)               -> erlang:error(["∀",T]).
