@@ -23,11 +23,11 @@ print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract()    -> om_extract:scan().
 extract(X)   -> om_extract:extract(X).
+normalize(T) -> om_type:normalize(T).
 type(S)      -> type(S,[]).
-normalize(T) -> om_type:normalize2(T).
+type(S,B)    -> om_type:type(S,B).
 erase(X)     -> erase(X,[]).
-erase(X,D)   -> om_erase:erase2(X,D).
-type(S,B)    -> om_type:type2(S,B).
+erase(X,D)   -> om_erase:erase(X,D).
 modes(_)     -> modes().
 modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).

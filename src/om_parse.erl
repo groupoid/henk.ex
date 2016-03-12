@@ -76,9 +76,11 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % parser1
 pad(D)                         -> lists:duplicate(D,"  ").
 
 print(any,D)                   -> ["any"];
+print(none,D)                   -> ["none"];
 print({var,{N,0}},D)           -> [ om:cat([N]) ];
 print({var,{N,I}},D)           -> [ om:cat([N]), "@", integer_to_list(I)];
 print({star,N},D)              -> [ "*",om:cat([N]) ];
+print({box,N},D)              -> [ "[]",om:cat([N]) ];
 print({"→",{I,O}},D)           -> [ "(", print(I,D+1),"\n",pad(D),"→ ",print(O,D), ")\n" ];
 print({app,{I,O}},D)           -> [ "(",print(I,D)," ",print(O,D),")" ];
 print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];

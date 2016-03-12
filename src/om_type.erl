@@ -8,8 +8,8 @@ type2(T,D) ->
     om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
     R.
 
-type({box,N},D)               -> {box,N};
-type({star,N},D)              -> {star,N+1};
+type({box,N},_)               -> {star,3};
+type({star,N},_)              -> {star,N+1};
 type({var,{N,I}},D)           -> assertVar(N,D), om:keyget(N,D,I);
 type({"→",{I,O}},D)           -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,D)))};
 type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,[{N,om:normalize(I)}|D])))};
@@ -51,11 +51,11 @@ subst({var, {N,L}},       N,V,L) -> V;           % index match
 subst({var, {N,I}},       N,V,L) when I>L -> {var, {N,I-1}}; % unshift
 subst(T,       _,_,_)            -> T.
 
-eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
+eq(T,T)                                           -> true;
+%eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
 eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
 eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(O2,N2,{var,{N1,0}},0));
 eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
-eq(T,T)                                           -> true;
 eq(A,B)                                           -> erlang:error(["==", A, B]).
 
 star({star,N})        -> N;
