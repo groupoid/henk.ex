@@ -7,9 +7,9 @@ hierarchy(Arg,Out) -> Out.           % impredicative
 
 type2(T) -> type(T,[]).
 type2(T,D) ->
-    om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
+    %om:debug("type?: T = ~tp~n // D = ~tp~n -------------------------~n", [om:bin(T), lists:map(fun(P) -> {V,E}=P, {V,om:bin(E)} end, D)]),
     R=type(T,D),
-    om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
+    %om:debug("type!: ~tp :~n ~tp ~n",[om:bin(T), om:bin(R)]),
     R.
 
 type(Term) -> type(Term, []). % closed term (w/o free vars)
@@ -26,7 +26,7 @@ type({app,{F,A}},D)           -> T = type2(F,D),
                                  normalize2(subst(O,N,A)).
 
 normalize2(T) -> NT=normalize(T),
-    om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
+    %om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
     NT.
 
 normalize(none)                          -> none;
@@ -40,20 +40,21 @@ normalize({app,{F,A}})                   -> NF=normalize(F),case NF of
 normalize({var,{N,I}})                   -> {var,{N,I}};
 normalize({star,N})                      -> {star,N}.
 
-shift({var,{NN,I}},N)        -> {var,{NN, case N of NN -> I+1; _ -> I end}};
-shift({Q, {L,R}},N)          -> {Q, {shift(L,N),shift(R,N)}};
-shift(T,N)                   -> T.
+shift({var,{N,I}},N,P) when I>=P -> {var,{N,I+1}};
+shift({{"∀",{N,0}},{I,O}},N,P)  -> {{"∀",{N,0}},{shift(I,N,P),shift(O,N,P+1)}};
+shift({{"λ",{N,0}},{I,O}},N,P)  -> {{"λ",{N,0}},{shift(I,N,P),shift(O,N,P+1)}};
+shift({Q,{L,R}},N,P)            -> {Q,{shift(L,N,P),shift(R,N,P)}};
+shift(T,N,P)                    -> T.
 
 subst(Term,Name,Value)           -> subst(Term,Name,Value,0).
 subst({"→",        {I,O}},N,V,L) -> {"→",        {subst(I,N,V,L),subst(O,N,V,L)}};
-subst({{"∀",{N,0}},{I,O}},N,V,L) -> {{"∀",{N,0}},{subst(I,N,V,L),subst(O,N,shift(V,N),L+1)}};
-subst({{"∀",{F,X}},{I,O}},N,V,L) -> {{"∀",{F,X}},{subst(I,N,V,L),subst(O,N,shift(V,N),L)}};
-subst({{"λ",{N,0}},{I,O}},N,V,L) -> {{"λ",{N,0}},{subst(I,N,V,L),subst(O,N,shift(V,N),L+1)}};
-subst({{"λ",{F,X}},{I,O}},N,V,L) -> {{"λ",{F,X}},{subst(I,N,V,L),subst(O,N,shift(V,N),L)}};
+subst({{"∀",{N,0}},{I,O}},N,V,L) -> {{"∀",{N,0}},{subst(I,N,V,L),subst(O,N,shift(V,N,0),L+1)}};
+subst({{"∀",{F,X}},{I,O}},N,V,L) -> {{"∀",{F,X}},{subst(I,N,V,L),subst(O,N,shift(V,F,0),L)}};
+subst({{"λ",{N,0}},{I,O}},N,V,L) -> {{"λ",{N,0}},{subst(I,N,V,L),subst(O,N,shift(V,N,0),L+1)}};
+subst({{"λ",{F,X}},{I,O}},N,V,L) -> {{"λ",{F,X}},{subst(I,N,V,L),subst(O,N,shift(V,F,0),L)}};
 subst({app, {F,A}},       N,V,L) -> {app,        {subst(F,N,V,L),subst(A,N,V,L)}};
 subst({var, {N,L}},       N,V,L) -> V;           % index match
-subst({var, {N,I}},       _,_,_) -> {var,{N,I}}; % no match
-subst({star,N},           _,_,_) -> {star,N}.
+subst(T,       _,_,_)            -> T.
 
 eq(T,T)                                           -> true;
 eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
