@@ -34,8 +34,8 @@ using F-algebras please refer to Exe macrosystem over Om. Also Om doesn't suppor
 so you should anotate aforehand all the Types in order to produce correct Om programs.
 Om just checks the given terms in its own language.
 
-REPL
-----
+Users
+-----
 
 wget install:
 
@@ -44,6 +44,15 @@ $ brew install erlang
 $ wget https://github.com/groupoid/om/releases/download/0.3/om
 $ chmod +x om
 $ ./om
+```
+
+Developers
+----------
+
+```
+$ git clone git://github.com/groupoid/om && cd om
+$ make
+$ ./mad sh
 ```
 
 Session example with Om:
