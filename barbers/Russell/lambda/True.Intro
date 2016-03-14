@@ -1,0 +1,7 @@
+-- #True.Intro : #True
+
+\ (True : #Prop) ->
+----
+\ (Intro : True) ->
+----
+Intro
