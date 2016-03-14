@@ -37,6 +37,7 @@ name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
 str(F)       -> om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]).
 read(F)      -> om_tok:tokens([],file(F),0,{1,[]},[]).
 comp(F)      -> rev(tokens(F,"/")).
+normal(F)    -> om_type:normalize(F).
 cname(F)     -> hd(comp(F)).
 tname(F)     -> tname(F,[]).
 tname(F,S)   -> X = hd(tl(comp(F))), case om:mode() of X -> []; _ -> X ++ S end.
