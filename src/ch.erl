@@ -13,9 +13,11 @@ ap1(Fun,Arg) -> Fun(Arg).
 %        (true: bool)
 %        (false: bool)
 
-bool   () ->      [true, false].
-true   () ->       fun (T) -> fun (F) -> T end end.
-false  () ->       fun (T) -> fun (F) -> F end end.
+'if'   () ->  fun (P) -> fun (A) -> fun (B) -> (P(A))(B) end end end.
+
+bool   () ->      ["true", "false"].
+true   () ->       fun (T) -> fun (F) -> io:format("true called~n"), T end end.
+false  () ->       fun (T) -> fun (F) -> io:format("false called~n"), F end end.
 
             bool(F) -> ?MODULE:F().
             unbool(X) -> ap(X,bool()).
@@ -86,6 +88,11 @@ cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head)
              list   ([Head|Tail]) ->  (('List':'Cons'())(Head))(list(Tail)).
                                      %fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
              unlist (L)           -> ap(L,list_()).
+
+testbool() ->
+   (ch:ap(ch:'if'(),[ch:bool(true),fun (_) -> io:format("LEFT~n"),  left end,
+                                   fun (_) -> io:format("RIGHT~n"), right end]))(call).
+
 
 % marshaling sample
 
