@@ -1,0 +1,6 @@
+-- #EquProp : #Prop -> #Prop -> #Prop
+
+\ (A : #Prop) ->
+\ (B : #Prop) ->
+----
+#And (A -> B) (B -> A)

@@ -1,0 +1,7 @@
+-- #FalseNotTrue : \/(A : #Prop) -> (#EquProp A (#Not A)) -> #False
+
+\ (A : #Prop) ->
+\ (eq : #EquProp A (#Not A)) ->
+----
+(\ (a : #A) ->  #PR-L eq a a)
+(#PR-R eq (\ (a : #A) ->  #PR-L eq a a))
