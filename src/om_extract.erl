@@ -13,7 +13,7 @@ extract(X)  -> save( [{attribute,1,module,om:atom(om:cname(X))},
                   ++ [{eof,1}] ).
 
 save(Forms) -> om:debug("Forms: ~p~n",[Forms]),
-               {ok,Name,Bin} = compile:forms(om:flat(Forms)),
+               {ok,Name,Bin} = compile:forms(om:flat(Forms),[debug_info]),
                file:write_file(om:cat([ebin,"/",Name,".beam"]),Bin).
 
 extract(F,T,C) -> case ext(F,T,C) of
