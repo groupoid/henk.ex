@@ -1,0 +1,6 @@
+  λ (a : *)
+→ λ (x : #Bool/@)
+→ λ (y : #Prod0/@ → a)
+→ λ (z : #Prod0/@ → a)
+→ x (#Prod0/@ → a) y z #Prod0/Make
+

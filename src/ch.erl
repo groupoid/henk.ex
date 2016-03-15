@@ -3,6 +3,7 @@
 %-compile({parse_transform, dump}).
 -compile(export_all).
 
+
 % Erlang Partial Application
 
 ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
@@ -14,6 +15,16 @@ ap1(Fun,Arg) -> Fun(Arg).
 %        (false: bool)
 
 'if'   () ->  fun (P) -> fun (A) -> fun (B) -> (P(A))(B) end end end.
+
+% > ch:unnat(ch:ap('Bool':'if'(),['Bool':'True'(),
+%   fun(_) -> ('List':length())((('ch':'cons'())(1))('List':'Nil'())) end,
+%   fun(_) -> 'Nat':'Zero'() end])).
+% CONS
+% 1
+% > ch:unnat(ch:ap('Bool':'if'(),['Bool':'False'(),
+%   fun(_) -> ('List':length())((('ch':'cons'())(1))('List':'Nil'())) end,
+%   fun(_) -> 'Nat':'Zero'() end])).
+% 0
 
 bool   () ->      [ begin io:format("TRUE~n"), "true" end, begin io:format("FALSE~n"), "false" end].
 true   () ->       fun (T) -> fun (F) -> io:format("true called~n"), T end end.
@@ -113,3 +124,47 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () -> unlist(list(lists:seq(1,1000000))) end)),'_'}]) end ),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
+
+
+iff() ->
+    fun (X) ->
+            fun (Y) ->
+                    ((X(fun (L) ->
+                                fun (Succ) ->
+                                        fun (Zero) ->
+                                                io:format("SUCC~n"),
+                                                Succ(Succ((((Y(fun (Head) ->
+                                                                       fun
+                                                                         (Pred) ->
+                                                                             fun
+                                                                               (Succ) ->
+                                                                                   fun
+                                                                                     (Zero) ->
+                                                                                         Succ((Pred(Succ))(Zero))
+                                                                                   end
+                                                                             end
+                                                                       end
+                                                               end))(fun
+                                                                       (Succ) ->
+                                                                           fun
+                                                                             (Zero) ->
+                                                                                 Zero
+                                                                           end
+                                                                     end))(Succ))(Zero)))
+                                        end
+                                end
+                        end))(fun (P) ->
+                                      (Y(fun (Head) ->
+                                                 fun (Pred) ->
+                                                         fun (Succ) ->
+                                                                 fun (Zero) ->
+                                                                         Succ((Pred(Succ))(Zero))
+                                                                 end
+                                                         end
+                                                 end
+                                         end))(fun (Succ) ->
+                                                       fun (Zero) -> Zero end
+                                               end)
+                              end))(fun (Make) -> Make end)
+            end
+    end.
