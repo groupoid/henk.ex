@@ -4,7 +4,7 @@
 --
 --     import Prelude hiding (
 --         [+], [*], IO, putStrLn, getLine, [>>=], [>>], return )
--- 
+--
 --     -- Simple prelude
 --
 --     data Nat = Succ Nat | Zero
@@ -141,7 +141,7 @@
         -- [>>]
         (   \(m : IO U)
         ->  \(n : IO U)
-        ->  [>>=] U U m (\(_ : U) -> n)
+        ->  [>>=] U U m (\(_x : U) -> n)
         )
 
         -- two
