@@ -15,7 +15,7 @@ ap1(Fun,Arg) -> Fun(Arg).
 
 'if'   () ->  fun (P) -> fun (A) -> fun (B) -> (P(A))(B) end end end.
 
-bool   () ->      ["true", "false"].
+bool   () ->      [ begin io:format("TRUE~n"), "true" end, begin io:format("FALSE~n"), "false" end].
 true   () ->       fun (T) -> fun (F) -> io:format("true called~n"), T end end.
 false  () ->       fun (T) -> fun (F) -> io:format("false called~n"), F end end.
 
@@ -79,7 +79,8 @@ succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> Succ((Nat(Succ)
 list_  () ->                            [fun (H) -> fun (T) -> [H|T] end end, [] ].
 list   () ->                            [fun (H) -> fun (T) -> {cons,H,T} end end, nil].
 nil    () ->                             fun (Cons) -> fun (Nil) -> Nil end end.
-cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head))((Tail(Cons))(Nil))) end end end end.
+cons   () -> io:format("CONS~n"),
+         fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head))((Tail(Cons))(Nil))) end end end end.
                                                                     % ap(Cons,[Head,ap(Tail,[Cons,Nil])]) end end end end.
 
              % mapping to erlang list
@@ -87,11 +88,13 @@ cons   () -> fun (Head) -> fun (Tail) -> fun (Cons) -> fun (Nil) -> ((Cons(Head)
              list   ([])          -> 'List':'Nil'();
              list   ([Head|Tail]) ->  (('List':'Cons'())(Head))(list(Tail)).
                                      %fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
-             unlist (L)           -> ap(L,list_()).
+             unlist (L)           -> ap(L,list()).
+
+left() -> fun(_) -> io:format("LEFT~n"), left end.
+right() -> fun(_) -> io:format("RIGHT~n"), right end.
 
 testbool() ->
-   (ch:ap(ch:'if'(),[ch:bool(true),fun (_) -> io:format("LEFT~n"),  left end,
-                                   fun (_) -> io:format("RIGHT~n"), right end]))(call).
+   (ch:ap(ch:'if'(),[ch:bool(true),left(),right()]))(call).
 
 
 % marshaling sample

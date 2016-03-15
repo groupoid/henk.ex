@@ -1,0 +1,1 @@
+λ(a : *) → λ(eqA : #Eq  a) → λ(p1 : #Prod1  a) → λ(p2 : #Prod1  a) → p1 #Bool  (λ(_1 : a) → p2 #Bool  (eqA _1))
