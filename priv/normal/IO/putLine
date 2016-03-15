@@ -1,1 +1,1 @@
-λ(str : #String/@ ) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : #Prod0/@  → IO) → PutLine_ str (Pure_ #Prod0/Make )
+λ(str : #String/@ ) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : #Unit/@  → IO) → PutLine_ str (Pure_ #Unit/Make )

@@ -1,0 +1,1 @@
+λ(_ : #Unit/@ ) → λ(_ : #Unit/@ ) → #Bool/True
