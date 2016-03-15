@@ -1,4 +1,0 @@
--- #Equ : \/(T : #Star) -> #Prop
-
-\ (T : #Star) ->
-T -> T -> #Prop

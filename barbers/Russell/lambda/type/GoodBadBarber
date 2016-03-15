@@ -1,2 +1,0 @@
--- #GoodBadBarber : #EquProp (#Good #Barber) (#Bad #Barber)
-(\(t : #EquProp (#Good #Barber) (#Bad #Barber))-> t) #GoodBadBarber

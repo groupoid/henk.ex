@@ -1,2 +1,0 @@
--- #TheParadox : #Prop
-(\(t : #Prop) -> t) #TheParadox
