@@ -37,6 +37,6 @@
     NaiveOk (Down P POk)) ->
 
 --
-NaiveOk (
-  N Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk
-)
+#And
+    (#NaiveOkOk Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk)
+    (#NaiveOkLim Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk)

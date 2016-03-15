@@ -20,7 +20,7 @@
 \/(Down1 :
     \/(P :
         \/(n : Naive1) -> \/(nOk : Naive1Ok n) -> #Prop) ->
-    \/(POk :
+    \/(PEqu :
         \/(n1 : Naive1) -> \/(n1Ok : Naive1Ok n) ->
         \/(n2 : Naive1) -> \/(n2Ok : Naive1Ok n) ->
         \/(eq : Naive1Equ n1 n2) ->
@@ -29,7 +29,7 @@
 \/(Down1Ok :
     \/(P :
         \/(n : Naive1) -> \/(nOk : Naive1Ok n) -> #Prop) ->
-    \/(POk :
+    \/(PEqu :
         \/(n1 : Naive1) -> \/(n1Ok : Naive1Ok n) ->
         \/(n2 : Naive1) -> \/(n2Ok : Naive1Ok n) ->
         \/(eq : Naive1Equ n1 n2) ->
@@ -54,7 +54,7 @@
 \/(Down2 :
     \/(P :
         \/(n : Naive2) -> \/(nOk : Naive2Ok n) -> #Prop) ->
-    \/(POk :
+    \/(PEqu :
         \/(n1 : Naive2) -> \/(n1Ok : Naive2Ok n) ->
         \/(n2 : Naive2) -> \/(n2Ok : Naive2Ok n) ->
         \/(eq : Naive2Equ n1 n2) ->
@@ -63,7 +63,7 @@
 \/(Down2Ok :
     \/(P :
         \/(n : Naive2) -> \/(nOk : Naive2Ok n) -> #Prop) ->
-    \/(POk :
+    \/(PEqu :
         \/(n1 : Naive2) -> \/(n1Ok : Naive2Ok n) ->
         \/(n2 : Naive2) -> \/(n2Ok : Naive2Ok n) ->
         \/(eq : Naive2Equ n1 n2) ->
@@ -81,27 +81,27 @@
 \/(morDown :
     \/(P :
         \/(n : Naive1) -> \/(nOk : Naive1Ok n) -> #Prop) ->
-    \/(POk :
+    \/(PEqu :
         \/(n1 : Naive1) -> \/(n1Ok : Naive1Ok n) ->
         \/(n2 : Naive1) -> \/(n2Ok : Naive1Ok n) ->
         \/(eq : Naive1Equ n1 n2) ->
         #EquProp (P n1 n1Ok) (P n2 n2Ok)) ->
     Naive2Equ
-        (mor (Down1 P POk))
+        (mor (Down1 P PEqu))
         (Down2
             (#Map
                 Naive1 Naive1Ok Naive1Equ Naive1Refl Naive1Trans Naive1Sym
                 Naive2 Naive2Ok Naive2Equ Naive2Refl Naive2Trans Naive2Sym
                 mor morOk
-                P POk)
+                P PEqu)
             (#MapEqu
                 Naive1 Naive1Ok Naive1Equ Naive1Refl Naive1Trans Naive1Sym
                 Naive2 Naive2Ok Naive2Equ Naive2Refl Naive2Trans Naive2Sym
                 mor morOk
-                P POk))) ->
+                P PEqu))) ->
 
 --
 Naive2Equ
   (mor
-  (N1 Naive1 Naive1Ok Naive1Equ Naive1Refl Naive1Trans Naive1Sym))
-  (N2 Naive2 Naive2Ok Naive2Equ Naive2Refl Naive2Trans Naive2Sym)
+  (N1 Naive1 Naive1Ok Naive1Equ Naive1Refl Naive1Trans Naive1Sym Down1 Down1Ok))
+  (N2 Naive2 Naive2Ok Naive2Equ Naive2Refl Naive2Trans Naive2Sym Down2 Down2Ok)

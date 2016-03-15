@@ -1,0 +1,6 @@
+-- #GoodEqu : ?
+
+\ (N : #Naive) ->
+\ (NOk : #NaiveOk N) ->
+?
+#UpEqu N NOk N NOk

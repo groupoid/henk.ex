@@ -1,4 +1,4 @@
--- #Map : \/(f : T1 -> T2) -> Power T1 -> Power T2
+-- #MapEqu : \/(f : T1 -> T2) -> Power T1 -> Power T2
 
 -- setoid 1
 \ (T1 : #Star) ->

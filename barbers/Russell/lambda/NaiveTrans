@@ -1,23 +1,25 @@
--- #NaiveOk : #Naive -> #Prop
+-- #NaiveTrans : \/(N1 : #Naive) -> \/(N2 : #Naive) -> \/(N3 : #Naive) -> #NaiveEqu N1 N2 -> #NaiveEqu N2 N3 -> #NaiveEqu N1 N3
 
-\ (N : #Naive) ->
+-- Equ args
+\ (N1 : #Naive) ->
+\ (N2 : #Naive) ->
+\ (N3 : #Naive) ->
 
 -- setoid
-\/(Naive : #Star) ->
-\/(NaiveOk : Naive -> #Prop) ->
-\/(NaiveEqu : Naive -> Naive -> #Prop) ->
-\/(NaiveRefl :
-    \/(n : Naive) ->
-    NaiveEqu n n) ->
-\/(NaiveTrans :
+\ (Naive : #Star) ->
+\ (NaiveOk : Naive -> #Prop) ->
+\ (NaiveEqu : Naive -> Naive -> #Prop) ->
+\ (NaiveRefl :
+    \/(n : Naive) -> NaiveEqu n n) ->
+\ (NaiveTrans :
     \/(n1 : Naive) -> \/(n2 : Naive) -> \/(n3 : Naive) ->
     NaiveEqu n1 n2 -> NaiveEqu n2 n3 -> NaiveEqu n1 n3) ->
-\/(NaiveSym :
+\ (NaiveSym :
     \/(n1 : Naive) -> \/(n2 : Naive) ->
     NaiveEqu n1 n2 -> NaiveEqu n2 n1) ->
 
 -- algebra
-\/(Down :
+\ (Down :
     \/(P :
         \/(n : Naive) -> \/(nOk : NaiveOk n) -> #Prop) ->
     \/(PEqu :
@@ -26,7 +28,7 @@
         \/(eq : NaiveEqu n1 n2) ->
         #EquProp (P n1 n1Ok) (P n2 n2Ok)) ->
     Naive) ->
-\/(DownOk :
+\ (DownOk :
     \/(P :
         \/(n : Naive) -> \/(nOk : NaiveOk n) -> #Prop) ->
     \/(PEqu :
@@ -37,6 +39,7 @@
     NaiveOk (Down P POk)) ->
 
 --
-NaiveOk (
-  N Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk
-)
+NaiveTrans
+    (N1 Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk)
+    (N2 Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk)
+    (N3 Naive NaiveOk NaiveEqu NaiveRefl NaiveTrans NaiveSym Down DownOk)
