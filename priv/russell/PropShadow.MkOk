@@ -1,0 +1,11 @@
+-- #PropShadow.MkOk : \/(P : #Prop) -> #PropShadowOk (#PropShadow.Mk P)
+
+-- arg
+\ (P : #Prop) ->
+
+-- result
+#And.Intro
+    (#PropShadowOkOk (#PropShadow.Mk P))
+    (#PropShadowOkLim (#PropShadow.Mk P))
+    (#PropShadow.MkOkOk P)
+    (#PropShadow.MkOkLim P)

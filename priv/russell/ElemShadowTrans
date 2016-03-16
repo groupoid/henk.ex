@@ -1,0 +1,37 @@
+-- #ElemShadowTrans : \/(sh1 : #ElemShadow) -> \/(sh2 : #ElemShadow) -> \/(sh3 : #ElemShadow) -> #ElemShadowEqu sh1 sh2 -> #ElemShadowEqu sh2 sh3 -> #ElemShadowEqu sh1 sh3
+
+-- args
+\ (sh1 : #ElemShadow) ->
+\ (sh2 : #ElemShadow) ->
+\ (sh3 : #ElemShadow) ->
+\ (eq12 : #ElemShadowEqu sh1 sh2) ->
+\ (eq23 : #ElemShadowEqu sh2 sh3) ->
+
+-- setoid
+\ (ElemShadow : #Star ) ->
+\ (ElemShadowOk : ElemShadow -> #Prop ) ->
+\ (ElemShadowEqu : ElemShadow -> ElemShadow -> #Prop ) ->
+\ (ElemShadowRefl :
+    \/(s : ElemShadow) ->
+    ElemShadowEqu s s ) ->
+\ (ElemShadowTrans :
+    \/(s1 : ElemShadow) -> \/(s2 : ElemShadow) -> \/(s3 : ElemShadow) ->
+    ElemShadowEqu s1 s2 -> ElemShadowEqu s2 s3 -> ElemShadowEqu s1 s3) ->
+\ (ElemShadowSym :
+    \/(s1 : ElemShadow) -> \/(s2 : ElemShadow) ->
+    ElemShadowEqu s1 s2 -> ElemShadowEqu s2 s1) ->
+
+-- algebra/constructors
+\ (Mk : \/(P : #Prop) -> \/(p : P) -> ElemShadow) ->
+\ (MkOk : \/(P : #Prop) -> \/(p : P) -> ElemShadowOk (Mk P p)) ->
+\ (MkEqu :
+    \/(P1 : #Prop) -> \/(p1 : P1) -> \/(P2 : #Prop) -> \/(p2 : P2) ->
+    #EquProp P1 P2 -> ElemShadowEqu (Mk P1 p1) (Mk P2 p2)) ->
+
+-- result
+ElemShadowTrans
+    (sh1 ElemShadow ElemShadowOk ElemShadowEqu ElemShadowRefl ElemShadowTrans ElemShadowSym Mk MkOk MkEqu)
+    (sh2 ElemShadow ElemShadowOk ElemShadowEqu ElemShadowRefl ElemShadowTrans ElemShadowSym Mk MkOk MkEqu)
+    (sh3 ElemShadow ElemShadowOk ElemShadowEqu ElemShadowRefl ElemShadowTrans ElemShadowSym Mk MkOk MkEqu)
+    (eq12 ElemShadow ElemShadowOk ElemShadowEqu ElemShadowRefl ElemShadowTrans ElemShadowSym Mk MkOk MkEqu)
+    (eq23 ElemShadow ElemShadowOk ElemShadowEqu ElemShadowRefl ElemShadowTrans ElemShadowSym Mk MkOk MkEqu)

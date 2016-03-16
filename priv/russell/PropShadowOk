@@ -1,0 +1,7 @@
+-- #PropShadowOkLim : #PropShadow -> #Prop
+
+-- arg
+\ (sh : #PropShadow) ->
+
+--result
+#And (#PropShadowOkOk sh) (#PropShadowOkLim sh)
