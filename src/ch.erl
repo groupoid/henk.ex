@@ -104,9 +104,10 @@ cons   () -> io:format("CONS~n"),
 left() -> fun(_) -> io:format("LEFT~n"), left end.
 right() -> fun(_) -> io:format("RIGHT~n"), right end.
 
-testbool() ->
-   (ch:ap(ch:'if'(),[ch:bool(true),left(),right()]))(call).
+testbool() -> ((ch:ap(ch:'iff'(),[ch:bool(true),ch:list([])]))(call))(1).
 
+
+morte() -> ap('Morte':corecursive(),['Maybe':'Just'()]).
 
 % marshaling sample
 
@@ -125,46 +126,72 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
 
+eiff() ->
+    fun (X) ->
+            fun (Y) ->
+                    (X(fun (Succ) ->
+                               fun (Zero) ->
+                                                io:format("EIFF CONS~n"),
+                                       Succ(Succ(Succ(Succ(Succ(Succ(Succ((((Y(fun
+                                                                                 (Head) ->
+                                                                                     fun
+                                                                                       (Pred) ->
+                                                                                           fun
+                                                                                             (Succ) ->
+                                                                                                 fun
+                                                                                                   (Zero) ->
+                                                                                                       Succ((Pred(Succ))(Zero))
+                                                                                                 end
+                                                                                           end
+                                                                                     end
+                                                                               end))(fun
+                                                                                       (Succ) ->
+                                                                                           fun
+                                                                                             (Zero) ->
+                                                                                                 Zero
+                                                                                           end
+                                                                                     end))(Succ))(Zero))))))))
+                               end
+                       end))((Y(fun (Head) ->
+                                        fun (Pred) ->
+                                                fun (Succ) ->
+                                                        fun (Zero) ->
+                                                                Succ((Pred(Succ))(Zero))
+                                                        end
+                                                end
+                                        end
+                                end))(fun (Succ) -> fun (Zero) -> Zero end end))
+            end
+    end.
 
 iff() ->
     fun (X) ->
             fun (Y) ->
-                    ((X(fun (L) ->
-                                fun (Succ) ->
-                                        fun (Zero) ->
-                                                io:format("SUCC~n"),
-                                                Succ(Succ((((Y(fun (Head) ->
-                                                                       fun
-                                                                         (Pred) ->
-                                                                             fun
-                                                                               (Succ) ->
-                                                                                   fun
-                                                                                     (Zero) ->
-                                                                                         Succ((Pred(Succ))(Zero))
-                                                                                   end
-                                                                             end
-                                                                       end
-                                                               end))(fun
-                                                                       (Succ) ->
-                                                                           fun
-                                                                             (Zero) ->
-                                                                                 Zero
-                                                                           end
-                                                                     end))(Succ))(Zero)))
-                                        end
-                                end
-                        end))(fun (P) ->
-                                      (Y(fun (Head) ->
-                                                 fun (Pred) ->
-                                                         fun (Succ) ->
-                                                                 fun (Zero) ->
-                                                                         Succ((Pred(Succ))(Zero))
-                                                                 end
-                                                         end
-                                                 end
-                                         end))(fun (Succ) ->
-                                                       fun (Zero) -> Zero end
-                                               end)
-                              end))(fun (Make) -> Make end)
+                    fun (Succ) ->
+                            fun (Zero) ->
+                                                io:format("LAZY CONS~n"),
+                                    Succ(Succ(Succ(Succ(Succ(Succ(Succ((((Y(fun
+                                                                              (Head) ->
+                                                                                  fun
+                                                                                    (Pred) ->
+                                                                                        fun
+                                                                                          (Succ) ->
+                                                                                              fun
+                                                                                                (Zero) ->
+                                                                                                    Succ((Pred(Succ))(Zero))
+                                                                                              end
+                                                                                        end
+                                                                                  end
+                                                                            end))(fun
+                                                                                    (Succ) ->
+                                                                                        fun
+                                                                                          (Zero) ->
+                                                                                              Zero
+                                                                                        end
+                                                                                  end))(Succ))(Zero))))))))
+                            end
+                    end
             end
     end.
+    
+

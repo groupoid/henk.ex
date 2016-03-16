@@ -1,5 +1,5 @@
   λ (a : *)
 → ∀ (IO : *)
-→ ∀ (GetLine_ : (#String/@  → IO) → IO)
-→ ∀ (PutLine_ : #String/@  → IO → IO)
+→ ∀ (GetLine_ : (#List/@ #Nat/@ → IO) → IO)
+→ ∀ (PutLine_ : #List/@ #Nat/@ → IO → IO)
 → ∀ (Pure_ : a → IO) → IO

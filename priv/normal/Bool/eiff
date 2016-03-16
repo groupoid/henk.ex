@@ -1,7 +1,7 @@
     \ (X: #Bool/@)
 ->  \ (Y: #List/@ #Nat/@)
--> #Bool/if #Nat/@ #Bool/True
-   (\ (l: #Unit/@) -> #List/length #Nat/@
+-> #Bool/eif #Nat/@ X
+   (#List/length #Nat/@
    (#List/Cons #Nat/@ #Nat/Zero
    (#List/Cons #Nat/@ #Nat/Zero
    (#List/Cons #Nat/@ #Nat/Zero
@@ -9,4 +9,4 @@
    (#List/Cons #Nat/@ #Nat/Zero
    (#List/Cons #Nat/@ #Nat/Zero
    (#List/Cons #Nat/@ (#Nat/Succ #Nat/Zero) Y))))))))
-   (\ (p: #Unit/@) -> #List/length #Nat/@ Y)
+   (#List/length #Nat/@ Y)

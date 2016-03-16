@@ -1,1 +1,6 @@
-λ(a : *) → λ(_x : a) → λ(IO : *) → λ(GetLine_ : (#String/@  → IO) → IO) → λ(PutLine_ : #String/@  → IO → IO) → λ(Pure_ : a → IO) → Pure_ _x
+  λ (a : *)
+→ λ (_x : a)
+→ λ (IO : *)
+→ λ (GetLine_ : (#List/@ #Nat/@ → IO) → IO)
+→ λ (PutLine_ : #List/@ #Nat/@ → IO → IO)
+→ λ (Pure_ : a → IO) → Pure_ _x
