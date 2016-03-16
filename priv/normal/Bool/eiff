@@ -1,12 +1,5 @@
     \ (X: #Bool/@)
-->  \ (Y: #List/@ #Nat/@)
+->  \ (Y: #Nat/@)
 -> #Bool/eif #Nat/@ X
-   (#List/length #Nat/@
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ #Nat/Zero
-   (#List/Cons #Nat/@ (#Nat/Succ #Nat/Zero) Y))))))))
-   (#List/length #Nat/@ Y)
+   (#Nat/[+] Y (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ #Nat/Zero))))))
+   (Y)
