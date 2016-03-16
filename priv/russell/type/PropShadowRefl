@@ -1,0 +1,1 @@
+(\(t : \/(sh : #PropShadow) -> #PropShadowEqu sh sh) -> t) #PropShadowRefl

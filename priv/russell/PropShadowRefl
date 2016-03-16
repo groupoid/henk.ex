@@ -1,0 +1,27 @@
+-- #PropShadowRefl : \/(sh : #PropShadow) -> #PropShadowEqu sh sh
+
+-- args
+\ (sh1 : #PropShadow) ->
+
+-- setoid
+\ (PropShadow : #Star ) ->
+\ (PropShadowOk : PropShadow -> #Prop ) ->
+\ (PropShadowEqu : PropShadow -> PropShadow -> #Prop ) ->
+\ (PropShadowRefl :
+    \/(s : PropShadow) ->
+    PropShadowEqu s s ) ->
+\ (PropShadowTrans :
+    \/(s1 : PropShadow) -> \/(s2 : PropShadow) -> \/(s3 : PropShadow) ->
+    PropShadowEqu s1 s2 -> PropShadowEqu s2 s3 -> PropShadowEqu s1 s3) ->
+\ (PropShadowSym :
+    \/(s1 : PropShadow) -> \/(s2 : PropShadow) ->
+    PropShadowEqu s1 s2 -> PropShadowEqu s2 s1) ->
+
+-- algebra/constructors
+\ (Mk : \/(P : #Prop) -> PropShadow) ->
+\ (MkOk : \/(P : #Prop) -> PropShadowOk (Mk P)) ->
+\ (MkEqu : \/(P1 : #Prop) -> \/(P2 : #Prop) -> #EquProp P1 P2 -> PropShadowEqu (Mk P1) (Mk P2)) ->
+
+-- result
+PropShadowRefl
+    (sh1 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)

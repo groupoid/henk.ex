@@ -1,0 +1,1 @@
+(\(t : \/(P1 : #Prop) -> \/(P2 : #Prop) -> #EquProp P1 P2 -> #PropShadowEqu (#PropShadow.Mk P1) (#PropShadow.Mk P2)) -> t) #PropShadow.MkEqu

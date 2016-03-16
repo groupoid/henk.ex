@@ -1,0 +1,1 @@
+(\(t : \/(sh1 : #ElemShadow) -> \/(sh2 : #ElemShadow) -> \/(sh3 : #ElemShadow) -> #ElemShadowEqu sh1 sh2 -> #ElemShadowEqu sh2 sh3 -> #ElemShadowEqu sh1 sh3) -> t) #ElemShadowTrans

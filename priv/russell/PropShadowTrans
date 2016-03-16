@@ -1,0 +1,35 @@
+-- #PropShadowTrans : \/(sh1 : #PropShadow) -> \/(sh2 : #PropShadow) -> \/(sh3 : #PropShadow) -> #PropShadowEqu sh1 sh2 -> #PropShadowEqu sh2 sh3 -> #PropShadowEqu sh1 sh3
+
+-- args
+\ (sh1 : #PropShadow) ->
+\ (sh2 : #PropShadow) ->
+\ (sh3 : #PropShadow) ->
+\ (eq12 : #PropShadowEqu sh1 sh2) ->
+\ (eq23 : #PropShadowEqu sh2 sh3) ->
+
+-- setoid
+\ (PropShadow : #Star ) ->
+\ (PropShadowOk : PropShadow -> #Prop ) ->
+\ (PropShadowEqu : PropShadow -> PropShadow -> #Prop ) ->
+\ (PropShadowRefl :
+    \/(s : PropShadow) ->
+    PropShadowEqu s s ) ->
+\ (PropShadowTrans :
+    \/(s1 : PropShadow) -> \/(s2 : PropShadow) -> \/(s3 : PropShadow) ->
+    PropShadowEqu s1 s2 -> PropShadowEqu s2 s3 -> PropShadowEqu s1 s3) ->
+\ (PropShadowSym :
+    \/(s1 : PropShadow) -> \/(s2 : PropShadow) ->
+    PropShadowEqu s1 s2 -> PropShadowEqu s2 s1) ->
+
+-- algebra/constructors
+\ (Mk : \/(P : #Prop) -> PropShadow) ->
+\ (MkOk : \/(P : #Prop) -> PropShadowOk (Mk P)) ->
+\ (MkEqu : \/(P1 : #Prop) -> \/(P2 : #Prop) -> #EquProp P1 P2 -> PropShadowEqu (Mk P1) (Mk P2)) ->
+
+-- result
+PropShadowTrans
+    (sh1 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)
+    (sh2 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)
+    (sh3 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)
+    (eq12 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)
+    (eq23 PropShadow PropShadowOk PropShadowEqu PropShadowRefl PropShadowTrans PropShadowSym Mk MkOk MkEqu)

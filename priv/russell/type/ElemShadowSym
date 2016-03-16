@@ -1,0 +1,1 @@
+(\(t : \/(sh1 : #ElemShadow) -> \/(sh2 : #ElemShadow) -> #ElemShadowEqu sh1 sh2 -> #ElemShadowEqu sh2 sh1) -> t) #ElemShadowSym
