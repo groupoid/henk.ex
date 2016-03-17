@@ -1,6 +1,6 @@
     \ (X: #Bool/@)
 ->  \ (Y: #List/@ #Nat/@)
--> #Bool/if #Nat/@ #Bool/True
+-> #Bool/if #Nat/@ X
    (\ (l: #Unit/@) -> #List/length #Nat/@
    (#List/Cons #Nat/@ #Nat/Zero
    (#List/Cons #Nat/@ #Nat/Zero
