@@ -1,6 +1,7 @@
   λ (a : *)
 → λ (_x : a)
 → λ (IO : *)
-→ λ (GetLine_ : (#List/@ #Nat/@ → IO) → IO)
-→ λ (PutLine_ : #List/@ #Nat/@ → IO → IO)
-→ λ (Pure_ : a → IO) → Pure_ _x
+→ λ (GetLine_ : (#IO/data → IO) → IO)
+→ λ (PutLine_ : #IO/data → IO → IO)
+→ λ (Pure_ : a → IO)
+→ Pure_ _x
