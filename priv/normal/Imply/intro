@@ -1,4 +1,1 @@
-\(p: #Prop) -> \ (q: #Prop) -> \(pp: #Prop) -> \ (qq: #Prop) -> p
-
-
-
+\(p: #Prop) -> \ (q: #Prop) -> \(pp: p) -> \ (qq: q) -> pp
