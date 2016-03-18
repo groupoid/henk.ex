@@ -1,0 +1,2 @@
+-- #True : #Prop
+\/(True : #Prop) -> \/(Intro : True) -> True
