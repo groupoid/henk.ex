@@ -1,0 +1,3 @@
+\(p: #Prop) -> \ (q: #Prop) -> #Prop
+
+
