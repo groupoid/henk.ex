@@ -99,9 +99,13 @@ cons   () -> io:format("CONS~n"),
              list   ([])          -> 'List':'Nil'();
              list   ([Head|Tail]) ->  (('List':'Cons'())(Head))(list(Tail)).
                                      %fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
-             unlist (L)           -> ap(L,list()).
+             unlist (L)           -> ap(L,list_()).
 
-morte() -> ap('Morte':corecursive(),['Maybe':'Just'()]).
+getLine() ->           fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
+putLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), ch:ap(IO,[S]) end end.
+pure()    ->           fun(IO) -> IO end.
+
+ma() -> ap('Morte':recursive(),[getLine(),putLine(),pure(),ch:nil()]).
 
 % marshaling sample
 
