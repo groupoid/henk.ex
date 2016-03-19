@@ -1,4 +1,4 @@
-  λ (T : *)
+  λ (T: *)
 → λ (a: T)
-→ λ (Equ: \/ (a : T) -> #Prop)
-→ (\(x: #Prop) -> \ (t: x) -> t) (Equ a)
+→ λ (Equ: ∀ (a: T) → #Prop/@)
+→ #Prop/id (Equ a)

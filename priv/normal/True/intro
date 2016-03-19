@@ -1,2 +1,4 @@
--- #True/intro : #True
-\ (True : #Prop) -> \ (Intro : True) -> Intro
+-- #True/intro : #True/@
+  λ (True: #Prop/@)
+→ λ (Intro: True)
+→ Intro

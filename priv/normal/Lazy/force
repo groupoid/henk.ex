@@ -1,1 +1,3 @@
-\ (a: *) -> \ (force: #Unit/@ -> a) -> a
+  λ (a: *)
+→ λ (force: #Unit/@ → a)
+→ a

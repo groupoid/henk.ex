@@ -1,2 +1,4 @@
--- #True : #Prop
-\/(True : #Prop) -> \/(Intro : True) -> True
+-- #True : #Prop/@
+  ∀ (True: #Prop/@)
+→ ∀ (Intro: True)
+→ True

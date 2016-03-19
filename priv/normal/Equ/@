@@ -1,6 +1,6 @@
-   \  (T: *)
--> \  (a: T)
--> \  (b: T)
--> \/ (equ:  \/ (a : T) -> T -> #Prop)
--> \/ (refl: \/(t: T)-> equ t t)
--> equ a b
+  λ (T: *)
+→ λ (a: T)
+→ λ (b: T)
+→ ∀ (equ: T → T → #Prop/@)
+→ ∀ (refl: ∀ (t: T) → equ t t)
+→ equ a b

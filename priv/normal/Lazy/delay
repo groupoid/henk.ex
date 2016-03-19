@@ -1,1 +1,3 @@
-\ (a: *) -> \ (delay: #Unit/@ -> a) -> #Lazy/@ a
+  λ (a: *)
+→ λ (delay: #Unit/@ → a)
+→ #Lazy/@ a

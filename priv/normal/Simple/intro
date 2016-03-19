@@ -1,1 +1,5 @@
-\(p: #Prop) -> \ (q: #Prop) -> \(pp: p) -> \ (qq: q) -> pp
+  λ (p: #Prop/@)
+→ λ (q: #Prop/@)
+→ λ (pp: p)
+→ λ (qq: q)
+→ pp

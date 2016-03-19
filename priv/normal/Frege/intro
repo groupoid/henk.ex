@@ -1,5 +1,7 @@
-\(p : #Prop) -> \(q : #Prop) -> \(r : #Prop) ->
-\(f : p -> q -> r) ->
-\(g : p -> q) ->
-\(pp : p) ->
-f pp (g pp)
+   \ (p: #Prop/@)
+-> \ (q: #Prop/@)
+-> \ (r: #Prop/@)
+-> \ (f: p -> q -> r)
+-> \ (g: p -> q)
+-> \ (pp: p)
+-> f pp (g pp)

@@ -1,2 +1,2 @@
--- #False : #Prop
-\/(False : #Prop) -> False
+-- #False : #Prop/@
+∀ (False: #Prop/@) → False
