@@ -7,7 +7,7 @@
     ->  #Maybe/maybe
             #IOI/data
             m
-            (#IOI/F/@ r (#Maybe/@ #IOI/data))
+            (#IOI/F r (#Maybe/@ #IOI/data))
             (\(str : #IOI/data) ->
                 #IOI/putLine
                     r
