@@ -40,7 +40,7 @@ comp(F)      -> rev(tokens(F,"/")).
 normal(F)    -> om_type:normalize(F).
 cname(F)     -> hd(comp(F)).
 tname(F)     -> tname(F,[]).
-tname(F,S)   -> X = hd(tl(comp(F))), case om:mode() of X -> []; _ -> X ++ S end.
+tname(F,S)   -> X = string:join(rev(tl(rev(tl(tl(tokens(F,"/")))))),"/"), case om:mode() of X -> []; _ -> X ++ S end.
 show(F)      -> Term = snd(parse(tname(F),cname(F))), mad:info("~n~ts~n~n", [bin(Term)]), Term.
 a(F)         -> snd(parse(str(F))).
 fst({X,_})   -> X.
@@ -85,12 +85,12 @@ pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
 all()        -> om:debug(false), lists:flatten([ begin om:mode(M), om:scan() end || M <- modes() ]).
-syscard()    -> [ {F} || F <- filelib:wildcard(name(mode(),"**","*")), filelib:is_dir(F) /= true ].
+syscard()    -> [ {F} || F <- filelib:wildcard(name(mode(),"**/*","*")), filelib:is_dir(F) /= true ].
 wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                 lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
 scan(_)      -> scan().
 scan()       -> om:debug(false),
-                Res = [ { flat(element(2,pipe(F))),lists:concat([tname(F,"/"),cname(F)])}
+                Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F,"/"),cname(F)])}
                      || {F} <- lists:umerge(wildcard(),syscard()),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
