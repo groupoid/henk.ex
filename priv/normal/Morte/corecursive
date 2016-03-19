@@ -1,51 +1,19 @@
-(   \(IO : * -> *)
-->  \(  MkIO
-    :   forall (r : *)
-    ->  forall (s : *)
-    ->  s
-    ->  (s -> #IOI/F/@ r s)
-    ->  IO r
+\(r : *)
+->  #IOI/MkIO
+    r
+    (#Maybe/@ #IOI/data)
+    (#Maybe/Nothing #IOI/data)
+    (   \(m : #Maybe/@ #IOI/data)
+    ->  #Maybe/maybe
+            #IOI/data
+            m
+            (#IOI/F/@ r (#Maybe/@ #IOI/data))
+            (\(str : #IOI/data) ->
+                #IOI/putLine
+                    r
+                    (#Maybe/@ #IOI/data)
+                    str
+                    (#Maybe/Nothing #IOI/data)
+            )
+            (#IOI/getLine r (#Maybe/@ #IOI/data) (#Maybe/Just #IOI/data))
     )
-->  (   \(main : forall (r : *) -> IO r)
-    ->  main
-    )
-
-    -- main
-    (   \(r : *)
-    ->  MkIO
-        r
-        (#Maybe/@ #IOI/data)
-        (#Maybe/Nothing #IOI/data)
-        (   \(m : #Maybe/@ #IOI/data)
-        ->  #Maybe/maybe
-                #IOI/data
-                m
-                (#IOI/F/@ r (#Maybe/@ #IOI/data))
-                (\(str : #IOI/data) ->
-                    #IOI/putLine
-                        r
-                        (#Maybe/@ #IOI/data)
-                        str
-                        (#Maybe/Nothing #IOI/data)
-                )
-                (#IOI/getLine r (#Maybe/@ #IOI/data) (#Maybe/Just #IOI/data))
-        )
-    )
-)
-
--- IO
-(   \(r : *)
-->  forall (x : *)
-->  (forall (s : *) -> s -> (s -> #IOI/F/@ r s) -> x)
-->  x
-)
-
--- MkIO
-(   \(r : *)
-->  \(s : *)
-->  \(seed : s)
-->  \(step : s -> #IOI/F/@ r s)
-->  \(x : *)
-->  \(k : forall (s : *) -> s -> (s -> #IOI/F/@ r s) -> x)
-->  k s seed step
-)

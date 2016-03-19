@@ -1,0 +1,7 @@
+    \(r : *)
+->  \(s : *)
+->  \(seed : s)
+->  \(step : s -> #IOI/F/@ r s)
+->  \(x : *)
+->  \(k : forall (s : *) -> s -> (s -> #IOI/F/@ r s) -> x)
+->  k s seed step
