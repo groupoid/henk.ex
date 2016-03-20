@@ -1,6 +1,0 @@
-   λ (P : #Bool/@ → #Prop/@) 
--> \ (a : #Bool/@)
--> \ (t : P #Bool/True)
--> \ (f : P #Bool/False)
--> a t f
-
