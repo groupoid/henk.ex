@@ -52,6 +52,16 @@ parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
 
 % system functions
 
+convert(A,S, nt) -> convert(A,S);
+convert(A,S, _)  -> A.
+
+convert([],Acc) -> rev(Acc);
+convert([$>|T],Acc) -> convert(T,[61502|Acc]);
+convert([$<|T],Acc) -> convert(T,[61500|Acc]);
+convert([$:|T],Acc) -> convert(T,[61498|Acc]);
+convert([$||T],Acc) -> convert(T,[61564|Acc]);
+convert([H|T],Acc)  -> convert(T,[H|Acc]).
+
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ terms, types, erased ].
 boot()       -> [ ets:new(T,opt()) || T <- tables() ],
@@ -115,7 +125,7 @@ keyget(K,D,I)  -> lists:nth(I+1,proplists:get_all_values(K,D)).
 hierarchy(Arg,Out) -> Out.           % impredicative
 %hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
-file(F) -> case file:read_file(F) of
+file(F) -> case file:read_file(convert(F,[],element(2,os:type()))) of
                 {ok,Bin} -> Bin;
                 {error,_} -> mad(F) end.
 
