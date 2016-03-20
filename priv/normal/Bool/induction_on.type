@@ -1,0 +1,5 @@
+forall (P : #Bool/@ → #Prop/@) 
+-> ∀ (a : #Bool/@)
+-> P #Bool/True 
+→ P #Bool/False 
+→ P a

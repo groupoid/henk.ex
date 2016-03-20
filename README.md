@@ -6,36 +6,59 @@ Om: Lambda Assembler
 Abstract
 --------
 
-Om library provides backbone CoC lambda assembler with predicative universes
-as target language for general purpose languages or macrosystems, possibly with
-dependent types. This work is based on Henk lambda cube assembler, and impredicative
-Morte implementation by Gabriel Gonzalez. Om is intended to be a compatible version
-of Morte and supports two typecheckers: predicative and impredicative.
-Om is useful as an intermediate language for high level front-end languages
-with <b>System F<sub>ω<sub></b>, <b>System F<sub>&lt;:</sub></b> or pure <b>CoC</b> type systems.
+Om is intended to be used as a back-end library to facilitate 
+implementation of general purpose typed functional languages.
 
-Types
------
-
-Om AST provides very few types: only universe constants, lambda abstractions, pi types, arrow types and applications.
-
-```
-    data Om: * :=
-         (star: nat → Om)
-         (var: string → Om)
-         (pi: string → Om →  Om)
-         (arrow: string → Om → Om)
-         (app: Om → Om → Om)
-```
+Om is a low-level implementation of several Pure Type Systems - a class of typed 
+lambda calculi with pluggable features such as polymorphism, dependent types, universes
+and predicativity.  It includes a type checker, a compile time partial evaluator 
+and a compiler into Erlang. Om can be used with a wide range of type systems 
+which can be expressed with PTS triples, such as <b>System F<sub>ω<sub></b>, 
+<b>System F<sub>&lt;:</sub></b> or <b>Calculus of Constructions</b>. 
 
 Just like Morte, Om doesn't have built in recursive types. Instead, Exe language
 adds a layer of syntactic sugar and internally encodes types such as lists using
-F-algebras (so called Boehm-Berarducci encoding).
+F-algebras (so called impredicative Boehm-Berarducci encoding).
 
-The richness of type system makes type inference impossible, so type information
-is mandatory as in type systems a la Church, and not mere annotations. Also, as
-Om is designed as an intermediate language for machines, partial inference/elaboration
-is not planned in Om but may be supported by higher level languages built on top of it.
+Many other traditional features missing from Om such as let, arrow types, 
+pattern matching can be implemented purely as macros or syntactic sugar on top
+of the Om core calculus.
+
+Although Om supports arbitrary PTSes, our primary focus is a particular yet
+unnamed PTS that can be seen as an extension of the classical non-inductive 
+Calculus of Constructions with predicative universes. We develop a way to encode 
+inductive types using categorical semantics instead of adding them to the core
+language. A related works are Church, Parigot and Boehm-Berarducci encodings, 
+although they are inherently impredicative so they cannot be used with 
+the chosen type system.
+
+This work is based on Henk lambda cube assembler, and the implementaton of its
+predicative variant by Gabriel Gonzalez called Morte. Om has an option of full
+compatibility with Morte, but also supports variations of the type system:
+with or without countably many universes, and with or without predicativity.
+
+Representation of Terms
+-----------------------
+
+Om intermediate representation is typical for a PTS:
+
+```
+    data Om: * :=
+         (star: nat → Om)             -- universe constants
+         (var: string → Om)           -- lambda abstractions
+         (pi: string → Om →  Om)      -- pi types
+         (arrow: string → Om → Om)    -- arrow types, a sugar for non-dependent cases of pi
+         (app: Om → Om → Om)          -- applications
+```
+
+Concrete syntax and modularity
+------------------------------
+
+To simplify debugging, Om terms have concrete text representation, and there is
+a minimalistic module system based on folders/files, just like in Morte.
+
+Om provides construction of the IR term from folder tree (parsing and name resolution
+for external references) as a utility. 
 
 Users
 -----
