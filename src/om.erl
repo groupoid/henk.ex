@@ -30,7 +30,7 @@ type(T,C)    -> om_type:type(T,C).
 erase(X)     -> erase(X,[]).
 erase(T,C)   -> om_erase:erase(T,C).
 modes(_)     -> modes().
-modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["new-setoids", "russell","girard"]
+modes()      -> ["hurkens","normal","setoids","src-hurkens","new-setoids"]. % ++ [ "russell","girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
@@ -40,7 +40,8 @@ comp(F)      -> rev(tokens(F,"/")).
 normal(F)    -> om_type:normalize(F).
 cname(F)     -> hd(comp(F)).
 tname(F)     -> tname(F,[]).
-tname(F,S)   -> X = string:join(rev(tl(rev(tl(tl(tokens(F,"/")))))),"/"), case om:mode() of X -> []; _ -> X ++ S end.
+pname(F)     -> string:join(tl(tl(string:tokens(F,"/"))),"/").
+tname(F,S)   -> X = string:join(rev(tl(comp(F))),"/"), case om:mode() of X -> []; _ -> X ++ S end.
 show(F)      -> Term = snd(parse(tname(F),cname(F))), mad:info("~n~ts~n~n", [bin(Term)]), Term.
 a(F)         -> snd(parse(str(F))).
 fst({X,_})   -> X.
@@ -88,7 +89,7 @@ console(S)   -> boot(),
 
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
-parsed(F)    -> case parse(tname(F),cname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
+parsed(F)    -> case parse([],pname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
 pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
                 {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed,erased]).
 pass(0)      -> "PASSED";
@@ -100,7 +101,7 @@ wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
                 lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
 scan(_)      -> scan().
 scan()       -> om:debug(false),
-                Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F,"/"),cname(F)])}
+                Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F),"/",cname(F)])}
                      || {F} <- lists:umerge(wildcard(),syscard()),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
