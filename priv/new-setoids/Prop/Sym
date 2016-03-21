@@ -1,0 +1,11 @@
+-- #Prop/Sym : #Setoid/Ob/Sym #Prop/El #Prop/Equ
+
+-- args
+\ (P1 : #Prop/El) ->
+\ (P2 : #Prop/El) ->
+\ (equ12 : #Prop/Equ P1 P2) ->
+
+-- res
+#Prop/And2/Intro
+    (P2->P1) (P1->P2)
+    (#Prop/And2/pr2 (P1->P2) (P2->P1) equ12) (#Prop/And2/pr1 (P1->P2) (P2->P1) equ12)

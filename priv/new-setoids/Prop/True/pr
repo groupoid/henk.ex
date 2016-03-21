@@ -1,0 +1,5 @@
+-- #Prop/True/pr : \/(P:#Prop/El) -> P -> #Prop/True
+
+\ (P : #Prop/El) ->
+\ (p : P) ->
+#Prop/True/Intro

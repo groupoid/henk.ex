@@ -30,7 +30,7 @@ type(T,C)    -> om_type:type(T,C).
 erase(X)     -> erase(X,[]).
 erase(T,C)   -> om_erase:erase(T,C).
 modes(_)     -> modes().
-modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["russell","girard"]
+modes()      -> ["hurkens","normal","setoids","src-hurkens"]. % ++ ["new-setoids", "russell","girard"]
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").

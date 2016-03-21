@@ -1,0 +1,5 @@
+-- #Setoid/Ob/Ok : #Setoid/Ob/El -> #Star
+
+\ (El : #Setoid/Ob/El) ->
+----
+El -> #Prop/El

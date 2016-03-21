@@ -1,0 +1,7 @@
+-- #Prop/Refl : #Setoid/Ob/Refl #Prop/El #Prop/Equ
+
+-- args
+\ (P0 : #Prop/El) ->
+
+-- res
+#Prop/And2/Intro (P0->P0) (P0->P0) (#id0 P0) (#id0 P0)

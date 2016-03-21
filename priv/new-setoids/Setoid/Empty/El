@@ -1,0 +1,12 @@
+-- #Setoid/Empty/El : #Setoid/Ob/El
+
+-- lim arg
+\/(EmptyEl : #Setoid/Ob/El) ->
+\/(EmptyOk : #Setoid/Ob/Ok EmptyEl) ->
+\/(EmptyEqu : #Setoid/Ob/Equ EmptyEl) ->
+\/(EmptyRefl : #Setoid/Ob/Refl EmptyEl EmptyEqu) ->
+\/(EmptyTrans : #Setoid/Ob/Trans EmptyEl EmptyEqu) ->
+\/(EmptySym : #Setoid/Ob/Sym EmptyEl EmptyEqu) ->
+
+-- lim res
+EmptyEl

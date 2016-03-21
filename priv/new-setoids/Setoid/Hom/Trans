@@ -1,0 +1,28 @@
+-- #Setoid/Hom/Trans : \/(A:#Setoid/Ob) -> \/(B:#Setoid/Ob) -> #Setoid/Ob/Trans (#Setoid/Hom/El A B) (#Setoid/Ob/Equ A B)
+
+-- arg A
+\ (AEl : #Setoid/Ob/El) ->
+\ (AOk : #Setoid/Ob/Ok AEl) ->
+\ (AEqu : #Setoid/Ob/Equ AEl) ->
+\ (ARefl : #Setoid/Ob/Refl AEl AEqu) ->
+\ (ATrans : #Setoid/Ob/Trans AEl AEqu) ->
+\ (ASym : #Setoid/Ob/Sym AEl AEqu) ->
+
+-- arg B
+\ (BEl : #Setoid/Ob/El) ->
+\ (BOk : #Setoid/Ob/Ok BEl) ->
+\ (BEqu : #Setoid/Ob/Equ BEl) ->
+\ (BRefl : #Setoid/Ob/Refl BEl BEqu) ->
+\ (BTrans : #Setoid/Ob/Trans BEl BEqu) ->
+\ (BSym : #Setoid/Ob/Sym BEl BEqu) ->
+
+-- equ args
+\ (f1    : #Setoid/Hom/El  AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
+\ (f2    : #Setoid/Hom/El  AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
+\ (f3    : #Setoid/Hom/El  AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
+\ (equ12 : #Setoid/Hom/Equ AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym f1 f2) ->
+\ (equ23 : #Setoid/Hom/Equ AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym f2 f3) ->
+
+--
+\ (a : AEl) ->
+BTrans (f1 a) (f2 a) (f3 a) (equ12 a) (equ23 a)

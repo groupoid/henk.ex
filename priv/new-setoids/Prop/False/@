@@ -1,0 +1,5 @@
+-- #Prop/False/@ : #Prop/El
+
+\/(False : #Prop/El) ->
+----
+False

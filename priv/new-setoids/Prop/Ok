@@ -1,0 +1,4 @@
+-- #Prop/Ok : #Prop/El -> #Prop/El
+
+\ (P : #Prop/El) ->
+#Prop/True/@

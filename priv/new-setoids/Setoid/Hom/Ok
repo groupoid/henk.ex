@@ -1,0 +1,25 @@
+-- #Setoid/Hom/Ok : \/(A:#Setoid/Ob) -> \/(B:#Setoid/Ob) -> #Setoid/Ob/Ok (#Setoid/Hom/El A B)
+
+-- arg A
+\ (AEl : #Setoid/Ob/El) ->
+\ (AOk : #Setoid/Ob/Ok AEl) ->
+\ (AEqu : #Setoid/Ob/Equ AEl) ->
+\ (ARefl : #Setoid/Ob/Refl AEl AEqu) ->
+\ (ATrans : #Setoid/Ob/Trans AEl AEqu) ->
+\ (ASym : #Setoid/Ob/Sym AEl AEqu) ->
+
+-- arg B
+\ (BEl : #Setoid/Ob/El) ->
+\ (BOk : #Setoid/Ob/Ok BEl) ->
+\ (BEqu : #Setoid/Ob/Equ BEl) ->
+\ (BRefl : #Setoid/Ob/Refl BEl BEqu) ->
+\ (BTrans : #Setoid/Ob/Trans BEl BEqu) ->
+\ (BSym : #Setoid/Ob/Sym BEl BEqu) ->
+
+-- Ok arg
+\ (hom : #Setoid/Hom/El AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
+
+-- res
+#Prop/And2/@
+    (#Setoid/Hom/Ok.Ok  AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym hom)
+    (#Setoid/Hom/Ok.Equ AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym hom)

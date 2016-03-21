@@ -1,0 +1,8 @@
+-- #Prop/Equ : #Prop/El -> #Prop/El -> #Prop/El
+
+-- args
+\ (A : #Prop/El) ->
+\ (B : #Prop/El) ->
+
+-- res
+#Prop/And2/@ (A -> B) (B -> A)

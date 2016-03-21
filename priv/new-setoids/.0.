@@ -1,0 +1,9 @@
+-- #.0. : \/(A : #Prop/El) -> \/(B : #Prop/El) -> \/(C : #Prop/El) -> (B -> C) -> (A -> B) -> (A -> C)
+
+\ (A : #Prop/El) ->
+\ (B : #Prop/El) ->
+\ (C : #Prop/El) ->
+\ (fBC : B -> C) ->
+\ (fAB : A -> B) ->
+\ (a : A) ->
+fBC (fAB a)

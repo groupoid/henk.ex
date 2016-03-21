@@ -1,0 +1,7 @@
+-- #Setoid/Ob/Refl :
+
+\ (El : #Setoid/Ob/El) ->
+\ (Equ : #Setoid/Ob/Equ El) ->
+----
+\/(e0: El) ->
+Equ e0 e0

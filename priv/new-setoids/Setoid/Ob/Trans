@@ -1,0 +1,7 @@
+-- #Setoid/Ob/Trans :
+
+\ (El : #Setoid/Ob/El) ->
+\ (Equ : #Setoid/Ob/Equ El) ->
+----
+\/(e1: El) -> \/(e2: El) -> \/(e3: El) ->
+Equ e1 e2 -> Equ e2 e3 -> Equ e1 e3

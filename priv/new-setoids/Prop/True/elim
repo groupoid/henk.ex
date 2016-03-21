@@ -1,0 +1,9 @@
+-- #Prop/True/elim : \/(P : #Prop/El) -> \/(p : P) -> #Prop/True -> P
+
+-- args
+\ (P : #Prop/El) ->
+\ (p : P) ->
+\ (true : #Prop/True/@) ->
+
+-- res
+true P p
