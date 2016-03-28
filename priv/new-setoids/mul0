@@ -1,4 +1,4 @@
--- #.0. : \/(A : #Prop/El) -> \/(B : #Prop/El) -> \/(C : #Prop/El) -> (B -> C) -> (A -> B) -> (A -> C)
+-- #mul0 : \/(A : #Prop/El) -> \/(B : #Prop/El) -> \/(C : #Prop/El) -> (B -> C) -> (A -> B) -> (A -> C)
 
 \ (A : #Prop/El) ->
 \ (B : #Prop/El) ->
