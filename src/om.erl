@@ -50,6 +50,8 @@ snd({_,[X]}) -> X;
 snd({_,X})   -> X.
 parse(X)     -> om_parse:expr2([],X,[],{0,0}).
 parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
+linear(C)    -> put(inc,0), R = om_parse:expr2([],C,[],{0,0}),
+                case {get(inc),length(C)} of {X,Y} when X =< Y * 2 -> R ; {X,Y} -> {error,{nonlinear,X,Y}} end.
 
 % system functions
 

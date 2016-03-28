@@ -3,9 +3,9 @@
 -compile(export_all).
 -define(arr(F), (F == lambda orelse F == pi)).
 -define(noh(F), (F /= '$'   andalso F /= ':')).
--define(nah(F,C), (?noh(C) andalso ?noh(F))).
--define(reason1, "unexpected syntax").
--define(reason2, "unexpected syntax").
+-define(nah(F,C),  (?noh(C) andalso ?noh(F))).
+-define(reason1, "syntax violation").
+-define(reason2, "syntax violation").
 -define(reason3, "wrong function definition").
 
 expr(P,[],                 [{':',X}],{V,D}) ->      {error,{?reason3,X}};
@@ -26,22 +26,23 @@ expr(P,[X                     |T], Acc, {V,D})                -> {error,{?reason
 
 rewind([],                      {V,D},       R)  -> trail(13,"[] RET"),  {{V,D},om:flat(R)};
 rewind([{':',_}|_]=A,           {V,D},       R)  -> trail(1, ": RET"),   {{V,D},om:flat([R|A])};
-rewind([{'$',M}|A],             {V,D},[{B,Y}|R]) -> trail(2, ": 1"),     rewind2([{':',{M,{B,Y}}}|A],{V,D},R);
-rewind([{B,Y},{'$',M}|A],{V,D},R) when V == D    -> trail(3, "$ -> :"),  rewind2([{':',{M,{B,Y}}}|A],{V,D},R);
-rewind([{B,Y},{'$',M}|_]=A,     {V,D},       R)  -> trail(4, "$ RET"),   {{V,D},  om:flat([A|R])};
-rewind([{C,X},{open},{':',{M,I}}|A],{V,D},   R)  -> trail(5, "("),       {{V,D-1},om:flat([{C,X},{':',{M,I}}|[R|A]])};
-rewind([{C,X},{open},{'$',M}|A],{V,D},       R)  -> trail(6, "("),       {{V,D-1},om:flat([{C,X},{'$',M}    |[R|A]])};
-rewind([{C,X},{open},{open} |A],{V,D},       R)  -> trail(7, "("),       {{V,D-1},om:flat([{C,X},{open}     |[R|A]])};
-rewind([{C,X},{open},{B,Y}  |A],{V,D},       R)  -> trail(8, "("),       {{V,D-1},om:flat([{app,{{B,Y},{C,X}}}|[R|A]])};
-rewind([{C,X},{open}|A],{V,D},               R)  -> trail(8, "("),       {{V,D-1},om:flat([{C,X}|[R|A]])};
+rewind([{'$',M}|A],             {V,D},[{C,X}|R]) -> trail(2, ": 1"),     rewind2([{':',{M,{C,X}}}|A],{V,D},R);
 rewind([{arrow},{':',{M,I}} |A],{V,D},[{C,X}|R]) -> trail(9, "FUN"),     rewind2([{M,{I,{C,X}}}|A],{V,D},R);
-rewind([{C,X},{arrow},{':',{M,I}}|A],{V,D}, R)   -> trail(10, "FUN 2"),  rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{arrow},{B,Y}       |A],{V,D},[{C,X}|R]) -> trail(11, "ARROW"),  rewind2([{func(arrow),{{B,Y},{C,X}}}|A],{V,D},R);
+rewind([{C,X},{'$',M}|A],{V,D},R) when V == D    -> trail(3, "$ -> :"),  rewind2([{':',{M,{C,X}}}|A],{V,D},R);
+rewind([{C,X},{'$',M}|_]=A,          {V,D},  R)  -> trail(4, "$ RET"),   {{V,D},  om:flat([A|R])};
+rewind([{C,X},{open},{':',{M,I}} |A],{V,D},  R)  -> trail(5, "("),       {{V,D-1},om:flat([{C,X},{':',{M,I}}  |[R|A]])};
+rewind([{C,X},{open},{'$',M}     |A],{V,D},  R)  -> trail(6, "("),       {{V,D-1},om:flat([{C,X},{'$',M}      |[R|A]])};
+rewind([{C,X},{open},{open}      |A],{V,D},  R)  -> trail(7, "("),       {{V,D-1},om:flat([{C,X},{open}       |[R|A]])};
+rewind([{C,X},{open},{B,Y}       |A],{V,D},  R)  -> trail(8, "("),       {{V,D-1},om:flat([{app,{{B,Y},{C,X}}}|[R|A]])};
+rewind([{C,X},{open}|A],{V,D},               R)  -> trail(8, "("),       {{V,D-1},om:flat([{C,X}|[R|A]])};
+rewind([{C,X},{arrow},{':',{M,I}}|A],{V,D},  R)  -> trail(10, "FUN 2"),  rewind2([{M,{I,{C,X}}}|A],{V,D},R);
 rewind([{C,X},{arrow},{B,Y} |A],{V,D},       R)  -> trail(12, "ARROW 2"),rewind2([{func(arrow),{{B,Y},{C,X}}}|A],{V,D},R);
 rewind([{C,X},{B,Y}|A], {V,D}, R) when ?nah(C,B) -> trail(12, "APP "),   rewind2([{app,{{B,Y},{C,X}}}|A],{V,D},R);
-rewind([{A,X}],       {V,D},     R) when ?noh(A) ->                      {{V,D},om:flat([R|[{A,X}]])};
-rewind(A,                         {V,D},     R)  ->                      {error,{?reason2,hd(lists:flatten([R|A]))}}.
+rewind([{C,X}]=A,         {V,D}, R) when ?noh(A) ->                      {{V,D},om:flat([R|A])};
+rewind(A,                 {V,D}, R)              ->                      {error,{?reason2,hd(lists:flatten([R|A]))}}.
 
+red(A) -> put(inc,0), {begin om:a(A), get(inc) end,length(om:str(A))}.
 % Syntax and Algorithm
 
 %     I := #identifier
@@ -56,8 +57,11 @@ rewind(A,                         {V,D},     R)  ->                      {error,
 % control to the forward pass).
 
 trail(I,S)     -> om:debug("~p: FOUND ~tp~n",[I,S]).
-expr2(X,T,Y,C) -> om:debug("forwrd: ~tp -- ~tp~n",  [lists:sublist(T,3),lists:sublist(Y,2)]),    expr(X,T,Y,C).
-rewind2(X,T,Y) -> om:debug("rewind: ~tp -~p- ~tp~n",[lists:sublist(X,40),T,lists:sublist(Y,2)]), rewind(X,T,Y).
+expr2(X,T,Y,C) -> inc(), om:debug("forwrd: ~tp -- ~tp~n",  [lists:sublist(T,3),lists:sublist(Y,2)]),    expr(X,T,Y,C).
+rewind2(X,T,Y) -> inc(), om:debug("rewind: ~tp -~p- ~tp~n",[lists:sublist(X,40),T,lists:sublist(Y,2)]), rewind(X,T,Y).
+
+inc() -> put(inc,case get(inc) of undefined -> 0 ; A -> A end + 1).
+dec() -> put(inc,case get(inc) of undefined -> 0 ; A -> A end - 1).
 
 test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % colon
                 "\\ (x : ( err (o:*) -> o ) -> p ) -> o",    % ->
@@ -75,7 +79,8 @@ test() -> F = [ "(x : ( \\ (o:*) -> o ) -> p ) -> o",        % colon
                ],
 
           TT = lists:foldl(fun(X,Acc) ->  {X,{M,_}=A} = {X,om:a(X)},
-                                     case M of error -> erlang:error(["test",X,"failed",A]); _ -> ok end,
+                                     case M of error -> erlang:error(["test",X,"failed",A]);
+                                                 _ -> ok end,
                                      [{X,A}|Acc] end, [], T),
 
           FF =lists:foldl(fun(X,Acc) -> {X,{error,{M,A}}} = {X,om:a(X)},
