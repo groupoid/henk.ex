@@ -1,0 +1,1 @@
+λ(a : *) → λ(cmd : #Cmd/@  #IO/@  a) → cmd (#IO/@  a) (λ(b : *) → #IO/[>>=]  b a) (#IO/pure a)
