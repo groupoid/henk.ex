@@ -1,0 +1,2 @@
+λ(m : * → *) → λ(a : *) → λ(b : *) → λ(monad : #Monad/@  m) → λ(as : #List/@  a) → λ(f : a → m #Unit/@ ) → #Monad/sequence_
+m (#List/map  a (m #Unit/@ ) f as)

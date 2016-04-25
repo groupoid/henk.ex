@@ -20,8 +20,7 @@
 
 \vspace{3cm}
 
-    \vspace{3cm}   {\Large \bf Normal Form Representation of Dependent Inductive Types\\ \vspace{0.2cm}
-                                in terms of Pure Type System\\}\par
+    \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types for Erlang/OTP applications.\\}\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
     \vspace{4cm}   {\Large Kyiv 2016}
@@ -38,375 +37,234 @@
 
 %\vspace{0.5cm}
 
-\subsection{Verifiable Functional Compiler}
+\paragraph{}
+{\bf LISP}. Untyped lambda calculus was discovered as an inner language of the space
+at origin (Curry, Church, 1932). This language was manifested as LISP (McCarthy, 1958)
+that was built upon: cons, nil, eq, atom, car, cdr, lambda, apply and id.
+It was parts of inductive types lately known as inductive type constructors.
+Still untyped lambda calculus is used as an extraction target for many
+provers (Idris, F*), and also manifests in different domain languages (JavaScript, Erlang).
+
+\paragraph{}
+{\bf ML/LCF}. Further teardown of inner space language was ML language, founded merely on algebraic
+datatypes and algebra on higher terms rather than categorical semantic. Lately it
+was fixed with categorical methods in CPL (Hagino, 1987) and Charity (Cockett, 1992).
+Milner, assisted by Morris and Newey designed Meta Language for the purpose of builing LCF
+in early 70-s. LCF was a predecessor family of automated math provers: HOL88,
+HOL90, HOL98 and HOL/Isabelle which is now built using Poly/ML.
+
+\paragraph{}
+{\bf Fully Automated Provers}. In that period during 80-90s other automated math systems were appeared:
+AUTOMATH (de Bruijn, 1967), Mizar (Trybulec, 1989), PVS (Owre, Rushby, Shankar, 1995),
+ACL2 (Boyer, Kaufmann, Moore, 1996) and Otter (McCune, 1996).
+
+\paragraph{}
+{\bf MLTT}. Contemporary provers (built upon consistent Martin-Löf Type Theory, 1972)
+like Agda, Coq, Lean, F*, Idris are based on Barendregt
+and Coquand' CoC with different flavours of inifinity universe hierarchies
+and Calculus of Inductive Constructions. Some of them are automated and some
+are trying to be and general purpose programming languages with proving facilities.
+
+\newpage
+\section{Motivation}
+
+\paragraph{}
+{\bf No Fixpoint and Induction in Core}. We came up with pure CoC core having
+predicative and impredicative universe hierachies and macro extensions. Other MLTT
+cores has additional axioms like Fixpoint and Induction (and even more) ---
+something we strive to escape, because it leads to clean and understandable core.
+No, we don't have Fixpoint, and yes, we implemented Induction principle in pure CoC.
+
+\paragraph{}
+{\bf Extensible Language Design}. Encoding of inductive types is based on categorical
+semantic of compilation to CoC. All other syntax constructions are inductive
+definitions, plugged into the stream parser. AST of the CoC language is also
+defined in terms of inductive constructions and thus allowed in the macros.
+The language of polynomial functors (data and record) and core language of
+the process calculus (spawn, receive and send) are just macrosystem over CoC language,
+its syntax extensions.
+
+\paragraph{}
+{\bf Changable Encodings}. In pure CoC we have only arrows, so all inductive type encodings would
+be Church-encoding variations. Most extended nowadays is Church-Boehm-Berrarducci encoding,
+which dedicated to inductive types. Another well known are Scott (lazyness),
+Parigot (lazyness and constant-time iterators) and CPS (continuations) encodings.
+
+\paragraph{}
+{\bf Proved Categorical Semantic}. There was modeled a math model (using
+higher-order categorical logic) of encoding, which calculates (co)limits in a
+cathegory of (co)algebras built with given set of (de)constructors.
+We call such encoding in honour of Lambek lemma that leeds us to the
+equality of (co)initial object and (co)limit in the categories of (co)algebras.
+Such encoding works with dependent types and its consistency is proved in Lean model.
+
+\newpage
+\section{Intermediate Language Om}
 
    \paragraph{}
-   This article describes the frontend language {\bf Exe} along with its categorical semantic
-   that compiles to a pure type system minimal core {\bf Om} --- the
-   non-recursive subset of dependent type theory from which you can extract: LLVM code,
-   untyped lambda code with erased type information, or even $System\ F_\omega$ programs.
-   As a top-level task we expect to produce lean verifiable functional compiler pipeline,
-   but as an milestone task we just produce concise working prototype in Erlang language.
-
-\subsection{General Purpose Functional Language Exe}
+   The Om language is a dependently typed lambda calculus, an extension of Barendregt'
+   and Coquand Calculus of Constructions with predicative hierarchy of indexed universes.
+   There is no fixpoint axiom needed for the definition of infinity term dependance.
 
    \paragraph{}
-   General purpose function language with functors, lambdas on types, recursive algebraic types,
-   higher order functions and embedded process calculus with corecursion, free monad for effects encoding.
-   This language will be called Exe and dedicated to be high level general purpose functional
-   programming language frontend to small core of dependent type system without recursion called Om.
-   This language indended to be useful enough to encode KVS, N2O and BPE applications.
+   All terms respect ranking A inside sequence of universes S and complexity of the
+   dependent term is equal maximum complexity of term and its dependency R. The type
+   system is completely described by the following PTS notation (due to Barendregt):
 
-\subsection{Intermediate Language Om}
+$$
+\begin{cases}
+    Sorts = Type.\{i\},\ i : Nat\\
+    Axioms = Type.\{i\} : Type.\{inc\ i\}\\
+    Rules = Type.\{i\} \leadsto Type.\{j\} : Type.\{max\ i\ j\}\\
+\end{cases}
+$$
 
-   \paragraph{}
    An intermediate Om language is based on Henk\cite{henk} languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
-   It is based only on $\pi$, $\lambda$ and $apply$ constructions, one axiom and four deduction rules.
-   The design of Om language resemble Henk and Morte both design and implementation.
-   This language indended to be small, conside, easy provable and clean and produce
-   verifiable peace of code that can be distributed over the networks and compiled at target with
-   safe linkage.
+   It is based only on $\pi$, $\lambda$ and $apply$ constructions, infinity number of universes,
+   one axiom and one deduction rule. The design of Om language resemble Henk and Morte both
+   design and implementation. This language indended to be small, conside, easy provable
+   and clean and produce verifiable peace of code that can be distributed over the networks
+   and compiled at target with safe linkage.
 
-\subsection{Target Erlang VM and LLVM platforms}
+   \subsection{BNF}
+\vspace{0.5cm}
+   Om resemble both the Henk theory of pure type system and $\lambda C$ calculus of constructions
+   and Morte Core Specification
 
-   \paragraph{}
-   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
-   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+   <> ::= #option
+    I ::= #identifier
+    U ::= * < #number >
+    O ::= U | I | ( O ) | O O | $\lambda$ ( I : O ) $\rightarrow$ O |
+          O $\rightarrow$ O | $\forall$ ( I : O ) $\rightarrow$ O
+\end{lstlisting}
 
-\newpage
-\section{General Purpose Language}
-\vspace{0.3cm}
-
-   \subsection{Category Theory, Programs and Functions}
-   Category theory is widely used as an instrument for mathematicians for software analisys.
-   Category theory could be treated as an abstract algebra of functions. Let's define an Category
-   formally: {\bf Category} consists of two lists: the one is morphisms (arrows) and the second is
-   objects (domains and codomains of arrows) along with assoociative operation of composition and
-   unit morphism that exists for all objects in category.
-
-   \paragraph{}
-   The formation axoims of objects and arrows are not given here and autopostulating yet. Formation axoims
-   will be introduced during exponential definition. Objects $A$ and $B$ of an arrow $f: A \rightarrow B$
-   are called {\bf domain} and {\bf codomain} respectively.
-
-   \paragraph{}
-   Intro axioms -- associativity of composition and left/right unit arrow compisitions show that
-   categories are actually typed monoids, which consist of morphisms and operation of composition.
-   There are many languages to show the semantic of categories such as commutative diagrams and string diagrams
-   however here we define here in proof-theoretic manner:
-
-\begingroup
-\parbox[t][][l]{0.60\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
-\AxiomC{$\Gamma\ \vdash g: B \rightarrow C$ }
-\BinaryInfC{$\Gamma \vdash g \circ f : A \rightarrow C $}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash f : B \rightarrow A$ }
-\AxiomC{$\Gamma \vdash g : C \rightarrow B$ }
-\AxiomC{$\Gamma \vdash h : D \rightarrow C$ }
-\TrinaryInfC{$\Gamma \vdash (f \circ g) \circ h = f \circ (g \circ h) : D \rightarrow A $}
-\end{prooftree}
-
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.40\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$$ }
-\UnaryInfC{$\Gamma \vdash id_A : A \rightarrow A $}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
-\UnaryInfC{$\Gamma \vdash f \circ id_A = f : A \rightarrow B$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash f: A \rightarrow B$ }
-\UnaryInfC{$\Gamma \vdash id_B \circ f = f : A \rightarrow B $}
-\end{prooftree}
-
-}
-\endgroup
-
-\paragraph{}
-Composition shows an ability to connect the result space of the previous evaluation (codomain)
-and the arguments space of the next evaluation (domain). Composition is fundamental property of morphisms
-that allows us to chain evaluations.
-
-\paragraph{}
-\begin{tabular}{lll}
-$1.$ & $A: *$\\
-$2.$ & $A: *\ ,\ B: * \implies f: A \rightarrow B$\\
-$3.$ & $f: B \rightarrow C\ ,\ g: A \rightarrow B \implies f \circ g : A \rightarrow C$\\
-$4.$ & $(f \circ g) \circ h = f \circ (g \circ h)$\\
-$5.$ & $A \implies id : A \rightarrow A$\\
-$6.$ & $f \circ id = f$\\
-$7.$ & $id \circ f = f$\\
-\end{tabular}
-
-\newpage
-\subsection{Algebraic Types and Cartesian Categories}
-
-After composition operation of construction of new objects with morphisms we introduce
-operation of construction cartesian product of two objects $A$ and $B$ of a given
-category along with morphism product $<f,g>$ with a common domain, that is needed
-for full definition of cartesian product of $A \times B$.
-
-\paragraph{}
-This is an internal language of cartesian category, in which for all two selected objects there is an object
-of cartesian product (sum) of two objects along with its $\bot$ terminal (or $\top$ coterminal) type.
-Exe languages is always equiped with product and sum types.
-
-\paragraph{}
-Product has two eliminators $\pi$ with an common domain, which are also called projections of an product.
-The sum has eliminators $i$ with an common codomain.
-Note that eliminators $\pi$ and $i$ are isomorphic, that is $\pi \circ \sigma = \sigma \circ \pi = id$.
-
-\begingroup
-\parbox[t][][l]{0.40\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ x: A \times B$ }
-\UnaryInfC{$\Gamma \vdash \pi_1\ : A \times B \rightarrow A$;
-           $\Gamma \vdash \pi_2\ : A \times B \rightarrow B$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash\  a:A$ }
-\AxiomC{$\Gamma \vdash\  b:B$ }
-\BinaryInfC{$\Gamma \vdash\ (a,b) : A \times B$ }
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{}
-\UnaryInfC{$\Gamma \vdash\ \top$ }
-\end{prooftree}
-
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
-
-\begin{prooftree}
-\AxiomC{}
-\UnaryInfC{$\Gamma \vdash\ \bot$ }
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash\  a:A$ }
-\AxiomC{$\Gamma \vdash\  b:B$ }
-\BinaryInfC{$\Gamma\vdash a\ |\ b : A \otimes B$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ x: A \otimes B$ }
-\UnaryInfC{$\Gamma \vdash \i_1: A \rightarrow A \otimes B$;
-           $\Gamma \vdash \i_2: B \rightarrow A \otimes B$}
-\end{prooftree}
-
-}
-\endgroup
-
-   \paragraph{}
-
-   The $\bot$ type in Haskell is used as {\bf undefined} type (empty sum component presented in all types), that
-   is why Hask category is not based on cartesian closed but CPO\cite{cpo}. The $\bot$ type has no values.
-   The $\top$ type is known as unit type or zero tuple $()$ often
-   used as an default argument for function with zero arguments.
-   Also we include here an axiom of morphism product which is given during full definition
-   of product using commutative diagram. This axiom is needed for applicative
-   programming in categorical abstract machine. Also consider co-version of this
-   axiom for $[f,g]: B+C \rightarrow A$ morphism sums.
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash\ f:A \rightarrow B$ }
-\AxiomC{$\Gamma \vdash\ g:A \rightarrow C$ }
-\AxiomC{$\Gamma \vdash\ B \times C$ }
-\TrinaryInfC{$\Gamma \vdash\ \langle f,g \rangle : A \rightarrow B \times C$ }
-\end{prooftree}
-
-\begin{center}
-%$(f \circ g) \circ h = f \circ (g \circ h)$\\
-%$f \circ id = f$\\
-%$id \circ f = f$\\
-$\pi_1 \circ \langle f, g \rangle = f$\\
-$\pi_2 \circ \langle f, g \rangle = g$\\
-$\langle f \circ \pi_1, f \circ \pi_2 \rangle = f$\\
-$\langle f, g \rangle \circ h = \langle f \circ h, g \circ h \rangle$\\
-$\langle \pi_1, \pi_2 \rangle = id$\\
-\end{center}
-
-\newpage
-   \subsection{Exponential, $\lambda$-calculus and Cartesian Closed Categories}
-   Being an internal language of cartesian closed category, lambda calculus except variables and constants
-   provides two operations of abstraction and applications which defines complete evaluation language
-   with higher order functions, recursion and corecursion, etc.
-
-   \paragraph{}
-   To explain functions from the categorical point of vew we need to define categorica exponential
-   $f: A^B$, which are analogue to functions $f: A \rightarrow B$.
-   As we already defined the products and terminals we could define an exponentials with three
-   axioms of function construction, one eliminator of application with apply a function to its argument
-   and axiom of currying the function of two arguments to function of one argument.
-
-\begingroup
-\parbox[t][][l]{0.40\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma  x:A \vdash M : B$}
-\UnaryInfC{$\Gamma \vdash \lambda\ x\ .\ M : A \rightarrow B$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ f:A \rightarrow B$ }
-\AxiomC{$\Gamma\ a:A$ }
-\BinaryInfC{$\Gamma \vdash apply\ f\ a\ : (A \rightarrow B) \times A \rightarrow B$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash f: A \times B \rightarrow C$ }
-\UnaryInfC{$\Gamma \vdash curry\ f : A \rightarrow (B \rightarrow C)$}
-\end{prooftree}
-
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
-
-\begin{center}
-$apply \circ \langle (curry\ f) \circ \pi_1 , \pi_2 \rangle = f$\\
-$curry\ apply \circ \langle g \circ \pi_1, \pi_2 \rangle) = g$\\
-$apply \circ \langle curry\ f, g \rangle = f \circ \langle id , g\rangle$\\
-$(curry\ f) \circ g = curry\ (f \circ \langle g \circ \pi_1,\pi_2\rangle)$\\
-$curry\ apply = id$\\
-\end{center}
-
-
-}
-\endgroup
-
-\subsection{$\lambda$-language}
-
-\begin{center}
-Objects : $\bot\ |\ \rightarrow\ |\ \times$\\
-Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\ curry$
-\end{center}
-
-  \subsection{Functors, $\Lambda$-calculus}
-
-  Functor comes as a notion of morphisms in categories whose objects are categories.
-  Functors preserve compositions of arrows and identities, otherwise it would
-  be impossible to deal with categories. One level up is notion of morphism between categories whose
-  objects are Functors, such morphisms are called natural transformations. Here we need
-  only functor definition which is needed as general type declarations.
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash f\ :\ A \rightarrow B$}
-\UnaryInfC{$\Gamma \vdash F\ f\ :\ (A \rightarrow B) \rightarrow (F\ a \rightarrow F\ b)$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash id_A\ :A \rightarrow A$}
-\UnaryInfC{$\Gamma \vdash F\ id_A\ =\ id_{F A}\ :\ F\ A \rightarrow F\ A$}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash f\ :B \rightarrow C,\ g : A \rightarrow B$}
-\UnaryInfC{$\Gamma \vdash F\ f \circ F\ g\ =\ F (f \circ g)\ :\ F\ A \rightarrow F\ C$}
-\end{prooftree}
-
-   We start thinking of functors on dealing with typed theories, because functors usually
-   could be seen as higher order type con
-
-\newpage
-
-
-
-
-\newpage
-   \subsection{Algebras}
-
-   F-Algebras gives us a categorical understanding recursive types.
-   Let $F : C \rightarrow C$ be an endofunctor on category $C$.
-   An F-algebra is a pair $(C, \phi)$, where C is an object and $\phi\ : F\ C \rightarrow C$
-   an arrow in the category C. The object C is the carrier and the functor
-   F is the signature of the algebra. Reversing arrows gives us F-Coalgebra.
-
-\vspace{1cm}
+   \subsection{AST}
 
 \begin{center}
 \begin{tabular}{lcl}
-\begin{tikzcd}
-  F\ C \arrow{d}[left]{F\ f} \arrow{r}{\varphi} & C \arrow{d}{f} \\
-  F\ D \arrow{r}{\psi} & D \end{tikzcd} & & \begin{tikzcd}
-  C \arrow{d}[left]{f} \arrow{r}{\varphi} & F\ C \arrow{d}{F\ f} \\
-  D \arrow{r}{\psi} & F\ D \end{tikzcd} \\
-  \ & \  &\  \\
-  $f \circ \varphi = \psi \circ F\ f$ & & $\psi \circ f =  F\ f \circ \varphi$ \\
+      $E$ & :=& $K$ \\
+          & | & $x$ \\
+          & | & $E E$ \\
+          & | & $\lambda (x: E) \rightarrow E$ \\
+          & | & $\Pi (x: E) \rightarrow E$ \\
 \end{tabular}
 \end{center}
 
-  \subsection{Initial Algebras}
+%\subsection{Target Erlang VM and LLVM platforms}
 
-  A F-algebra $(\mu F, in)$ is the initial F-algebra if for any F-algebra $(C, \varphi)$
-  there exists a unique arrow $\llparenthesis \varphi \rrparenthesis : \mu F \rightarrow C$ where $f = \llparenthesis \varphi \rrparenthesis$
-  and is called catamorphism. Similar a F-coalgebra $(\nu F, out)$ is the terminal
-  F-coalgebra if for any F-coalgebra $(C, \varphi)$ there exists unique arrow
-  $\llbracket \varphi \rrbracket : C \rightarrow \nu F$ where $f = 
-  \llbracket \varphi \rrbracket$
+%   \paragraph{}
+%   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
+%   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
 
-\begin{center}
-\begin{tabular}{lcl}
-\begin{tikzcd}
-  F\ \mu F \arrow{d}[left]{F\ \llparenthesis \varphi \rrparenthesis} \arrow{r}{in} & \mu F \arrow{d}{\llparenthesis \varphi \rrparenthesis} \\
-  F C \arrow{r}{\varphi} & C \end{tikzcd} & & \begin{tikzcd}
-  C \arrow{d}[left]{ \llbracket \varphi \rrbracket} \arrow{r}{\phi} & F\ C\arrow{d}{F\ \llbracket \varphi \rrbracket} \\
-  \nu F \arrow{r}{out} & F \nu F\end{tikzcd} \\
-  \ & \  &\  \\
-  $f \circ in = \varphi \circ F\ f \equiv f = \llparenthesis \varphi \rrparenthesis$& &
-  $out \circ f = F\ f \circ \varphi \equiv f = \llbracket \varphi \rrbracket$ \\
-\end{tabular}
-\end{center}
+\newpage
+   \section{Exe Macrosystem}
 
-   \subsection{Recursive Types}
+   Exe is a general purpose functional language with functors, lambdas on types, recursive algebraic types,
+   higher order functions, corecursion, free monad for effects encoding. It compilers to
+   to small core of dependent type system without recursion called Om.
+   This language indended to be useful enough to encode KVS (database), N2O (web framework) and
+   BPE (processes) applications.
 
-  As was shown by Wadler\cite{recursive} we could deal with recusrive equations having
-  three axioms: one $fix: (A \rightarrow A) \rightarrow A$ fixedpoint axiom,
-  and axioms $in: F\ T \rightarrow T$ and $out: T \rightarrow F\ T$ of recursion direction. We need to
-  define fixed point as axiom because we can't define recursive axioms. This axioms
-  also needs functor axiom defined earlier.
+   \subsection{Compiler Passes}
+
+   The underlying OM typechecker and compiler is a target language for EXE general purpose language.
+   \begin{center}
+   \begin{tabular}{ll}
+   EXPAND  & EXE -- Macroexpansion\\
+   NORMAL  & OM -- Term normalization and typechecking\\
+   ERASE   & OM -- Delete information about types\\
+   COMPACT & OM -- Term Compactification\\
+   EXTRACT & OM -- Extract Erlang Code\\
+   \end{tabular}
+   \end{center}
+
+   \subsection{BNF}
+
+\begin{lstlisting}[mathescape=true]
+    <> ::= #option
+    [] ::= #list
+     I ::= #identifier
+     U ::= * < #number >
+     O ::= I | ( O ) |
+           U | O $\rightarrow$ O | O O
+             | $\lambda$ ( I : O ) $\rightarrow$ O
+             | $\forall$ ( I : O ) $\rightarrow$ O
+     L ::= I | L I
+     A ::= O | A $\rightarrow$ A | ( L : O )
+     F ::= $\empty$ | F ( I : O ) | ()
+     E ::= O | E data L : A := F
+             | E record L : A < extend F > := F
+             | E let F in E
+             | E case E [ | I O $\rightarrow$ E ]
+             | E receive E [ | I O $\rightarrow$ E ]
+             | E spawn E raise L := E
+             | E send E to E
+\end{lstlisting}
+
+\newpage
+
+   \subsection{Pure Macro Types}
+
+   \begin{center}
+   \begin{tabular}{ll}
+   CASE   & Control Branch Pattern Matching\\
+   LET    & Variable Bind\\
+   DATA   & Inductive Tree\\
+   RECORD & Coinductive Tuple\\
+   \end{tabular}
+   \end{center}
+
+   \subsection{Effectful Macro Types}
+
+   \begin{center}
+   \begin{tabular}{ll}
+   SPAWN   & Spawn IOI Corecursion\\
+   TRY     & Exception Effect\\
+   SEND    & Send Message to IOI Cofree Comonad\\
+   RECEIVE & Control Branch Pattern Matching\\
+   \end{tabular}
+   \end{center}
 
 
-\begingroup
-\parbox[t][][l]{0.40\textwidth}{
+\subsection{Prelude Base Library}
 
-\begin{prooftree}
-\AxiomC{$\Gamma  \vdash M : F\ (\mu\ F)$}
-\UnaryInfC{$\Gamma \vdash in_{\mu F}\ M : \mu\ F$}
-\end{prooftree}
+\begin{lstlisting}[mathescape=true]
 
-\begin{prooftree}
-\AxiomC{$\Gamma  \vdash M : \mu F$}
-\UnaryInfC{$\Gamma \vdash out_{\mu F}\ M : F\ (\mu\ F)$}
-\end{prooftree}
+        inductive Nat: * :=
+                  (zero: () $\rightarrow$ Nat)
+                  (succ: Nat $\rightarrow$ Nat)
 
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
+        inductive List: (A:*) $\rightarrow$ * :=
+                  (nil: () $\rightarrow$ list A)
+                  (cons: A $\rightarrow$ list A $\rightarrow$ list A)
 
 
-\begin{prooftree}
-\AxiomC{$\Gamma  \vdash M : A \rightarrow A$}
-\UnaryInfC{$\Gamma \vdash fix\ M : A$}
-\end{prooftree}
+           record List: (A B: *) :=
+                  (len: list A $\rightarrow$ integer)
+                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
+                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
 
-}
-\endgroup
+           record String: List Nat := ()
+
+        inductive IO: * :=
+                  (getLine: (String $\rightarrow$ IO) $\rightarrow$ IO)
+                  (putLint: String $\rightarrow$ IO)
+                  (pure: () $\rightarrow$ IO)
+
+           record IO: * :=
+                  (data: String)
+                  ([>>=]: )
+
+           record Morte: * :=
+                  (recursive: IO.replicateM Nat.Five
+                              (IO.[>>=] IO.data Unit IO.getLine IO.putLine))
+
+\end{lstlisting}
 
 \newpage
    \subsection{Inductive Types}
@@ -432,12 +290,6 @@ Morphisms : $id\ |\ f \circ g\ |\ \langle f, g \rangle\ |\ apply\ |\ \lambda\ |\
   as an non-recursive definitions of folds that include in indentity signature all the
   constructor components of (co)inductive type.
 
-  \subsection{Peano Numbers}
-  Pointer Unary System is a category C with terminal object
-  and a carrier X having morphism $[zero: 1_C \rightarrow X,succ: X \rightarrow X]$.
-  The initial object of C is called Natural Number Objects and models Peano axiom set.
-
-\newpage
   \subsection{Lists}
   The data type of lists over a given set A can be represented as the initial algebra
   $(\mu L_A, in)$ of the functor $L_A(X) = 1 + (A \times X)$. Denote $\mu L_A = List(A)$.
@@ -455,6 +307,7 @@ $$
 \end{cases}
 $$
 
+
 \paragraph{}
   where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
   $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
@@ -470,8 +323,9 @@ $$
 \end{cases}
 $$
 
+\newpage
 \vspace{0.2cm}
-\subsection{Inductive Encoding and List Module}
+\subsection{Berrarducci Inductive Encoding}
 \vspace{0.4cm}
 
 \begin{lstlisting}[mathescape=true]
@@ -504,254 +358,9 @@ foldl = \lambda\ f\ v\ xs = foldr\ (\lambda\ xg\rightarrow\ (\lambda \rightarrow
 \end{cases}
 $$
 
-
-% \newpage
-%   \subsection{Process Calculus}
-%   Thr $\pi$-calculus of processes by Robert Milner is basic formalism for distributed
-%   computational theory and its implementations. From origin times of CSP developed by Hoare,
-%   Milner significanly evolved the theory and adopted it to contemporary telecommunication requirements,
-%   such as hangovers in mobile networks.
-
-%   \subsection{Model}
-
-%\begin{lstlisting}
-
-   
-%\end{lstlisting}
-
-%  \subsection*{Core Axioms}
-%  We announce process and a fundamental function type of a special signature with protocol $\Sigma$ and
-%  state $X$.
-
-%\begin{prooftree}
-%\AxiomC{$\Gamma\ \vdash E, \Sigma, X$ }
-%\AxiomC{$\Gamma\ \vdash action : \Sigma \times X \rightarrow \Sigma \times X$ }
-%\BinaryInfC{$\Gamma \vdash {spawn}\ action : \pi_(\Sigma,X) $}
-%\end{prooftree}
-
-%\begin{prooftree}
-%\AxiomC{$\Gamma\ \vdash pid : \pi_(\Sigma,X)$ }
-%\AxiomC{$\Gamma\ \vdash msg : \Sigma$ }
-%\BinaryInfC{$\Gamma \vdash join\ msg\ pid : \Sigma \times \pi_\Sigma \xrightarrow{\bullet} \Sigma$;
-%            $\Gamma \vdash send\ msg\ pid : \Sigma \times \pi_\Sigma \rightarrow \Sigma$}
-%\end{prooftree}
-
-%\begin{prooftree}
-%\AxiomC{$\Gamma\ \vdash L : A + B, R : X + Y$ }
-%\AxiomC{$\Gamma\ \vdash M : A \rightarrow X, N : B \rightarrow Y$ }
-%\BinaryInfC{$\Gamma \vdash receive\ L\ M\ N : L \xrightarrow{\bullet} R$}
-%\end{prooftree}
-
-%\paragraph{}
-
-%   \subsection*{Process Algebra}
-
-
-% \begin{center}
-% \begin{tabular}{lcl}
-% $\oplus$   &:& $\pi \parallel \pi$\\
-% $\otimes$  &:& $\pi \mid \pi$\\
-% \end{tabular}
-% \end{center}
-
-\newpage
-   \subsection{Intuitionistic Type Theory}
-
-   \paragraph{}
-   Using Build Yourself Type Teory approach sooner or later
-   you should decide the pallete of inductive structures. Such in Coq
-   abstract algebra framework was built upon polymorphic records\cite{coqalg} rather
-   that type classes engine like it is used in Agda and Idris. However
-   Idris still lack of polymorphic records and coinductive types. Lean also
-   lack of coinductive structures but has powerful non-recursive polymorphic records
-   which are used in Lean HoTT library.
-
-   \paragraph{}
-   As was show by Spephan Kaes\cite{kaes}, one of strategy of type clasess engine
-   implementataion is using polymorphic structures which allows us do deal with
-   persistent structures on a low theoretical level. Moreover this style of coding
-   is completly compatible with Erlang records which are used to model KVS and N2O hierarchies.
-
-  \subsection{Logic and Quantification}
-
-  Depended product is generalisation of exponential or function definition, when domain of morphism is depended on codomain.
-  Depended sum is generalisation of cartesian product when one element depends on anotehr.
-  Depended product is noted as $\forall$ and depended sum is noted as $\exists$:
-
-\begingroup
-\parbox[t][][l]{0.40\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ x: A \vdash B$ }
-\AxiomC{$\Gamma\ \vdash A$ }
-\BinaryInfC{$\Gamma\ \vdash \Pi (x : A) B $}
-\end{prooftree}
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ x: A \vdash B$ }
-\AxiomC{$\Gamma\ \vdash A$ }
-\BinaryInfC{$\Gamma\ \vdash \Sigma (x : A) B $}
-\end{prooftree}
-
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash a : A$ }
-\AxiomC{$\Gamma\ x : A \vdash B$ }
-\AxiomC{$\Gamma\ b : B (x=a)$ }
-\TrinaryInfC{$\Gamma\ \vdash (a,b) : \Pi (x : A) B $}
-\end{prooftree}
-
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash a : A$ }
-\AxiomC{$\Gamma\ x : A \vdash B$ }
-\AxiomC{$\Gamma\ b : B (x=a)$ }
-\TrinaryInfC{$\Gamma\ \vdash (a,b) : \Sigma (x : A) B $}
-\end{prooftree}
-
-}
-\endgroup
-
-\begingroup
-\parbox[t][][l]{0.40\textwidth}{
-
-\begin{prooftree}
-\AxiomC{$\Gamma\ \vdash x: A$ }
-\AxiomC{$\Gamma\ \vdash x': A$ }
-\BinaryInfC{$\Gamma\ \vdash Id_A (x,x')$}
-\end{prooftree}
-
-}
-\hspace{0.1cm}
-\parbox[t][][r]{0.60\textwidth}{
-
-}\endgroup
-
-
-\begin{center}
-\begin{tabular}{lll}
-  reflexivity     &:& $Id_A(a,a)$ \\
-  substitution    &:& $Id_A(a,a') \rightarrow B(x=a) \rightarrow B(x=a')$ \\
-  symmetry        &:& $Id_A(a,b) \rightarrow Id_A(b,a)$  \\
-  transitivity    &:& $Id_A(a,b) \rightarrow Id_A(b,c) \rightarrow Id_A(a,c)$ \\
-  congruence      &:& $(f: A \rightarrow B) \rightarrow Id_A(x,x') \rightarrow Id_B(f(x),f(x'))$ \\
-\end{tabular}
-\end{center}
-
-\newpage
-
-  \section{Intermediate Language}
 \vspace{1cm}
+\subsection{Normal Forms}
 
-   \subsection{Om Language Definition}
-\vspace{0.5cm}
-   Om resemble both the Henk theory of pure type system and $\lambda C$ calculus of constructions
-   and Morte Core Specification
-
-\begin{lstlisting}
-    EXPR :=                     EXPR             EXPR 
-          | "\"   "(" LABEL ":" EXPR ")" "arrow" EXPR 
-          | "\/"  "(" LABEL ":" EXPR ")" "arrow" EXPR 
-          |                     EXPR     "arrow" EXPR 
-          |           LABEL                           
-          | "*"                                       
-          | "[]"                                      
-          |       "("           EXPR ")"              
-\end{lstlisting}
-
-During forward pass we stack applications (except typevars), then
-on reaching close paren ")" we perform backward pass and stack arrows,
-until neaarest unstacked open paren "(" appeared (then we just return
-control to the forward pass).
-
-\paragraph{}
-We need to preserve applies to typevars as they should
-be processes lately on rewind pass, so we have just typevars bypassing rule.
-On the rewind pass we stack lambdas by matching arrow/apply signatures
-where typevar(x) is an introduction of variable "x" to the Gamma context.
-
-\begin{center}
-                   $apply: (A \rightarrow B) \times A \rightarrow B$ \\
-                  $lambda: arrow\ (app\ (typevar\ x)\ ,\ A)\ B$ \\
-\end{center}
-
-
-   \subsection{Abstract Syntax Tree}
-
-\begin{center}
-\begin{tabular}{lcl}
-      $E$ & :=& $K$ \\
-          & | & $x$ \\
-          & | & $E E$ \\
-          & | & $\lambda (x: E) \rightarrow E$ \\
-          & | & $\Pi (x: E) \rightarrow E$ \\
-\end{tabular}
-\end{center}
-
-\newpage
-
-  \subsection{Exe Prelude}
-\vspace{1cm}
-\paragraph{}
-
-\begin{lstlisting}[mathescape=true]
-             enum unit: * :=
-                  (make: () $\rightarrow$ unit)
-
-             enum bool: * :=
-                  (true: () $\rightarrow$ bool)
-                  (false: () $\rightarrow$ bool)
-
-             enum option: (A:*) $\rightarrow$ * :=
-                  (none: () $\rightarrow$ option A)
-                  (some: A $\rightarrow$ option A)
-
-             enum product: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
-                  (make: (a:A) $\rightarrow$ (b:B) $\rightarrow$ prod A B)
-
-             enum sum: (A:*) $\rightarrow$ (B:*) $\rightarrow$ * :=
-                  (make: (a:A) $\rightarrow$ (b:B) -> sum A B)
-
-             enum list: (A:*) $\rightarrow$ * :=
-                  (nil: () $\rightarrow$ list A)
-                  (cons: A $\rightarrow$ list A $\rightarrow$ list A)
-
-           record lists: (A B: *) :=
-                  (len: list A $\rightarrow$ integer)
-                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
-                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
-                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
-
-             enum eq: (A:*) $\rightarrow$ A $\rightarrow$ A $\rightarrow$ * :=
-                  (refl: (x:A) $\rightarrow$ eq A x x)
-
-             enum exists: (A:*) $\rightarrow$ (A $\rightarrow$ *) $\rightarrow$ * :=
-                  (exists-intro: (P: A $\rightarrow$ *) $\rightarrow$ (x:A) $\rightarrow$ P x $\rightarrow$ exists A P)
-
-           record pure (P: * $\rightarrow$ *) (A: *) :=
-                  (return: P A)
-
-           record functor (F: * $\rightarrow$ *) (A B: *) :=
-                  (fmap: (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
-
-           record applicative (F: * $\rightarrow$ *) (A B: *)
-           extend pure F A,
-                  functor F A B :=
-                  (ap: F (A $\rightarrow$ B) $\rightarrow$ F A $\rightarrow$ F B)
-
-           record monad (F: * $\rightarrow$ *) (A B: *)
-           extend pure F A,
-                  functor F A B :=
-                  (join: F (F A) $\rightarrow$ F B)
-
-\end{lstlisting}
-
-\newpage
-\subsection*{Om Normal Depended Forms}
-\vspace{1cm}
 \subsubsection*{Lists/Map}
 {\fontfamily{pcr}\selectfont
 \vspace{0.5cm}
@@ -766,11 +375,7 @@ $\rightarrow$ List) $\rightarrow$ $\lambda$ (List: *) $\rightarrow$ $\lambda$ (C
 List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 }
 
-\subsubsection*{Vector}
-{\fontfamily{pcr}\selectfont
-\vspace{0.5cm}
-$\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (a : *) $\rightarrow$ $\forall$ (Vector : ($\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ * $\rightarrow$ *) $\rightarrow$ $\forall$ (Cons : $\forall$ (m : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\forall$ (Zero : Nat) $\rightarrow$ Nat) $\rightarrow$ $\forall$ (b : *) $\rightarrow$ b $\rightarrow$ Vector m b $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Succ (m Nat Succ Zero)) b) $\rightarrow$ $\forall$ (Nil : $\forall$ (b : *) $\rightarrow$ Vector ($\lambda$ (Nat : *) $\rightarrow$ $\lambda$ (Succ : Nat $\rightarrow$ Nat) $\rightarrow$ $\lambda$ (Zero : Nat) $\rightarrow$ Zero) b) $\rightarrow$ Vector n a
-}
+\newpage
 
 \begin{thebibliography}{9}
 
@@ -814,34 +419,4 @@ $\lambda$ (n : $\forall$ (Nat : *) $\rightarrow$ $\forall$ (Succ : Nat $\rightar
 \end{thebibliography}
 \newpage
 
-%
-%\begin{lstlisting}[mathescape=true]
-%> om:show("priv/List/@").
-%
-%=INFO REPORT==== 22-Dec-2015::10:01:10 ===
-%"priv/List/@"
-%  $\lambda$ (a: *)
-%$\rightarrow$ $\forall$ (List: *)
-%$\rightarrow$ $\forall$ (Cons:
-%    $\forall$ (head: a)
-%  $\rightarrow$ $\forall$ (tail: List)
-%  $\rightarrow$ List)
-%$\rightarrow$ $\forall$ (Nil: List)
-%$\rightarrow$ List
-
-%{[],
-% [{lambda,{{arg,a},
-%           {const,star},
-%           {pi,{{arg,'List'},
-%                {const,star},
-%                {pi,{{arg,'Cons'},
-%                     {pi,{{arg,head},
-%                          {var,{a,0}},
-%                          {pi,{{arg,tail},
-%                               {var,{'List',0}},
-%                               {var,{'List',0}}}}}},
-%                     {pi,{{arg,'Nil'},
-%                          {var,{'List',0}},
-%                          {var,{'List',0}}}}}}}}}}]}
-%\end{lstlisting}
 \end{document}

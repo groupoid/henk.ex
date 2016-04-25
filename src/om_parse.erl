@@ -103,6 +103,7 @@ print({{"∀",{N,_}},{I,O}},D)   -> [ "( ∀ (",om:cat([N]),": ",print(I,D+1),")
 print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
 print({{"λ",{N,_}},{I,O}},D)   -> [ "( λ (",om:cat([N]),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
 
+
 func(lambda) -> "λ";
 func(pi)     -> "∀";
 func(arrow)  -> "→";
