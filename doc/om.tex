@@ -122,7 +122,7 @@ $$
    An intermediate Om language is based on Henk\cite{henk} languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
-   It is based only on $\pi$, $\lambda$ and $apply$ constructions, infinity number of universes,
+   It is based only on $\Pi$, $\lambda$ and $apply$ constructions, infinity number of universes,
    one axiom and one deduction rule. The design of Om language resemble Henk and Morte both
    design and implementation. This language indended to be small, conside, easy provable
    and clean and produce verifiable peace of code that can be distributed over the networks
@@ -130,8 +130,8 @@ $$
 
    \subsection{BNF}
 \vspace{0.5cm}
-   Om resemble both the Henk theory of pure type system and $\lambda C$ calculus of constructions
-   and Morte Core Specification
+   Om syntax is compatible with $\lambda C$ Coquand's calculus of constructions presented in Morte
+   and Henk languages. However it has extension in a part of specifying universe index as a {\bf Nat} number.
 
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
@@ -323,9 +323,142 @@ $$
 \end{cases}
 $$
 
+\include{basic}
+\newpage
+\subsection{Lambek Encoding}
+Lambek encoding is a categorical proof-representation of higher inductive types encoding.
+
+\subsubsection*{Initial Object}
+
+\begin{lstlisting}[mathescape=true]
+    let I = data List: (A:*) $\rightarrow$ * :=
+                 (nil: List A)
+                 (cons: A $\rightarrow$ List A $\rightarrow$ List A)
+
+           $F_A$ = 1 + A $\times$ X
+
+\end{lstlisting}
+
+\subsubsection*{Construct corresponding F-Algebra}
+
+\begin{lstlisting}[mathescape=true]
+    record ListAlg: (A:*) $\rightarrow$ * :=
+           (X: *)
+           (nil: X)
+           (cons: A $\rightarrow$ X $\rightarrow$ X)
+
+\end{lstlisting}
+
+\subsubsection*{Introduce List Morphisms}
+
+\begin{lstlisting}[mathescape=true]
+  infix '=' := Setoid.Ob.Equ
+
+  record ListMor: (A: *) $\rightarrow$ (x1 x2: ListAlg A) $\rightarrow$ * :=
+         (map: x1.X $\rightarrow$ x2.X)
+         (okNil: map x1.nil = x2.nil)
+         (okCons: $\forall$ (a: A) $\rightarrow\ \forall$ (x: x1)
+                  $\rightarrow$ map x1.cons a x = x2.cons a (map x))
+\end{lstlisting}
+
+\subsubsection*{Introduce connected points of List type}
+
+\begin{lstlisting}[mathescape=true]
+  record ListPoint: (A: *) $\rightarrow$ * :=
+         (point: $\forall$ (x: ListAlg A) -> x.X)
+         (pointOk:  $\forall$ (x1 x2: ListAlg A)
+                 $\rightarrow$ $\forall$ (m: ListMor A x1 x2)
+                 $\rightarrow$ Setoid.Ob.Equ (map m point x1) (point x2))
+
+\end{lstlisting}
+
+\subsubsection*{Theorems Section}
+
+\begin{center}
+%\begin{tabular}{l}
+$$
+\begin{tikzcd}
+  lim\ U \arrow{d}[left]{\pi_i} \\
+  X_i 
+\end{tikzcd}
+\Longrightarrow
+\begin{tikzcd}
+  F\ lim\ U \arrow{d}[left]{F\ \pi_i} \\
+  F\ X_i 
+\end{tikzcd}
+\Longrightarrow
+lim\left\{
+\begin{tikzcd}
+  F\ lim\ U \arrow{d}[left]{F\ \pi_i} \\
+  F\ X_i 
+\end{tikzcd}
+\right\}
+$$
+%\end{tabular}
+\end{center}
+
+\newpage
+\subsubsection*{Basic Ornaments}
+
+Our encoding allows you to precise control the type of encoded parameter.
+There is only three cases and three equations: 1) for unit; 2) particular
+functorial type over a parameter type and 3) recursive embedding such as
+in Cons constructor.
+
+q — is a limit in Dialg P category. The constructor body is calculated
+with q applied to forgetful functor U.
+
+$$
+\begin{cases}
+q_{P,D,G} : End\ P\ (G'(-),G'(-)) \rightarrow P\ (Lim\ G',Lim\ G') \\
+P : Set^{op} \times Set \rightarrow Set \\
+U : Dialg\ P \rightarrow Set \\
+G : D \rightarrow Dialg\ P \\
+G' = UG : D \rightarrow Set \\
+U (Lim\ G) = Lim\ G'
+\end{cases}
+$$
+
+\subsubsection*{Unit}
+
+Like for Bool or Nil constructors encoding.
+
+$$
+\begin{cases}
+P_0(A,B) =  B \\
+q_0\ e : Lim\ G' \\
+q_0\ e = e
+\end{cases}
+$$
+
+\subsubsection*{Fixed Type}
+
+Like for Cons first parameter.
+
+$$
+\begin{cases}
+P_1(A,B) = X \rightarrow P(A,B) \\
+q_1\ e : X \rightarrow P ( Lim\ G',  Lim\ G' ) \\
+q_1\ e\ x\ A = e\ A\ x
+\end{cases}
+$$
+
+\subsubsection*{Recursive Parameters}
+
+Like for Cons second parameter. This case is a key in encoding recursive
+   data types such as {\bf Lists} and recursive record types such as {\bf Streams}.
+
+$$
+\begin{cases}
+P_2(A,B) = A \rightarrow P(A,B) \\
+q_2\ e : Lim\ G' \rightarrow P ( Lim\ G',  Lim\ G' ) \\
+q_2\ e\ I\ A = e\ A\ (I\ A)
+\end{cases}
+$$
+
 \newpage
 \vspace{0.2cm}
-\subsection{Berrarducci Inductive Encoding}
+\subsection{Data, Polymorphic Functions and Theorems}
 \vspace{0.4cm}
 
 \begin{lstlisting}[mathescape=true]
