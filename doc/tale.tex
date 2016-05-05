@@ -23,32 +23,32 @@
 Ladies and gentlemen! Let us start from the beginning.
 In the beginning there were quantifiers and lambdas binding variables in the terms.
 This is what any Pure Type System is built from.
-It also can be seen as a category made from types (as objects) and functions (as morphisms).
+It can also be seen as a category made from types (as objects) and functions (as morphisms).
 If we want we can extend this category with any constructions
-we need but do it really need to be extended?
-What if it already contains all kind of structures we know?
+we need but do it really needs to be extended?
+What if it already contains all kinds of structures we know?
 Hereby we claim --- yes, it contains.
 The structures we seek are inductive types given by their constructors and eliminators,
 and coinductive types, and higher inductive types, and also
-a plenty of types formed by appropriate adjoint functors.
+plenty of types formed by appropriate adjoint functors.
 
-Such approach allows us to implement the full-featured language (EXE compiler)
+Such approach allows us to implement a full-featured language (EXE compiler)
 with dependent types atop of a small logical core of pure lambda calculus (OM compiler).
 You know the LISP language uses "code as data" metaphor, but we use "data as code" insteed!
 
 It this text we discuss an encoding. An encoding is a model of one type-theory-like formal
 system in another type-theory-like formal system. The encoding we use implements axioms
 of Calculus of Inductive Construction (CIC), the type theory of inductive types,
-in Calculus of Construction, one of Pure Type System (PTS).
-We do it mapping types not into types but into a kind of structure known
+in Calculus of Construction, a Pure Type System (PTS).
+We do it by mapping types not to types but to a kind of structure known
 as setoids providing a well-behaved equality on our types and on the whole category.
-Also we utilize the fact that this category have limits of functors going into it,
+We also utilize the fact that this category has limits of functors going into it,
 a categorical notion refining dependent function type from PTS.
 
-Attempts to explore encodings are not new. The historical example is the
-Church encoding for natural numbers. There are generalizations of it [Berarducci].
+Attempts to explore encodings are not new. An historical example is the
+Church encoding for natural numbers and its generalizations [Berarducci].
 Nowadays there are pragmatically charged compilers using them [Gonzalez].
-Insteed we introduce encoding capable of implement dependent eliminator a.k.a.
+Instead we introduce encoding capable of implementing dependent eliminator a.k.a.
 induction principle build by refining Berarducci encoding with categorical limits.
 Attention: we do not extend the preexistent category of types,
 we just discover all required kinds of structures in the category of setoids.
@@ -60,7 +60,7 @@ Here it goes. Enjoy!
 \subsection{Setoids, Mappings}
 \subsection{Categories, Functors}
 \subsection{Initial and Terminal Objects}
-\subsection{Inductive types and its eliminators}
+\subsection{Inductive types and their eliminators}
 \subsection{Limits and Colimits}
 \subsection{Adjoint Functor Theorem}
 \subsection{Categories of Dialgebras}
@@ -94,8 +94,10 @@ Here it goes. Enjoy!
 
 \bibitem{henk0}      Henk Barendregt \textit{The Lambda Calculus. Its syntax and semantics} 1981
 \bibitem{henk1}      Henk Barendregt \textit{Lambda Calculus With Types} 2010
-\bibitem{henk}       Erik Meijer, Symon Peyton Jones \textit{Henk: a typed intermediate language} 1984
+\bibitem{henk}       Erik Meijer, Simon Peyton Jones \textit{Henk: a typed intermediate language} 1984
 \bibitem{lof}        Per Martin-Löf \textit{Intuitionistic Type Theory} 1984
+\bibitem{berarducci} ????
+\bibitem{gonzalez} ????
 
 \end{thebibliography}
 \end{document}
