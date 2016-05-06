@@ -107,8 +107,8 @@ Such encoding works with dependent types and its consistency is proved in Lean m
    There is no fixpoint axiom needed for the definition of infinity term dependance.
 
    \paragraph{}
-   All terms respect ranking A inside sequence of universes S and complexity of the
-   dependent term is equal maximum complexity of term and its dependency R. The type
+   All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
+   dependent term is equal maximum complexity of term and its dependency $Rules$. The type
    system is completely described by the following PTS notation (due to Barendregt):
 
 $$
@@ -122,43 +122,40 @@ $$
    An intermediate Om language is based on Henk\cite{henk} languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lamda terms.
-   It is based only on $\Pi$, $\lambda$ and $apply$ constructions, infinity number of universes,
-   one axiom and one deduction rule. The design of Om language resemble Henk and Morte both
+   It is based only on one type constructor $\Pi$, its special case $\lambda$ and theirs eliminators:
+   $apply$ and $curry$, infinity number of universes,
+   and one computation rule called $\beta$-reduction.
+   The design of Om language resemble Henk and Morte both
    design and implementation. This language indended to be small, conside, easy provable
-   and clean and produce verifiable peace of code that can be distributed over the networks
-   and compiled at target with safe linkage.
+   and able to produce verifiable peace of code that can be distributed over the networks,
+   compiled at target with safe trusted linkage.
 
    \subsection{BNF}
 \vspace{0.5cm}
-   Om syntax is compatible with $\lambda C$ Coquand's calculus of constructions presented in Morte
-   and Henk languages. However it has extension in a part of specifying universe index as a {\bf Nat} number.
+   Om syntax is compatible with $\lambda C$ Coquand's Calculus of Constructions presented
+   in Morte and Henk languages. However it has extension in a part of specifying
+   universe index as a {\bf Nat} number.
 
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
    <> ::= #option
     I ::= #identifier
     U ::= * < #number >
-    O ::= U | I | ( O ) | O O | $\lambda$ ( I : O ) $\rightarrow$ O |
-          O $\rightarrow$ O | $\forall$ ( I : O ) $\rightarrow$ O
+    O ::= U
+        | I
+        | ( O )
+        | O O
+        | O $\rightarrow$ O
+        | $\lambda$ ( I : O ) $\rightarrow$ O
+        | $\forall$ ( I : O ) $\rightarrow$ O
 \end{lstlisting}
 
-   \subsection{AST}
 
-\begin{center}
-\begin{tabular}{lcl}
-      $E$ & :=& $K$ \\
-          & | & $x$ \\
-          & | & $E E$ \\
-          & | & $\lambda (x: E) \rightarrow E$ \\
-          & | & $\Pi (x: E) \rightarrow E$ \\
-\end{tabular}
-\end{center}
+\subsection{Target Erlang VM and LLVM platforms}
 
-%\subsection{Target Erlang VM and LLVM platforms}
-
-%   \paragraph{}
-%   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
-%   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
+   \paragraph{}
+   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
+   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
 
 \newpage
    \section{Exe Macrosystem}
