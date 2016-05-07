@@ -59,32 +59,61 @@ Here it goes. Enjoy!
 \section{Steps: The How}
 
 In this section we describe all the constructions used.
-Explanations are intended to be read by software engeneers (really?).
+Explanations are intended to be read by software engineers (really?).
 If you are a mathematician, just read the phrase
-"application of General Adjoint Functor Theorem at type theory" and meditate on it.
+"application of General Adjoint Functor Theorem to type theory" and meditate on it.
 
 \subsection{Forall and Lambda}
 
-If you used to use lambda expressions in functional programming
+If you are used to lambda expressions in functional programming
 you will find the following familiar.
-All our work is performed in a particular typed lambda calculus,
-specifically in PTS, a Pure Type System.
-The simplest of them is CoC, the Calculus of Constructions.
+
+The mathematical language we use is called Calculus of Constructions.
+
+It is a typed programming language with 5 constructions: variable names, anonymous functions,
+type declarations, function calls/argument applications and predefined types.
+
+Variables can be only defined as parameters to functions or parameters to type declarations. 
+There are no stand-alone variables, every variable is a parameter somewhere. Moreover,
+functions and types always have one argument. There are no functions or types without arguments,
+and they cannot have more than one.
+
+Also, there are no "normal" data: all the data is represented by functions.
+
+From now on, we will use mathematical names for the constructions of the language.
+
+Anonymous functions are called lambda-abstractions or simply lambdas,
+and are denoted by  $\lambda$. 
+
+Type declarations are denoted by $\forall$ and are called function types 
+(remember, everything is a function). Sometimes $\forall$ doesn't use the variable it declares,
+so we will use $\rightarrow$ as a shortcut.
+
+Predefined types are called universes. In original Calculus of Constructions
+there were only two universes, an asterisk and a square. But our variation has
+many, and for each universe there is a "larger" universe, so they form an infinite sequence. We will use *0, *1, *2 and so on. 
+As very large universes are rarely needed, later we will introduce special names for few first universes.
+
+As both types and functions have formal parameters, there is a way to pass the actual parameters. Unlike most normal programming languages, when passing value arguments are denoted by foo(bar) and passing type arguments is denoted by foo<bar>, in
+CoC they are both written as foo bar, and foo bar baz means (foo bar) baz, i.e. foo bar "returns" something that can be "called" again.
+
+For those mathematically inclined, Calculus of Construction is a Pure Type System, and Pure Type Systems are typed lambda-calculi.
+
 Its language consists of variable references,
-function expressions (known as lambda abstractions,
+functions (known as lambda abstractions,
 denoted by $\lambda$),
-their types (known as types of functions or dependent functions,
-denoted by $\forall$)
+function types (denoted by $\forall$)
 and applications of an argument to a function
 (denoted by juxtaposition).
 There are also universes (types of types).
-No others expressions!
-Expression of our language we will call {\em terms}.
-Here we will not introduce it fully formal by so-called
-"rules of inference", but rather show generic examples.
+There are no others expressions!
+We will call the expressions of our language  {\em terms}.
+
+We are not going to introduce them formally by so-called
+"rules of inference" notation. Instead, we will show generic examples.
 
 \paragraph{Typing}
-Notation $a : A$ means term $a$ is of type $A$.
+Notation $a : A$ means the term $a$ is of type $A$.
 
 \paragraph{Abstraction}
 If there is a term $y : Y$ containing variable $x : X$,
@@ -111,10 +140,10 @@ But what is the type of $*$ itself? Can we let it be just $*$?
 No, it appears that $* : *$ causes paradoxes, so
 we have to consider different universes.
 We can consider just one "superuniverse" $BOX$
-(than the whole system will be exactly CoC),
+(then the whole system will be exactly CoC),
 or else we can provide an infinite hierarchy of similar universes
 of level $n$, denoted $*{n}$,
-with the next universe containing the previous,
+with the next universe containing the previous one,
 and this is more general PTS.
 
 \paragraph{Predicativity}
