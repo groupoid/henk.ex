@@ -4,6 +4,7 @@
 %\input{synrc.tex}
 \usepackage[english]{babel}
 \usepackage{textcomp}
+\usepackage{amsmath}
 \begin{document}
 
 \thispagestyle{empty}
@@ -226,6 +227,7 @@ the following three properties:
 A tuple $(T, eq)$ of the type $T$ and the equivalence relation $eq$ on it
 is called a {\em setoid}.
 We may call $T$ the {\em carrier} of the setoid and $eq$ the {\em structure} on it.
+We are going to call the properties of equivalence {\em axioms} of setoid.
 If the structure is known and fixed we call equivalent elements
 of the setoid carrier just {\em equal}.
 
@@ -241,7 +243,66 @@ equivalence $eq_1$ onto evidences of equivalence $eq_2$.
 To speak simplified we can say that a mapping $m$ is just a function
 respecting the equality (the setoid structure).
 
+Note that we can compile our types and functions of the high-level language to setoids and mapping of the low-level language.
+
 \subsection{Categories, Functors}
+
+In the above we have considered the three different environments:
+types and functions between them,
+contexts and functions between them,
+setoids and mappings between them.
+All of them are usable as hosts for compiling lambda calculus
+based languages.
+Now we define such kind of environments more explicitly.
+
+A {\em category} (as viewed by the type theory)
+is a tuple $(Ob, Hom, Id, Mul, UnitL, UnitR, Assoc)$ where
+$Ob : Type$ is the type of {\em objects},
+$Hom : \forall(a, b : Ob)\rightarrow \operatorname{SetoidType}$
+is the family of
+setoids of {\em morphisms} denoted by $a \Rightarrow b$,
+$Id : \forall(o_0 : Ob)\rightarrow (o_0 \Rightarrow o_0)$ is a family
+of the {\em identity} morphisms $Id o_0$ defined for each object $o_0$,
+$Mul : \forall(o_1, o_2, o_3 : Ob) \rightarrow (o_2 \Rightarrow o_3) \rightarrow (o_1 \Rightarrow o_2) \rightarrow (o_1 \Rightarrow o_3)$
+is a family of operation of {\em multiplication} (or {\em composition})
+defined for any triples of objects, and predicates $UnitL$, $UnitR$
+ensure that the identity is neutral against the multiplication, and
+$Assoc$ is the predicate ensures that the multiplication is associative.
+
+In other words, a category comprises its carrier ---
+all the objects and the morphisms between them,
+denoted by $m : a \Rightarrow b$.
+Thereafter we have morphisms between objects and equalities between morphisms.
+The carrier is accompanied by {\em the structure}
+of associative multiplication with neutral identities.
+The basic example is the category of setoids, denoted $Set$.
+Types and contexts equipped by minimal equivalence relations on them
+can be viewed as subcategories of $Set$.
+
+A wise reader should ask now: what are functions between categories?
+The answer is a notion of {\em functor}.
+A functor $F : C \rightarrow D$ between given categories
+$C = (Ob_C, Hom_C, Id_C, Mul_C, UnitL_C, UnitR_C, Assoc_C)$ and
+$D = (Ob_D, Hom_D, Id_D, Mul_D, UnitL_D, UnitR_D, Assoc_D)$
+is a tuple $(F_{OB}, F_{HOM}, F_{ID}, F_{MUL})$ where
+$F_{OB} : Ob_C \rightarrow Ob_D$ is a function between types of objects
+(we write simply $F o$ for its action on objects),
+$F_{HOM} : \forall(a, b : Ob_C)\rightarrow (a \Rightarrow_C  b) \rightarrow ((F_{OB} a) \Rightarrow_D (F_{OB} b))$
+is a family of mappings between setoids of morpisms
+(we write simply $F m$ for its action on morphisms),
+$F_{ID} : \forall(a : Ob_C)\rightarrow (Id_D (F a) = F (Id_C a))$
+is a predicate ensuring that the functor respects the identities,
+and $F_{MUL}$ is a predicate ensuring that the functor respects
+the multiplication (try to write its type by your own).
+
+\paragraph{Important}
+Consider the process of compilation from the high-level language with
+particular category of types to the low-level language
+with the other category.
+The procedure of encoding is just a change of the category
+we focus on when compiling our code.
+The technical information needed to compile is
+the definition of the new category from the old one.
 
 \subsection{Initial and Terminal Objects}
 
