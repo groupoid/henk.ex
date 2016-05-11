@@ -3,6 +3,7 @@
 
 %\input{synrc.tex}
 \usepackage[english]{babel}
+\usepackage{textcomp}
 \begin{document}
 
 \thispagestyle{empty}
@@ -205,6 +206,40 @@ equivalent to a function with a number of arguments.
 Here we have curring by desing.
 
 \subsection{Setoids, Mappings}
+
+Recall the notion of equivalence. For any given type $T$
+an {\em equivalence relation}
+on it is a function $eq : T \rightarrow T \rightarrow Prop$
+(written below in infix form as $a \sim b$) satisfying
+the following three properties:
+
+\paragraph{Reflexivity}
+(For any $t_0 : T$) $t_0 \sim t_0$
+
+\paragraph{Transitivity}
+(For any $t_1, t_2, t_3 : T$) If $t_1 \sim t_2$ and $t_2 \sim t_3$  then  $t_1 \sim t_3$.
+
+\paragraph{Symmetry}
+(For any $t_1, t_2 : T$) If $t_1 \sim t_2$ then $t_2 \sim t_1$.
+
+\paragraph{}
+A tuple $(T, eq)$ of the type $T$ and the equivalence relation $eq$ on it
+is called a {\em setoid}.
+We may call $T$ the {\em carrier} of the setoid and $eq$ the {\em structure} on it.
+If the structure is known and fixed we call equivalent elements
+of the setoid carrier just {\em equal}.
+
+Also we need a notion of a function-like object between setoids.
+A {\em mapping} $m : (T_1, eq_1) \rightarrow (T_2, eq_2)$ is a tuple
+$(f, f_{OK})$ where $f : T_1 \rightarrow T_2$ is a function between carriers and
+$f_{OK} : \forall (t, t' : T_1) \rightarrow (t = t') \rightarrow (f t = f t')$
+is just a predicate ensuring that any pair of equal elements of domain
+is mapped by $f$ onto a pair of equal elements of codomain.
+From the constructive viewpoint, the $f_{OK}$ maps evidences of
+equivalence $eq_1$ onto evidences of equivalence $eq_2$.
+
+To speak simplified we can say that a mapping $m$ is just a function
+respecting the equality (the setoid structure).
 
 \subsection{Categories, Functors}
 
