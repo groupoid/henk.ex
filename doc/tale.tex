@@ -73,7 +73,7 @@ The mathematical language we use is called Calculus of Constructions.
 It is a typed programming language with 5 constructions: variable names, anonymous functions,
 type declarations, function calls/argument applications and predefined types.
 
-Variables can be only defined as parameters to functions or parameters to type declarations. 
+Variables can be only defined as parameters to functions or parameters to type declarations.
 There are no stand-alone variables, every variable is a parameter somewhere. Moreover,
 functions and types always have one argument. There are no functions or types without arguments,
 and they cannot have more than one.
@@ -83,15 +83,15 @@ Also, there are no "normal" data: all the data is represented by functions.
 From now on, we will use mathematical names for the constructions of the language.
 
 Anonymous functions are called lambda-abstractions or simply lambdas,
-and are denoted by  $\lambda$. 
+and are denoted by  $\lambda$.
 
-Type declarations are denoted by $\forall$ and are called function types 
+Type declarations are denoted by $\forall$ and are called function types
 (remember, everything is a function). Sometimes $\forall$ doesn't use the variable it declares,
 so we will use $\rightarrow$ as a shortcut.
 
 Predefined types are called universes. In original Calculus of Constructions
 there were only two universes, an asterisk and a square. But our variation has
-many, and for each universe there is a "larger" universe, so they form an infinite sequence. We will use *0, *1, *2 and so on. 
+many, and for each universe there is a "larger" universe, so they form an infinite sequence. We will use *0, *1, *2 and so on.
 As very large universes are rarely needed, later we will introduce special names for few first universes.
 
 As both types and functions have formal parameters, there is a way to pass the actual parameters. Unlike most normal programming languages, when passing value arguments are denoted by foo(bar) and passing type arguments is denoted by foo<bar>, in
@@ -175,6 +175,34 @@ mirroring older {\em predicate calculus} known from the XIX century.
 Any well-typed term in PTS is simultaneously a proof of the theorem stated by its type.
 
 \subsection{Contexts: Curried Records}
+
+A context is a notion in type theory meaning a sequence of types of variables
+needed to formally define a constraint on binding of all free variable in a term.
+For example, $( T : Type, x : T )$ declares a context including two variable with
+the type of the second variable being dependent on the value of the first one.
+
+We can define a notion of a function between two contexts.
+For contexts $A = (A_1, A_2, ...)$ and $B = (B_1, B_2, ...)$
+the type of such functions $A \rightarrow B$ is a context declaring
+function variables $(f_1 : A \rightarrow B_1, f_2 : A \rightarrow B_2, ...)$.
+All functions should receive all variables from the context $A$ and
+emit just one variable from the context $B$.
+
+For the given context there is a notion of {\em tuple type}
+as a type of all sequences of terms of the given types.
+We need to use tuples (a.k.a. records) but PTSs have not tuples.
+
+So this is the first layer of our encoding.
+
+We simply shift our focus from types to context and functions between them.
+We can simply consider context as tuple type.
+The pragmatic viewpoint allows such a shift because we are able to use
+types and terms in the high-level language being compiled to contexts and and sequences of terms in the low-level one.
+
+Also there is a well-known phenomenon in type theory --- a curring.
+A curring means that function with a tuple argument is
+equivalent to a function with a number of arguments.
+Here we have curring by desing.
 
 \subsection{Setoids, Mappings}
 
