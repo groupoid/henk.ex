@@ -1,10 +1,13 @@
 % copyright (c) 2016 Groupoid Infinity
 \documentclass[11pt,oneside]{article}
 
-%\input{synrc.tex}
-\usepackage[english]{babel}
+\input{synrc.tex}
 \usepackage{textcomp}
-\usepackage{amsmath}
+%\usepackage[english]{babel}
+%\usepackage{amsmath}
+
+\parindent = 1cm
+
 \begin{document}
 
 \thispagestyle{empty}
@@ -93,8 +96,14 @@ so we will use $\rightarrow$ as a shortcut.
 
 Predefined types are called universes. In original Calculus of Constructions
 there were only two universes, an asterisk and a square. But our variation has
-many, and for each universe there is a "larger" universe, so they form an infinite sequence. We will use *0, *1, *2 and so on.
-As very large universes are rarely needed, later we will introduce special names for few first universes.
+many, and for each universe there is a "larger" universe, so they form an infinite sequence. We will use \lstinline|*0|, \lstinline|*1|, \lstinline|*2| and so on.
+As very large universes are rarely needed, later we will introduce special names for few first universes:
+
+\begin{lstlisting}[mathescape=true]
+    def Prop := *0
+    def Type := *1
+    def Kind := *2
+\end{lstlisting}
 
 As both types and functions have formal parameters, there is a way to pass the actual parameters. Unlike most normal programming languages, when passing value arguments are denoted by foo(bar) and passing type arguments is denoted by foo<bar>, in
 CoC they are both written as foo bar, and foo bar baz means (foo bar) baz, i.e. foo bar "returns" something that can be "called" again.
@@ -115,46 +124,48 @@ We are not going to introduce them formally by so-called
 "rules of inference" notation. Instead, we will show generic examples.
 
 \paragraph{Typing}
-Notation $a : A$ means the term $a$ is of type $A$.
+Notation \lstinline|a : A| means the term \lstinline|a| is of type \lstinline|A|.
 
 \paragraph{Abstraction}
-If there is a term $y : Y$ containing variable $x : X$,
+If there is a term \lstinline[mathescape=true]|y : Y| containing variable \lstinline|x : X|,
 then there is a new term
-$(\lambda x : X) \rightarrow y : (\forall x : X) \rightarrow Y$.
+\lstinline[mathescape=true]|($\lambda$ x : X) $\rightarrow$ y|
+of type
+\lstinline[mathescape=true]|($\forall$ x : X) $\rightarrow$ Y|.
 The former is the term of dependent function, the latter is its type.
-Also we write $A \rightarrow B$ for shorthand of
-$(\forall a : A) \rightarrow B$ if the variable $a$
-does not appear in term $B$
-(it is the well-known type of non-dependent functions).
+Also we write \lstinline[mathescape=true]|A $\rightarrow$ B| as shorthand for
+\lstinline[mathescape=true]|($\forall$ a : A) $\rightarrow$ B| if the variable \lstinline|a|
+does not appear in term \lstinline[mathescape=true]|B| ---
+it is the well-known type of ordinary (non-dependent) functions.
 
-\paragraph{Application}
-If $f : (\forall x : X)\rightarrow Y$ and $v : X$  then $(f v) : Y[v/x]$.
-Also we assume $((\lambda x : X)\rightarrow y) v$
-to be equal to $y[v/x]$.
-Here $f[v/x]$ means the substitution of the term $v$ in place of all
-occurencies of the variable $x$ in the term $f$.
+\paragraph{Application}\sloppy
+If \lstinline[mathescape=true]|f : ($\forall$ x : X)$\rightarrow$ Y| and \lstinline[mathescape=true]|v : X|  then \lstinline[mathescape=true]|(f v) : Y[v/x]|.
+Also we assume \lstinline[mathescape=true]|(($\lambda$ x : X)$\rightarrow$ y) v|
+to be equal to \lstinline[mathescape=true]|y[v/x]|.
+Here \lstinline[mathescape=true]|f[v/x]| denote the substitution of the term \lstinline[mathescape=true]|v| in place of all
+occurencies of the variable \lstinline[mathescape=true]|x| in the term \lstinline[mathescape=true]|f|.
 
 \paragraph{Universes}
-If $a : A$ then $A : *$.
-Here we denote "type of types" as $*$ symbol.
+If \lstinline[mathescape=true]|a : A| then \lstinline[mathescape=true]|A : *|.
+Here we denote "type of types" as \lstinline[mathescape=true]|*| symbol.
 These are also called universes.
-But what is the type of $*$ itself? Can we let it be just $*$?
-No, it appears that $* : *$ causes paradoxes, so
+But what is the type of \lstinline[mathescape=true]|*| itself? Can we let it be just \lstinline[mathescape=true]|*|?
+No, it appears that \lstinline[mathescape=true]|* : *| causes paradoxes, so
 we have to consider different universes.
-We can consider just one "superuniverse" $BOX$
+We can consider just one "superuniverse" \lstinline[mathescape=true]|$BOX$| with \lstinline[mathescape=true]|* : $BOX$|
 (then the whole system will be exactly CoC),
 or else we can provide an infinite hierarchy of similar universes
-of level $n$, denoted $*{n}$,
-with the next universe containing the previous one,
-and this is more general PTS.
+of level $n$, denoted \lstinline[mathescape=true]|*{$n$}|,
+with the next universe containing the previous one \lstinline[mathescape=true]|*{$n$} : *{$n+1$}|,
+and it is the more general PTS commonly used.
 
 \paragraph{Predicativity}
-If we have different universes, we should ask what is the universe
+When we have different universes, we should ask what is the universe
 of the type of functions between given types.
-Let $M : *{m}$ and $N : *{n}$ and assume $(M \rightarrow N) : *{r} $.
+Let \lstinline[mathescape=true]|M : *{$m$}| and \lstinline[mathescape=true]|N : *{$n$}| and assume \lstinline[mathescape=true]|(M $\rightarrow$ N) : *{$r$}|.
 There are two simple answers:
-$r = max (m, n)$ (called the predicative hierarchy) and
-$r = n$ (called the impredicative hierarchy).
+$r = max (m, n)$ (the case is called the {\em predicative} hierarchy) and
+$r = n$ (the case is called the {\em impredicative} hierarchy).
 
 \subsection{Logics}
 In CoC/PTS the universes are first-class citizens,
@@ -178,17 +189,10 @@ Any well-typed term in PTS is simultaneously a proof of the theorem stated by it
 
 \subsection{Contexts: Curried Records}
 
-A context is a notion in type theory meaning a sequence of types of variables
+A context is a notion from type theory meaning a sequence of types of variables
 needed to formally define a constraint on binding of all free variable in a term.
-For example, $( T : Type, x : T )$ declares a context including two variable with
-the type of the second variable being dependent on the value of the first one.
-
-We can define a notion of a function between two contexts.
-For contexts $A = (A_1, A_2, ...)$ and $B = (B_1, B_2, ...)$
-the type of such functions $A \rightarrow B$ is a context declaring
-function variables $(f_1 : A \rightarrow B_1, f_2 : A \rightarrow B_2, ...)$.
-All functions should receive all variables from the context $A$ and
-emit just one variable from the context $B$.
+For example, $( T : *, x : T )$ declares a context including two variables where
+the type of the second variable is dependent on the value of the first one.
 
 For the given context there is a notion of {\em tuple type}
 as a type of all sequences of terms of the given types.
@@ -197,9 +201,34 @@ We need to use tuples (a.k.a. records) but PTSs have not tuples.
 So this is the first layer of our encoding.
 
 We simply shift our focus from types to context and functions between them.
-We can simply consider context as tuple type.
+We can simply consider context as a tuple type.
 The pragmatic viewpoint allows such a shift because we are able to use
 types and terms in the high-level language being compiled to contexts and and sequences of terms in the low-level one.
+We denote tuple types as following:
+
+\begin{lstlisting}[mathescape=true]
+    record Pair : * :=
+        (T : *)
+        (x : T)
+\end{lstlisting}
+
+We can define a notion of a function between two contexts.
+For contexts \lstinline[mathescape=true]|A| and \lstinline[mathescape=true]|B|:
+
+\begin{lstlisting}[mathescape=true]
+    record A : * := (a$_1$ : A$_1$) (a$_2$ : A$_2$)
+    record B : * := (b$_1$ : B$_1$) (b$_2$ : B$_2$)
+\end{lstlisting}
+the type of such functions \lstinline[mathescape=true]|A $\rightarrow$ B|
+is a context declaring function variables:
+
+\begin{lstlisting}[mathescape=true]
+    record FAB : * :=
+        (f$_1$ : A$_1$ $\rightarrow$ A$_2$ $\rightarrow$ B$_1$)
+        (f$_2$ : A$_1$ $\rightarrow$ A$_2$ $\rightarrow$ B$_2$)
+\end{lstlisting}
+All functions should receive all variables from the context $A$ and
+emit just one variable of the context $B$.
 
 Also there is a well-known phenomenon in type theory --- a curring.
 A curring means that function with a tuple argument is
@@ -208,31 +237,46 @@ Here we have curring by desing.
 
 \subsection{Setoids, Mappings}
 
-Recall the notion of equivalence. For any given type $T$
-an {\em equivalence relation}
-on it is a function $eq : T \rightarrow T \rightarrow Prop$
-(written below in infix form as $a \sim b$) satisfying
-the following three properties:
+Recall the notion of equivalence. For any given type \lstinline[mathescape=true]|T|
+an {\em equivalence relation} on \lstinline[mathescape=true]|T| is a function of two arguments
+\lstinline[mathescape=true]|eq : T $\rightarrow$ T $\rightarrow$ Prop|
+(written below in infix form as \lstinline[mathescape=true]|a $\sim$ b|)
+satisfying the following three properties:
 
 \paragraph{Reflexivity}
-(For any $t_0 : T$) $t_0 \sim t_0$
+(For any \lstinline[mathescape=true]|t$_0$ : T|) \lstinline[mathescape=true]|t$_0$ $\sim$ t$_0$|
 
 \paragraph{Transitivity}
-(For any $t_1, t_2, t_3 : T$) If $t_1 \sim t_2$ and $t_2 \sim t_3$  then  $t_1 \sim t_3$.
+(For any \lstinline[mathescape=true]|t$_1$, t$_2$, t$_3$ : T|) If
+\lstinline[mathescape=true]|t$_1$ $\sim$ t$_2$| and
+\lstinline[mathescape=true]|t$_2$ $\sim$ t$_3$| then
+\lstinline[mathescape=true]|t$_1$ $\sim$ t$_3$|.
 
 \paragraph{Symmetry}
-(For any $t_1, t_2 : T$) If $t_1 \sim t_2$ then $t_2 \sim t_1$.
+(For any \lstinline[mathescape=true]|t$_1$, t$_2$ : T|) If
+\lstinline[mathescape=true]|t$_1$ $\sim$ t$_2$| then
+\lstinline[mathescape=true]|t$_2$ $\sim$ t$_1$|.
 
 \paragraph{}
-A tuple $(T, eq)$ of the type $T$ and the equivalence relation $eq$ on it
-is called a {\em setoid}.
-We may call $T$ the {\em carrier} of the setoid and $eq$ the {\em structure} on it.
-We are going to call the properties of equivalence {\em axioms} of setoid.
-If the structure is known and fixed we call equivalent elements
-of the setoid carrier just {\em equal}.
+A tuple of the type and the equivalence relation on it is called
+a {\em setoid}.
+Formally:
+
+\begin{lstlisting}[mathescape=true]
+    record SetoidType : * :=
+        (El : *)
+        (Equ : El $\rightarrow$ El $\rightarrow$ Prop)
+        (Refl : $\forall${e$_0$ : El}, Equ e$_0$ e$_0$)
+        (Trans : $\forall${e$_1$ e$_2$ e$_3$ : El}, Equ e$_1$ e$_2$ $\rightarrow$ Equ e$_2$ e$_3$ $\rightarrow$ Equ e$_1$ e$_3$)
+        (Sym : $\forall${e$_1$ e$_2$ : El}, Equ e$_1$ e$_2$ $\rightarrow$ Equ e$_2$ e$_1$)
+\end{lstlisting}
+We call \lstinline[mathescape=true]|El| the {\em carrier} of the setoid and \lstinline[mathescape=true]|(Equ,Refl,Trans,Sym)| the {\em structure} on \lstinline[mathescape=true]|El|.
+We are going to call the properties of equivalence the {\em axioms} of setoid.
+When the structure is known we call equivalent elements
+of the setoid carrier just {\em equal} and denote it \lstinline[mathescape=true]|a = b|.
 
 Also we need a notion of a function-like object between setoids.
-A {\em mapping} $m : (T_1, eq_1) \rightarrow (T_2, eq_2)$ is a tuple
+A {\em mapping} \lstinline[mathescape=true]|m : (T_1, eq_1) \rightarrow (T_2, eq_2)| is a tuple
 $(f, f_{OK})$ where $f : T_1 \rightarrow T_2$ is a function between carriers and
 $f_{OK} : \forall (t, t' : T_1) \rightarrow (t = t') \rightarrow (f t = f t')$
 is just a predicate ensuring that any pair of equal elements of domain
@@ -244,6 +288,13 @@ To speak simplified we can say that a mapping $m$ is just a function
 respecting the equality (the setoid structure).
 
 Note that we can compile our types and functions of the high-level language to setoids and mapping of the low-level language.
+
+\paragraph{Kinds of equalities}
+
+We can see that setoid can couple a type with any equivalence.
+Given type $T$ there is a minimal equivalence on $T$ and it is called a propositional equality.
+However such equalities is dufficult to use in runtime, because we cannot pattern match against propositions.
+So for runtime testing of values to be equal we need a function of type $T \rightarrow T \rightarrow Bool$ which is called a decidable equality.
 
 \subsection{Categories, Functors}
 
@@ -289,7 +340,7 @@ $F_{OB} : Ob_C \rightarrow Ob_D$ is a function between types of objects
 (we write simply $F o$ for its action on objects),
 $F_{HOM} : \forall(a, b : Ob_C)\rightarrow (a \Rightarrow_C  b) \rightarrow ((F_{OB} a) \Rightarrow_D (F_{OB} b))$
 is a family of mappings between setoids of morpisms
-(we write simply $F m$ for its action on morphisms),
+(we write simply $F m$),
 $F_{ID} : \forall(a : Ob_C)\rightarrow (Id_D (F a) = F (Id_C a))$
 is a predicate ensuring that the functor respects the identities,
 and $F_{MUL}$ is a predicate ensuring that the functor respects
