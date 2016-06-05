@@ -1,4 +1,4 @@
--- #Prop/False/@ : #Prop/El
+-- #Prop/Sum0/@ : #Prop/El
 
 \/(False : #Prop/El) ->
 ----

@@ -1,8 +1,8 @@
--- #Setoid/Empty/Equ : #Setoid/Ob/Equ #Setoid/Empty/El
+-- #Setoid/Sum0/Equ : #Setoid/Ob/Equ #Setoid/Sum0/El
 
 -- args
-\ (emptyA : #Setoid/Empty/El) ->
-\ (emptyB : #Setoid/Empty/El) ->
+\ (emptyA : #Setoid/Sum0/El) ->
+\ (emptyB : #Setoid/Sum0/El) ->
 
 -- lim arg
 \/(EmptyEl : #Setoid/Ob/El) ->

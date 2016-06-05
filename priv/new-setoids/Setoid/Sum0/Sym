@@ -1,11 +1,9 @@
--- #Setoid/Empty/Sym : #Setoid/Ob/Sym #Setoid/Empty/El #Setoid/Empty/Equ
+-- #Setoid/Sum0/Sym : #Setoid/Ob/Sym #Setoid/Sum0/El #Setoid/Sum0/Equ
 
 -- args
-\ (empty1 : #Setoid/Empty/El) ->
-\ (empty2 : #Setoid/Empty/El) ->
-\ (empty3 : #Setoid/Empty/El) ->
-\ (equ12  : #Setoid/Empty/Equ empty1 empty2) ->
-\ (equ23  : #Setoid/Empty/Equ empty2 empty3) ->
+\ (empty1 : #Setoid/Sum0/El) ->
+\ (empty2 : #Setoid/Sum0/El) ->
+\ (equ12  : #Setoid/Sum0/Equ empty1 empty2) ->
 
 -- lim arg
 \ (EmptyEl : #Setoid/Ob/El) ->
@@ -16,9 +14,7 @@
 \ (EmptySym : #Setoid/Ob/Sym EmptyEl EmptyEqu) ->
 
 -- lim res
-EmptyTrans
+EmptySym
     (empty1 EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)
     (empty2 EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)
-    (empty3 EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)
     (equ12  EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)
-    (equ23  EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)

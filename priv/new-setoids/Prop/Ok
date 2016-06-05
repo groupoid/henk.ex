@@ -1,4 +1,6 @@
--- #Prop/Ok : #Prop/El -> #Prop/El
+-- #Prop/Ok : #Setoid/Ob/Ok #Prop/El
 
 \ (P : #Prop/El) ->
-#Prop/True/@
+#Prop/Prod0/@
+
+-- proof irrelevance can be forced here

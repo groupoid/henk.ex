@@ -1,7 +1,4 @@
--- #Setoid/Empty/Ok : #Setoid/Ob/Ok #Setoid/Empty/El
-
--- arg
-\ (empty : #Setoid/Empty/El) ->
+-- #Setoid/Sum0/El : #Setoid/Ob/El
 
 -- lim arg
 \/(EmptyEl : #Setoid/Ob/El) ->
@@ -12,5 +9,4 @@
 \/(EmptySym : #Setoid/Ob/Sym EmptyEl EmptyEqu) ->
 
 -- lim res
-EmptyOk
-    (empty EmptyEl EmptyOk EmptyEqu EmptyRefl EmptyTrans EmptySym)
+EmptyEl

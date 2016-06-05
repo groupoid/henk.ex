@@ -1,0 +1,10 @@
+-- #Prop/Prod2/pr1 : \/(P1:#Prop/El)->\/(P2:#Prop/El)-> #Prop/Prod2 P1 P2 -> P1
+
+-- args
+\ (P1 : #Prop/El) ->
+\ (P2 : #Prop/El) ->
+\ (and : #Prop/Prod2/@ P1 P2) ->
+
+-- res
+and P1
+    (\ (p1 : P1) -> \ (p2 : P2) -> p1)

@@ -20,6 +20,6 @@
 \ (hom : #Setoid/Hom/El AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
 
 -- res
-#Prop/And2/@
+#Prop/Prod2/@
     (#Setoid/Hom/Ok.Ok  AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym hom)
     (#Setoid/Hom/Ok.Equ AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym hom)

@@ -4,4 +4,4 @@
 \ (P0 : #Prop/El) ->
 
 -- res
-#Prop/And2/Intro (P0->P0) (P0->P0) (#id0 P0) (#id0 P0)
+#Prop/Prod2/Intro (P0->P0) (P0->P0) (#id0 P0) (#id0 P0)

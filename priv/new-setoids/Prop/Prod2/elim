@@ -1,0 +1,14 @@
+-- #Prop/Prod2/elim : \/(P1:#Prop/El) -> \/(P2:#Prop/El) -> \/(P:#Prop/El) -> \/(Intro : \/(p1 : P1) -> \/ (p2 : P2) -> P) -> (#Prop/Prod2/@ P1 P2 -> P)
+
+-- args
+\ (P1 : #Prop/El) ->
+\ (P2 : #Prop/El) ->
+
+-- lim arg
+\ (And : #Prop/El) ->
+-- ...alg
+\ (Intro : P1 -> P2 -> And) ->
+-- ARG
+\ (and : #Prop/Prod2/@ P1 P2) ->
+-- lim res
+and And Intro

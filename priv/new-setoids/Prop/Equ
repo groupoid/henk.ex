@@ -1,8 +1,8 @@
--- #Prop/Equ : #Prop/El -> #Prop/El -> #Prop/El
+-- #Prop/Equ : #Setoid/Ob/Equ #Prop/El
 
 -- args
 \ (A : #Prop/El) ->
 \ (B : #Prop/El) ->
 
 -- res
-#Prop/And2/@ (A -> B) (B -> A)
+#Prop/Prod2/@ (A -> B) (B -> A)

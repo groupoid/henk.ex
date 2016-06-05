@@ -1,4 +1,4 @@
--- #Prop/True : #Prop/El
+-- #Prop/Prod0 : #Prop/El
 
 \/(True : #Prop/El) ->
 ----
