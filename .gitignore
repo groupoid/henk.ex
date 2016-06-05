@@ -17,3 +17,6 @@ erl_crash.dump
 .rebar
 .vscode
 sandbox
+/.latex/
+/tale.pdf
+*.synctex.gz
