@@ -1,4 +1,4 @@
--- #Prop/El. : #Setoid/Ob/El. #Prop/El
+-- #Prop/El. : #Setoid/Ob/@El. #Prop/El
 
 λ (P : #Prop/El) →
 #Prop/Prod0/@

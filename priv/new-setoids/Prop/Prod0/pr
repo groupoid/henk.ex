@@ -1,6 +1,6 @@
--- #Prop/Prod0/pr : ∀(P: #Prop/El)→ P→ #Prop/True
+-- #Prop/Prod0/pr : ∀(P: #Prop/@El)→ P→ #Prop/Prod0/@
 
-λ (P : #Prop/El) →
+λ (P : #Prop/@El) →
 ----
 λ (p : P) →
 ----

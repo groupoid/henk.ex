@@ -1,7 +1,7 @@
--- #Prop/True/Intro : #Prop/True/@
+-- #Prop/True/Intro : #Prop/Prod0/@
 
-λ (True : #Prop/El) →
+λ (Prod0 : #Prop/@El) →
 ----
-λ (Intro : True) →
+λ (Intro : Prod0) →
 ----
 Intro

@@ -1,7 +1,7 @@
--- #Prop/Prod0 : #Prop/El
+-- #Prop/Prod0/@ : #Prop/=El
 
-\/(True : #Prop/El) ->
+\/(Prod0 : #Prop/=El) ->
 ----
-\/(Intro : True) ->
+\/(Intro : Prod0) ->
 ----
-True
+Prod0

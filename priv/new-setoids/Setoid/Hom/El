@@ -1,20 +1,21 @@
--- #Setoid/Hom/El : #Setoid/Ob -> #Setoid/Ob -> #Setoid/Ob/El
+-- #Setoid/Hom/El: #Setoid/Ob/→ #Setoid/Ob/→ #Setoid/Ob/El
 
 -- arg A
-\ (AEl : #Setoid/Ob/El) ->
-\ (AOk : #Setoid/Ob/Ok AEl) ->
-\ (AEqu : #Setoid/Ob/Equ AEl) ->
-\ (ARefl : #Setoid/Ob/Refl AEl AEqu) ->
-\ (ATrans : #Setoid/Ob/Trans AEl AEqu) ->
-\ (ASym : #Setoid/Ob/Sym AEl AEqu) ->
+λ (A.El : #Setoid/Ob/El) →
+λ (A.El. : #Setoid/Ob/El. A.El) →
+λ (A.Equ : #Setoid/Ob/Equ A.El A.El.) →
+λ (A.Refl : #Setoid/Ob/Refl A.El A.El. A.Equ) →
+λ (A.Trans : #Setoid/Ob/Trans A.El A.El. A.Equ) →
+λ (A.Sym : #Setoid/Ob/Sym A.El A.El. A.Equ) →
 
 -- arg B
-\ (BEl : #Setoid/Ob/El) ->
-\ (BOk : #Setoid/Ob/Ok BEl) ->
-\ (BEqu : #Setoid/Ob/Equ BEl) ->
-\ (BRefl : #Setoid/Ob/Refl BEl BEqu) ->
-\ (BTrans : #Setoid/Ob/Trans BEl BEqu) ->
-\ (BSym : #Setoid/Ob/Sym BEl BEqu) ->
+λ (B.El : #Setoid/Ob/El) →
+λ (B.El. : #Setoid/Ob/El. B.El) →
+λ (B.Equ : #Setoid/Ob/Equ B.El B.El.) →
+λ (B.Refl : #Setoid/Ob/Refl B.El B.El. B.Equ) →
+λ (B.Trans : #Setoid/Ob/Trans B.El B.El. B.Equ) →
+λ (B.Sym : #Setoid/Ob/Sym B.El B.El. B.Equ) →
 
 -- res
-AEl -> BEl
+A.El →
+B.El
