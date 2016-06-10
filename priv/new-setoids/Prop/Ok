@@ -1,6 +1,0 @@
--- #Prop/Ok : #Setoid/Ob/Ok #Prop/El
-
-\ (P : #Prop/El) ->
-#Prop/Prod0/@
-
--- proof irrelevance can be forced here

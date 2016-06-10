@@ -1,7 +1,16 @@
--- #Setoid/Ob/Trans :
+-- #Setoid/Ob/Trans : ∀(El : #Setoid/Ob/El)→ ∀(El. : #Setoid/Ob/El. El)→ ∀(Equ : #Setoid/Ob/Equ El El.)→ #Prop/El
 
-\ (El : #Setoid/Ob/El) ->
-\ (Equ : #Setoid/Ob/Equ El) ->
+λ (El : #Setoid/Ob/El) →
+λ (El. : #Setoid/Ob/El. El) →
+λ (Equ : #Setoid/Ob/Equ El El.) →
 ----
-\/(e1: El) -> \/(e2: El) -> \/(e3: El) ->
-Equ e1 e2 -> Equ e2 e3 -> Equ e1 e3
+∀(e1 : El) →
+∀(e1. : El. e1) →
+∀(e2 : El) →
+∀(e2. : El. e2) →
+∀(e3 : El) →
+∀(e3. : El. e3) →
+Equ e1 e1. e2 e2. →
+Equ e2 e2. e3 e3. →
+----
+Equ e1 e1. e3 e3.

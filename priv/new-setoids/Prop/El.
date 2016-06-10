@@ -1,0 +1,6 @@
+-- #Prop/El. : #Setoid/Ob/El. #Prop/El
+
+λ (P : #Prop/El) →
+#Prop/Prod0/@
+
+-- proof irrelevance can be forced here

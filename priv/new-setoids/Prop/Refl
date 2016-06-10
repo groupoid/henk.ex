@@ -1,7 +1,7 @@
--- #Prop/Refl : #Setoid/Ob/Refl #Prop/El #Prop/Equ
+-- #Prop/Refl : #Setoid/Ob/Refl #Prop/El #Prop/El. #Prop/Equ
 
 -- args
-\ (P0 : #Prop/El) ->
+λ(P0 : #Prop/El) → λ(P0. : #Prop/El.) →
 
 -- res
-#Prop/Prod2/Intro (P0->P0) (P0->P0) (#id0 P0) (#id0 P0)
+#Prop/Prod2/Intro (P0→P0) (P0→P0) (#id0 P0) (#id0 P0)

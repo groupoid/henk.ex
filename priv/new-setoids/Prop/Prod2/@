@@ -1,12 +1,12 @@
--- #Prop/And2/@ : #Prop/El -> #Prop/El -> #Prop/El
+-- #Prop/And2/@ : #Prop/El→ #Prop/El→ #Prop/El
 
 -- args
-\ (P1 : #Prop/El) ->
-\ (P2 : #Prop/El) ->
+λ (P1 : #Prop/El) →
+λ (P2 : #Prop/El) →
 
--- lim arg
-\/(And : #Prop/El) ->
--- ...alg
-\/(Intro : P1 -> P2 -> And) ->
--- lim res
+--
+∀ (And : #Prop/El) →
+--
+∀ (Intro : P1 → P2 → And) →
+--
 And
