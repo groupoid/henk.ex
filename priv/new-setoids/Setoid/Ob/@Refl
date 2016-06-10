@@ -1,0 +1,8 @@
+-- #Setoid/Ob/@Refl : ∀(El : #Setoid/Ob/@El)→ ∀(El. : #Setoid/Ob/@El. El)→ ∀(Equ : #Setoid/Ob/@Equ El El.)→ #Prop/=El
+
+λ (El : #Setoid/Ob/@El) → λ (El. : #Setoid/Ob/@El. El) →
+λ (Equ : #Setoid/Ob/@Equ El El.) →
+----
+∀ (e0 : El) → ∀ (e0. : El. e0) →
+----
+Equ e0 e0. e0 e0.

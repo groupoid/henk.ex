@@ -1,7 +1,7 @@
--- #Prop/Prod0/elim : ∀(P: #Prop/@El)→ ∀(p: P)→ #Prop/Prod0/@→ P
+-- #Prop/Prod0/elim : ∀(P: #Prop/=El)→ ∀(p: P)→ #Prop/Prod0/@→ P
 
 -- args
-λ (P : #Prop/@El) →
+λ (P : #Prop/=El) →
 λ (p : P) →
 λ (prod0 : #Prop/Prod0/@) →
 

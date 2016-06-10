@@ -1,5 +1,0 @@
--- #Setoid/Ob/El. : #Setoid/Ob/El -> #Star
-
-λ (El : #Setoid/Ob/El) →
-----
-El → #Prop/El

@@ -1,14 +1,14 @@
--- #Prop/Prod2/elim: ∀(P1: #Prop/@El)→ ∀(P2: #Prop/@El)→ ∀(P: #Prop/@El)→ (P1→ P2→ P)→ (#Prop/Prod2/@ P1 P2 → P)
+-- #Prop/Prod2/elim: ∀(P1: #Prop/=El)→ ∀(P2: #Prop/=El)→ ∀(P: #Prop/=El)→ (P1→ P2→ P)→ (#Prop/Prod2/@ P1 P2 → P)
 
 -- args
-λ (P1 : #Prop/@El) →
-λ (P2 : #Prop/@El) →
+λ (P1 : #Prop/=El) →
+λ (P2 : #Prop/=El) →
 
 --
-λ (Prod2 : #Prop/@El) →
+λ (Prod2 : #Prop/=El) →
 --
 λ (Intro : P1 → P2 → Prod2) →
 --
 λ (prod2 : #Prop/Prod2/@ P1 P2) →
--- lim res
+-- 
 prod2 Prod2 Intro

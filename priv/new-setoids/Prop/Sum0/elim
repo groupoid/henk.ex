@@ -1,7 +1,7 @@
--- #Prop/Sum0/elim : ∀(P: #Prop/@El)→ #Prop/Sum0→ P
+-- #Prop/Sum0/elim : ∀(P: #Prop/=El)→ #Prop/Sum0→ P
 
 -- args
-λ (P : #Prop/@El) →
+λ (P : #Prop/=El) →
 λ (sum0 : #Prop/Sum0/@) →
 
 -- res
