@@ -26,8 +26,8 @@
 --
 λ (a : A.El) → λ (a. : A.El.) →
 B.Sym
-    (#Setoid/Hom/El/.onOb A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
-    (#Setoid/Hom/El/.onOb. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
-    (#Setoid/Hom/El/.onOb A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. a a.)
-    (#Setoid/Hom/El/.onOb. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. a a.)
+    (#Setoid/Hom/El/.onEl A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
+    (#Setoid/Hom/El/.onEl. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
+    (#Setoid/Hom/El/.onEl A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. a a.)
+    (#Setoid/Hom/El/.onEl. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. a a.)
     (equ12 a a.)
