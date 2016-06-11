@@ -1,24 +1,27 @@
--- #Setoid/Hom/Refl : \/(A:#Setoid/Ob) -> \/(B:#Setoid/Ob) -> #Setoid/Ob/Refl (#Setoid/Hom/El A B) (#Setoid/Ob/Equ A B)
+-- #Setoid/Hom/=Refl : ∀(A, B:#Setoid/Ob/) → #Setoid/Ob/@Refl (#Setoid/Hom/=El/ A B) (#Setoid/Hom/=Equ A B)
 
 -- arg A
-\ (AEl : #Setoid/Ob/El) ->
-\ (AOk : #Setoid/Ob/Ok AEl) ->
-\ (AEqu : #Setoid/Ob/Equ AEl) ->
-\ (ARefl : #Setoid/Ob/Refl AEl AEqu) ->
-\ (ATrans : #Setoid/Ob/Trans AEl AEqu) ->
-\ (ASym : #Setoid/Ob/Sym AEl AEqu) ->
+λ (A.El : #Setoid/Ob/@El) →
+λ (A.El. : #Setoid/Ob/@El. A.El) →
+λ (A.Equ : #Setoid/Ob/@Equ A.El A.El.) →
+λ (A.Refl : #Setoid/Ob/@Refl A.El A.El. A.Equ) →
+λ (A.Trans : #Setoid/Ob/@Trans A.El A.El. A.Equ) →
+λ (A.Sym : #Setoid/Ob/@Sym A.El A.El. A.Equ) →
 
 -- arg B
-\ (BEl : #Setoid/Ob/El) ->
-\ (BOk : #Setoid/Ob/Ok BEl) ->
-\ (BEqu : #Setoid/Ob/Equ BEl) ->
-\ (BRefl : #Setoid/Ob/Refl BEl BEqu) ->
-\ (BTrans : #Setoid/Ob/Trans BEl BEqu) ->
-\ (BSym : #Setoid/Ob/Sym BEl BEqu) ->
+λ (B.El : #Setoid/Ob/@El) →
+λ (B.El. : #Setoid/Ob/@El. B.El) →
+λ (B.Equ : #Setoid/Ob/@Equ B.El B.El.) →
+λ (B.Refl : #Setoid/Ob/@Refl B.El B.El. B.Equ) →
+λ (B.Trans : #Setoid/Ob/@Trans B.El B.El. B.Equ) →
+λ (B.Sym : #Setoid/Ob/@Sym B.El B.El. B.Equ) →
 
 -- equ args
-\ (f0 : #Setoid/Hom/El AEl AOk AEqu ARefl ATrans ASym BEl BOk BEqu BRefl BTrans BSym) ->
+λ (hom0 : #Setoid/Hom/=El A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
+λ (hom0. : #Setoid/Hom/=El. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom0) →
 
 --
-\ (a : AEl) ->
-BRefl (f0 a)
+λ (a : A.El) → λ (a. : A.El.) →
+B.Refl
+    (#Setoid/Hom/El/.onOb A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom0 hom0. a a.)
+    (#Setoid/Hom/El/.onOb. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom0 hom0. a a.)
