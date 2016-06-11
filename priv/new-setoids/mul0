@@ -1,9 +1,9 @@
--- #mul0 : \/(A : #Prop/El) -> \/(B : #Prop/El) -> \/(C : #Prop/El) -> (B -> C) -> (A -> B) -> (A -> C)
+-- #mul0 : \/(A, B, C : #Prop/=El) → (B→C) → (A→B) → (A→C)
 
-\ (A : #Prop/El) ->
-\ (B : #Prop/El) ->
-\ (C : #Prop/El) ->
-\ (fBC : B -> C) ->
-\ (fAB : A -> B) ->
-\ (a : A) ->
+λ (A : #Prop/=El) →
+λ (B : #Prop/=El) →
+λ (C : #Prop/=El) →
+λ (fBC : B -> C) →
+λ (fAB : A -> B) →
+λ (a : A) →
 fBC (fAB a)
