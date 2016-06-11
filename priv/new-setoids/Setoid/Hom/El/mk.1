@@ -1,0 +1,25 @@
+-- #Setoid/Hom/El/mk.1: ∀(A, B: #Setoid/Ob/)→ #Setoid/Ob/@onEl A B
+
+-- arg A
+λ (A.El : #Setoid/Ob/@El) →
+λ (A.El. : #Setoid/Ob/@El. A.El) →
+λ (A.Equ : #Setoid/Ob/@Equ A.El A.El.) →
+λ (A.Refl : #Setoid/Ob/@Refl A.El A.El. A.Equ) →
+λ (A.Trans : #Setoid/Ob/@Trans A.El A.El. A.Equ) →
+λ (A.Sym : #Setoid/Ob/@Sym A.El A.El. A.Equ) →
+
+-- arg B
+λ (B.El : #Setoid/Ob/@El) →
+λ (B.El. : #Setoid/Ob/@El. B.El) →
+λ (B.Equ : #Setoid/Ob/@Equ B.El B.El.) →
+λ (B.Refl : #Setoid/Ob/@Refl B.El B.El. B.Equ) →
+λ (B.Trans : #Setoid/Ob/@Trans B.El B.El. B.Equ) →
+λ (B.Sym : #Setoid/Ob/@Sym B.El B.El. B.Equ) →
+
+-- res
+λ (onEl : #Setoid/Hom/El/@onEl A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
+λ (onEl. : #Setoid/Hom/El/@onEl. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym onEl) →
+λ (onEqu : #Setoid/Hom/El/@onEqu A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym onEl onEl.) →
+
+--
+onEl

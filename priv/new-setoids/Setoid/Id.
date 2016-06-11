@@ -1,0 +1,16 @@
+-- arg A
+λ (A.El : #Setoid/Ob/@El) →
+λ (A.El. : #Setoid/Ob/@El. A.El) →
+λ (A.Equ : #Setoid/Ob/@Equ A.El A.El.) →
+λ (A.Refl : #Setoid/Ob/@Refl A.El A.El. A.Equ) →
+λ (A.Trans : #Setoid/Ob/@Trans A.El A.El. A.Equ) →
+λ (A.Sym : #Setoid/Ob/@Sym A.El A.El. A.Equ) →
+
+#Setoid/Hom/El/mk.2
+    A.El A.El. A.Equ A.Refl A.Trans A.Sym
+    A.El A.El. A.Equ A.Refl A.Trans A.Sym
+    ( λ (a : A.El) → λ (a. : A.El. a) → a)
+    ( λ (a : A.El) → λ (a. : A.El. a) → a.)
+    ( λ (a1 : A.El) → λ (a1. : A.El. a1) →
+      λ (a2 : A.El) → λ (a2. : A.El. a2) →
+      λ (equ12 : A.Equ a1 a1. a2 a2.) → equ12)
