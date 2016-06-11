@@ -20,6 +20,6 @@
 
 --
 #Prop/DepProd2/pr1
-    (#Setoid/Hom/El/@onEl.  A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom)
-    (#Setoid/Hom/El/@onEqu  A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom)
+    (#Setoid/Hom/El/@onEl.  A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym .1)
+    (#Setoid/Hom/El/@onEqu  A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym .1)
     .2

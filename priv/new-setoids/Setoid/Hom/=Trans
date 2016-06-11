@@ -27,8 +27,8 @@
 λ (equ23 : #Setoid/Hom/=Equ A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. hom3 hom3.) →
 
 --
-λ (a : A.El) → λ (a. : A.El.) →
-B.TransSym
+λ (a : A.El) → λ (a. : A.El. a) →
+B.Trans
     (#Setoid/Hom/El/.onEl A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
     (#Setoid/Hom/El/.onEl. A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom1 hom1. a a.)
     (#Setoid/Hom/El/.onEl A.El A.El. A.Equ A.Refl A.Trans A.Sym B.El B.El. B.Equ B.Refl B.Trans B.Sym hom2 hom2. a a.)
