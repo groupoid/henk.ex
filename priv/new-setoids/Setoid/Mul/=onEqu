@@ -86,7 +86,7 @@
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
             C.El C.El. C.Equ C.Refl C.Trans C.Sym
             homBC.onEl) →
-        λ (homBC.onEqu : #Setoid/Hom/El/@onEl.
+        λ (homBC.onEqu : #Setoid/Hom/El/@onEqu
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
             C.El C.El. C.Equ C.Refl C.Trans C.Sym
             homBC.onEl homBC.onEl.) →
@@ -134,7 +134,7 @@
             A.El A.El. A.Equ A.Refl A.Trans A.Sym
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
             homAB.onEl) →
-        λ (homAB.onEqu : #Setoid/Hom/El/@onEl.
+        λ (homAB.onEqu : #Setoid/Hom/El/@onEqu
             A.El A.El. A.Equ A.Refl A.Trans A.Sym
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
             homAB.onEl homAB.onEl.) →
