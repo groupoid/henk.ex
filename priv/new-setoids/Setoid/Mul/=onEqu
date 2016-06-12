@@ -23,25 +23,25 @@
 λ (C.Sym : #Setoid/Ob/@Sym C.El C.El. C.Equ) →
 
 -- B ⥤ C, A ⥤ B
-λ (homBC : #Setoid/Hom/@El
+λ (homBC : #Setoid/Hom/=El
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     C.El C.El. C.Equ C.Refl C.Trans C.Sym) →
-λ (homBC. : #Setoid/Hom/@El.
+λ (homBC. : #Setoid/Hom/=El.
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     C.El C.El. C.Equ C.Refl C.Trans C.Sym
     homBC) →
-λ (homAB : #Setoid/Hom/@El
+λ (homAB : #Setoid/Hom/=El
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
-λ (homAB. : #Setoid/Hom/@El.
+λ (homAB. : #Setoid/Hom/=El.
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     homAB) →
 
 --res
-    ( λ (a1 : A.El) → λ (a1. : A.El. a1) →
-      λ (a2 : A.El) → λ (a2. : A.El. a2) →
-      λ (equ12 : A.Equ a1 a1. a2 a2.) →
+λ (a1 : A.El) → λ (a1. : A.El. a1) →
+λ (a2 : A.El) → λ (a2. : A.El. a2) →
+λ (equ12 : A.Equ a1 a1. a2 a2.) →
 
 -- match `homBC` into fields
 
@@ -89,7 +89,7 @@
         λ (homBC.onEqu : #Setoid/Hom/El/@onEl.
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
             C.El C.El. C.Equ C.Refl C.Trans C.Sym
-            homBC.onEl) →
+            homBC.onEl homBC.onEl.) →
 
 -- match `homAB` into fields
 
@@ -129,7 +129,7 @@
     (
         λ (homAB.onEl : #Setoid/Hom/El/@onEl
             A.El A.El. A.Equ A.Refl A.Trans A.Sym
-            B.El B.El. B.Equ B.Refl B.Trans B.Sym
+            B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
         λ (homAB.onEl. : #Setoid/Hom/El/@onEl.
             A.El A.El. A.Equ A.Refl A.Trans A.Sym
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
@@ -137,13 +137,14 @@
         λ (homAB.onEqu : #Setoid/Hom/El/@onEl.
             A.El A.El. A.Equ A.Refl A.Trans A.Sym
             B.El B.El. B.Equ B.Refl B.Trans B.Sym
-            homAB.onEl) →
---
+            homAB.onEl homAB.onEl.) →
+
+-- actual result
     (homBC.onEqu
         (homAB.onEl a1 a1.) (homAB.onEl. a1 a1.)
         (homAB.onEl a2 a2.) (homAB.onEl. a2 a2.)
         (homAB.onEqu
             a1 a1. a2 a2.
             equ12))
---
+
 ))

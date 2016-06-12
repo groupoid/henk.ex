@@ -23,17 +23,17 @@
 λ (C.Sym : #Setoid/Ob/@Sym C.El C.El. C.Equ) →
 
 -- B ⥤ C, A ⥤ B
-λ (homBC : #Setoid/Hom/@El
+λ (homBC : #Setoid/Hom/=El
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     C.El C.El. C.Equ C.Refl C.Trans C.Sym) →
-λ (homBC. : #Setoid/Hom/@El.
+λ (homBC. : #Setoid/Hom/=El.
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     C.El C.El. C.Equ C.Refl C.Trans C.Sym
     homBC) →
-λ (homAB : #Setoid/Hom/@El
+λ (homAB : #Setoid/Hom/=El
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
-λ (homAB. : #Setoid/Hom/@El.
+λ (homAB. : #Setoid/Hom/=El.
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
     homAB) →
