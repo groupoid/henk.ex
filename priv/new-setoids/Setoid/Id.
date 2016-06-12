@@ -6,6 +6,7 @@
 λ (A.Trans : #Setoid/Ob/@Trans A.El A.El. A.Equ) →
 λ (A.Sym : #Setoid/Ob/@Sym A.El A.El. A.Equ) →
 
+-- res
 #Setoid/Hom/El/mk.2
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
