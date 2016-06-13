@@ -1,0 +1,11 @@
+-- #Prop/Prod2/pr1: ∀(P1: #Prop/=El)→ ∀(P2: P1→ #Prop/=El)→ #Prop/Sigma2 P1 P2 → P1
+
+-- args
+λ (P1 : #Prop/=El) →
+λ (P2 : P1 → #Prop/=El) →
+λ (P2.Cong : ∀ (p11 : P1) → ∀ (p12 : P1) → (P2 p11 → P2 p12)) →
+λ (sigma2 : #Prop/Sigma2/@ P1 P2) →
+
+-- res
+sigma2 (P2 (#Prop/Sigma2/pr1 P1 P2 sigma2))
+    ( λ (p1 : P1) → λ (p2 : P2 p1) → P2.Cong p1 (#Prop/Sigma2/pr1 P1 P2 sigma2) p2 )

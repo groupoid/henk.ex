@@ -7,8 +7,8 @@
 λ (p2 : P2 p1) →
 
 --
-λ (Prod2 : #Prop/=El) →
+λ (Sigma2 : #Prop/=El) →
 --
-λ (Intro : ∀ (p1 : P1) → P2 p1 → Prod2) →
+λ (Intro : ∀ (p1 : P1) → P2 p1 → Sigma2) →
 --
 Intro p1 p2
