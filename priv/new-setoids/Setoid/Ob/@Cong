@@ -1,0 +1,10 @@
+--
+λ (El : #Setoid/Ob/@El) → λ (El. : #Setoid/Ob/@El. El) →
+λ (Equ : #Setoid/Ob/@Equ El El.) →
+----
+∀ (a : El) → ∀ (b : El) →
+∀ (a.- : El. a) → ∀ (a.+ : El. a) →
+∀ (b.- : El. b) → ∀ (b.+ : El. b) →
+----
+Equ a a.- b b.- →
+Equ a a.+ b b.+

@@ -3,7 +3,7 @@
 -- args
 λ (P1 : #Prop/=El) →
 λ (P2 : P1 → #Prop/=El) →
-λ (P2.Cong : ∀ (p11 : P1) → ∀ (p12 : P1) → (P2 p11 → P2 p12)) →
+λ (P2.Cong : #Prop/Sigma2/@Cong P1 P2) →
 λ (sigma2 : #Prop/Sigma2/@ P1 P2) →
 
 -- res

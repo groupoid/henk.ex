@@ -1,3 +1,6 @@
+-- #Prop/Sigma2 : (P1,P2) ∀ (p11 : P1) → ∀ (p12 : P1) → (P2 p11 → P2 p12)
+
+--
 -- arg A
 λ (A.El : #Setoid/Ob/@El) →
 λ (A.El. : #Setoid/Ob/@El. A.El) →
@@ -14,30 +17,29 @@
 λ (B.Trans : #Setoid/Ob/@Trans B.El B.El. B.Equ) →
 λ (B.Sym : #Setoid/Ob/@Sym B.El B.El. B.Equ) →
 
--- hom
-λ (.1 : #Setoid/Hom/El/@1
+-- Ok arg
+λ (onEl : #Setoid/Hom/El/@onEl
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
-λ (.2 : #Setoid/Hom/El/@2
+λ (onEl.- : #Setoid/Hom/El/@onEl.
     A.El A.El. A.Equ A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Refl B.Trans B.Sym
-    .1) →
-    
--- alg
-λ (P : #Prop/=El) →
-λ (mk :
-    ∀ (onEl : #Setoid/Hom/El/@onEl
-        A.El A.El. A.Equ A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Refl B.Trans B.Sym) →
-    ∀ (onEl. : #Setoid/Hom/El/@onEl.
-        A.El A.El. A.Equ A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Refl B.Trans B.Sym
-        onEl) →
-    ∀ (onEqu : #Setoid/Hom/El/@onEqu
-        A.El A.El. A.Equ A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Refl B.Trans B.Sym
-        onEl onEl.) →
-    P) ->
+    onEl) →
+λ (onEl.+ : #Setoid/Hom/El/@onEl.
+    A.El A.El. A.Equ A.Refl A.Trans A.Sym
+    B.El B.El. B.Equ B.Refl B.Trans B.Sym
+    onEl) →
+λ (f.equ- : #Setoid/Hom/El/@onEqu
+    A.El A.El. A.Equ A.Refl A.Trans A.Sym
+    B.El B.El. B.Equ B.Refl B.Trans B.Sym
+    onEl onEl.-) →
 
--- res
-.2 P (mk .1)
+-- onEqu
+λ (a1 : A.El) → λ (a1. : A.El. a1) →
+λ (a2 : A.El) → λ (a2. : A.El. a2) →
+λ (a.equ : A.Equ a1 a1. a2 a2.) →
+B.Cong
+    (onEl a1 a1.) (onEl a2 a2.)
+    (onEl.- a1 a1.) (onEl.+ a1 a1.)
+    (onEl.- a2 a2.) (onEl.+ a2 a2.)
+    (f.equ a1 a1. a2 a2. a.equ)
