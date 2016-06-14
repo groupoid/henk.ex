@@ -1,0 +1,14 @@
+-- arg A
+λ (A.El : #Setoid/Ob/@El) →
+λ (A.El. : #Setoid/Ob/@El. A.El) →
+λ (A.Equ : #Setoid/Ob/@Equ A.El A.El.) →
+λ (A.Cong : #Setoid/Ob/@Cong A.El A.El. A.Equ) →
+λ (A.Refl : #Setoid/Ob/@Refl A.El A.El. A.Equ) →
+λ (A.Trans : #Setoid/Ob/@Trans A.El A.El. A.Equ) →
+λ (A.Sym : #Setoid/Ob/@Sym A.El A.El. A.Equ) →
+
+-- res
+#Setoid/Hom/=El
+    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
+    #Prop/=El #Prop/=El. #Prop/=Equ #Prop/=Cong #Prop/=Refl #Prop/=Trans #Prop/=Sym
+    

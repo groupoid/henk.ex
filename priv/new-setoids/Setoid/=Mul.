@@ -42,7 +42,7 @@
     homAB) →
 
 --res
-#Setoid/Hom/El/mk.2
+#Setoid/Hom/El/mk.1
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     C.El C.El. C.Equ C.Cong C.Refl C.Trans C.Sym
     (#Setoid/Mul/=onEl
