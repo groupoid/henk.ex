@@ -44,4 +44,4 @@ B.Cong
     (onEl a1 a1.) (onEl a2 a2.)
     (onEl.- a1 a1.) (onEl.+ a1 a1.)
     (onEl.- a2 a2.) (onEl.+ a2 a2.)
-    (f.equ a1 a1. a2 a2. a.equ)
+    (f.equ- a1 a1. a2 a2. a.equ)

@@ -22,7 +22,8 @@
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym) →
 λ (.2 : #Setoid/Hom/El/@2
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym .1) →
+    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
+    .1) →
 
 --
 #Prop/Sigma2/pr2
@@ -34,7 +35,7 @@
         A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
         B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
         .1)
-    (#Setoid/Hom/El/@onEqu.Cong
+    (#Setoid/Hom/El/Cong
         A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
         B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
         .1)
