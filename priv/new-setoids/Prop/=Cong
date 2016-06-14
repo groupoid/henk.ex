@@ -1,0 +1,9 @@
+-- #Prop/=Equ : #Setoid/Ob/@Cong #Prop/=El #Prop/=El.
+
+-- args
+λ (A : #Prop/=El) → λ (B : #Prop/=El) →
+λ (A.- : #Prop/=El. A) → λ (A.+ : #Prop/=El. A) →
+λ (B.- : #Prop/=El. B) → λ (B.+ : #Prop/=El. B) →
+
+-- res
+#id0 (#Prop/Prod2/@ (A → B) (B → A))

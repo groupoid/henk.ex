@@ -1,4 +1,4 @@
--- #Setoid/Hom/=Trans : ∀(A, B:#Setoid/Ob/) → #Setoid/Ob/@Refl (#Setoid/Hom/=El/ A B) (#Setoid/Hom/=Equ A B)
+-- #Setoid/Hom/Equ : ∀(A, B:#Setoid/Ob/) → #Setoid/Ob/Equ (#Setoid/Hom/El/ A B)
 
 -- arg A
 λ (A.El : #Setoid/Ob/@El) →
@@ -22,59 +22,50 @@
 λ (hom1 : #Setoid/Hom/=El
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym) →
-λ (hom1. : #Setoid/Hom/=El.
-    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-    hom1) →
 λ (hom2 : #Setoid/Hom/=El
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym) →
-λ (hom2. : #Setoid/Hom/=El.
+λ (hom1.- : #Setoid/Hom/=El.
+    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
+    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
+    hom1) →
+λ (hom1.+ : #Setoid/Hom/=El.
+    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
+    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
+    hom1) →
+λ (hom2.- : #Setoid/Hom/=El.
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
     hom2) →
-λ (hom3 : #Setoid/Hom/=El
-    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym) →
-λ (hom3. : #Setoid/Hom/=El.
+λ (hom2.+ : #Setoid/Hom/=El.
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-    hom3) →
-λ (equ12 : #Setoid/Hom/=Equ
+    hom2) →
+--
+λ (f.equ : #Setoid/Hom/=Equ
     A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
     B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-    hom1 hom1. hom2 hom2.) →
-λ (equ23 : #Setoid/Hom/=Equ
-    A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-    hom2 hom2. hom3 hom3.) →
-
+    hom1 hom1.- hom2 hom2.-) →
 --
 λ (a : A.El) → λ (a. : A.El. a) →
-B.Trans
-    (#Setoid/Hom/El/.onEl
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom1 hom1. a a.)
+
+-- res
+B.Cong
+    (hom1 a a.) (hom2 a a.)
     (#Setoid/Hom/El/.onEl.
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom1 hom1. a a.)
-    (#Setoid/Hom/El/.onEl
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom2 hom2. a a.)
+        A.El A.El. A.Equ A.Refl A.Trans A.Sym
+        B.El B.El. B.Equ B.Refl B.Trans B.Sym
+        hom1 hom1.- a a.)
     (#Setoid/Hom/El/.onEl.
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom2 hom2. a a.)
-    (#Setoid/Hom/El/.onEl
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom3 hom3. a a.)
+        A.El A.El. A.Equ A.Refl A.Trans A.Sym
+        B.El B.El. B.Equ B.Refl B.Trans B.Sym
+        hom1 hom1.+ a a.)
     (#Setoid/Hom/El/.onEl.
-        A.El A.El. A.Equ A.Cong A.Refl A.Trans A.Sym
-        B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
-        hom3 hom3. a a.)
-    (equ12 a a.)
-    (equ23 a a.)
+        A.El A.El. A.Equ A.Refl A.Trans A.Sym
+        B.El B.El. B.Equ B.Refl B.Trans B.Sym
+        hom2 hom2.- a a.)
+    (#Setoid/Hom/El/.onEl.
+        A.El A.El. A.Equ A.Refl A.Trans A.Sym
+        B.El B.El. B.Equ B.Refl B.Trans B.Sym
+        hom2 hom2.+ a a.)
+    (f.equ a a.)
