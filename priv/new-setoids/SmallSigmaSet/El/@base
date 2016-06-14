@@ -1,0 +1,20 @@
+-- #SmallSigmaSet/El/@base : ...
+
+-- B : #Setoid/Ob/
+λ (B.El : #Setoid/Ob/@El) →
+λ (B.El. : #Setoid/Ob/@El. B.El) →
+λ (B.Equ : #Setoid/Ob/@Equ B.El B.El.) →
+λ (B.Cong : #Setoid/Ob/@Cong B.El B.El. B.Equ) →
+λ (B.Refl : #Setoid/Ob/@Refl B.El B.El. B.Equ) →
+λ (B.Trans : #Setoid/Ob/@Trans B.El B.El. B.Equ) →
+λ (B.Sym : #Setoid/Ob/@Sym B.El B.El. B.Equ) →
+
+-- P : [#PredicateSet/ B]
+λ (P : #PredicateSet/=El
+    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym) →
+λ (P. : #PredicateSet/=El.
+    B.El B.El. B.Equ B.Cong B.Refl B.Trans B.Sym
+    P) →
+
+--
+B.El
