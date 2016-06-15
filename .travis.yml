@@ -5,4 +5,5 @@ notifications:
   email:
     - maxim@synrc.com
 install: "./mad dep com pla bun om"
-script: "./om extract all , test all"
+#script: "./om extract all , test all"
+script: "./om test all"
