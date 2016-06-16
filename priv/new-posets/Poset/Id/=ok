@@ -1,0 +1,14 @@
+-- #Poset/Id/=ok : ∀(A: #Poset/Ob/)→ #@Ok (#Poset/Hom/=El A A) (#Poset/Hom/=To A A) (#Poset/Id/=el A)
+
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- res /To/ args
+λ (a1.el : A.El) → λ (a1.ok : #@Ok A.El A.To a1.el) →
+λ (a2.el : A.El) → λ (a2.ok : #@Ok A.El A.To a2.el) →
+λ (ato12 : A.To a1.el a2.el) →
+
+-- res
+ato12
