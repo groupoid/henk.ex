@@ -20,3 +20,4 @@ sandbox
 /.latex/
 /tale.pdf
 *.synctex.gz
+/log
