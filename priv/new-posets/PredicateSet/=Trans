@@ -1,0 +1,9 @@
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- res
+#Poset/Hom/=Trans
+    A.El A.To A.Trans
+    #Prop/=El #Prop/=To #Prop/=Trans

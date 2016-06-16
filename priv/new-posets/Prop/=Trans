@@ -8,4 +8,4 @@
 λ (to23 : #Prop/=To P2 P3) →
 
 -- res
-(#mul0 P1 P2 P3 equ23 equ12)
+(#mul0 P1 P2 P3 to23 to12)
