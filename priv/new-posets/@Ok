@@ -1,0 +1,12 @@
+-- #@Ok : ∀(A: #Poset/Ob/)→ A.El→ #Prop
+
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- arg
+λ (el : A.El) →
+
+-- res
+A.To el el
