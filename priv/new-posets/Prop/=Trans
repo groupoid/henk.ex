@@ -1,0 +1,11 @@
+-- #Prop/=Trans : #Poset/Ob/@Trans #Prop/=El #Prop/=To
+
+-- args
+λ (P1 : #Prop/=El) →
+λ (P2 : #Prop/=El) →
+λ (P3 : #Prop/=El) →
+λ (to12 : #Prop/=To P1 P2) →
+λ (to23 : #Prop/=To P2 P3) →
+
+-- res
+(#mul0 P1 P2 P3 equ23 equ12)

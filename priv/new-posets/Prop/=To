@@ -1,0 +1,8 @@
+-- #Prop/=To : #Poset/Ob/@To #Prop/=El
+
+-- args
+λ (A : #Prop/=El) →
+λ (B : #Prop/=El) →
+
+-- res
+(A → B)
