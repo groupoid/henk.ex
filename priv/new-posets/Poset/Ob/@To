@@ -1,4 +1,4 @@
--- #Poset/Ob/@Equ : ∀(El : #Poset/Ob/@El)→ #Star
+-- #Poset/Ob/@To : ∀(El : #Poset/Ob/@El)→ #Star
 
 λ (El : #Poset/Ob/@El) →
 ----
