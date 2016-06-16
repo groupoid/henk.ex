@@ -1,0 +1,7 @@
+-- #Prop/Prod0/@ : #Prop/=El
+
+\/(Prod0 : #Prop/=El) ->
+----
+\/(Intro : Prod0) ->
+----
+Prod0

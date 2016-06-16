@@ -1,0 +1,5 @@
+-- #Prop/Sum0/@ : #Prop/=El
+
+∀(Sum0 : #Prop/=El) →
+----
+Sum0

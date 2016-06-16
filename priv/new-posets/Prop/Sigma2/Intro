@@ -1,0 +1,14 @@
+-- #Prop/Prod2/Intro : ∀(P1: #Prop/=El)→ ∀(P2: P1→ #Prop/=El)→ ∀(p1: P1)→ P2 p1 → #Prop/DepProd2/@ P1 P2
+
+-- args
+λ (P1 : #Prop/=El) →
+λ (P2 : P1 → #Prop/=El) →
+λ (p1 : P1) →
+λ (p2 : P2 p1) →
+
+--
+λ (Sigma2 : #Prop/=El) →
+--
+λ (Intro : ∀ (p1 : P1) → P2 p1 → Sigma2) →
+--
+Intro p1 p2
