@@ -1,0 +1,54 @@
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg C
+λ (C.El : #Poset/Ob/@El) →
+λ (C.To : #Poset/Ob/@To C.El) →
+λ (C.Trans : #Poset/Ob/@Trans C.El C.To) →
+
+-- B ⥤ C, A ⥤ B
+λ (homBC.el : #Poset/Hom/=El
+    B.El B.To B.Trans
+    C.El C.To C.Trans) →
+λ (homBC.ok : #@Ok
+    (#Poset/Hom/=El
+        B.El B.To B.Trans
+        C.El C.To C.Trans)
+    (#Poset/Hom/=To
+        B.El B.To B.Trans
+        C.El C.To C.Trans)
+    homBC.el) →
+λ (homAB.el : #Poset/Hom/=El
+    A.El A.To A.Trans
+    B.El B.To B.Trans) →
+λ (homAB.ok : #@Ok
+    (#Poset/Hom/=El
+        A.El A.To A.Trans
+        B.El B.To B.Trans)
+    (#Poset/Hom/=To
+        A.El A.To A.Trans
+        B.El B.To B.Trans)
+    homAB.el) →
+
+-- res /To/ args
+λ (a1.el : A.El) → λ (a1.ok : #@Ok A.El A.To a1.el) →
+λ (a2.el : A.El) → λ (a2.ok : #@Ok A.El A.To a2.el) →
+λ (ato12 : A.To a1.el a2.el) →
+
+-- res
+homBC.ok
+    (homAB.el a1.el)
+    (homAB.ok a1.el a1.ok a1.el a1.ok a1.ok)
+    (homAB.el a2.el)
+    (homAB.ok a2.el a2.ok a2.el a2.ok a2.ok)
+    (homAB.ok
+        a1.el a1.ok
+        a2.el a2.ok
+        ato12)
