@@ -1,0 +1,62 @@
+-- #SmallSigmaSet/To/@: (B : Poset.Ob.{u, p}) (P : [PredicateSet.{u, p} B]) -> #Poset/Ob/@To
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+λ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+λ (P.ok : #@Ok
+    (#PredicateSet/=El
+        B.El B.To B.Trans)
+    (#PredicateSet/=To
+        B.El B.To B.Trans)
+    P.el) →
+
+-- /Trans/ args
+λ (b1 : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+λ (b2 : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+λ (b3 : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+
+--
+λ (bto12 : #SmallSigmaSet/=To
+    B.El B.To B.Trans
+    P.el P.ok
+    b1 b2) →
+λ (bto23 : #SmallSigmaSet/=To
+    B.El B.To B.Trans
+    P.el P.ok
+    b2 b3) →
+
+--
+#SmallSigmaSet/To/mk
+    B.El B.To B.Trans
+    P.el P.ok
+    b1 b3
+    -- .pred1 := bto12.pred1
+    (#SmallSigmaSet/To/.pred1
+        B.El B.To B.Trans
+        P.el P.ok
+        b1 b2
+        bto12)
+    -- to := B.Trans b1 b2 b3 bto12.to bto23.to
+    (B.Trans
+        b1 b2 b3
+        (#SmallSigmaSet/To/.to
+            B.El B.To B.Trans
+            P.el P.ok
+            b1 b2
+            bto12)
+        (#SmallSigmaSet/To/.to
+            B.El B.To B.Trans
+            P.el P.ok
+            b2 b3
+            bto23))

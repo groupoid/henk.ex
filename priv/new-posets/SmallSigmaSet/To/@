@@ -1,0 +1,35 @@
+-- #SmallSigmaSet/To/@: (B : Poset.Ob.{u, p}) (P : [PredicateSet.{u, p} B]) -> #Poset/Ob/@To
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+λ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+λ (P.ok : #@Ok
+    (#PredicateSet/=El
+        B.El B.To B.Trans)
+    (#PredicateSet/=To
+        B.El B.To B.Trans)
+    P.el) →
+
+-- /To/ args
+λ (b1 : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+λ (b2 : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+
+--
+#Prop/Prod2/@
+    (#SmallSigmaSet/To/@pred1
+        B.El B.To B.Trans
+        P.el P.ok
+        b1 b2)
+    (#SmallSigmaSet/To/@to
+        B.El B.To B.Trans
+        P.el P.ok
+        b1 b2)
