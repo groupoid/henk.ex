@@ -1,0 +1,25 @@
+-- #Poset/Hom/To : ∀(A, B:#Poset/Ob/) → #Poset/Ob/@To (#Poset/Hom/=El A B)
+
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- equ args
+λ (f1 : #Poset/Hom/=El
+    A.El A.To A.Trans
+    B.El B.To B.Trans) →
+λ (f2 : #Poset/Hom/=El
+    A.El A.To A.Trans
+    B.El B.To B.Trans) →
+
+-- res
+∀ (a1.el : A.El) → ∀ (a1.ok : #@Ok A.El A.To a1.el) →
+∀ (a2.el : A.El) → ∀ (a2.ok : #@Ok A.El A.To a2.el) →
+A.To a1.el a2.el →
+B.To (f1 a1.el) (f2 a2.el)
