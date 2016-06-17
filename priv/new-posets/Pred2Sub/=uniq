@@ -1,0 +1,51 @@
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+λ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+λ (P.ok : #@Ok
+    (#PredicateSet/=El
+        B.El B.To B.Trans)
+    (#PredicateSet/=To
+        B.El B.To B.Trans)
+    P.el) →
+
+--
+λ (a1.el : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+λ (a1.ok : #@Ok
+    (#SmallSigmaSet/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    a1.el) →
+λ (a2.el : #SmallSigmaSet/=El
+    B.El B.To B.Trans
+    P.el P.ok) →
+λ (a2.ok : #@Ok
+    (#SmallSigmaSet/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    a2.el) →
+λ (bto12 : B.To a1.el a2.el) →
+
+--
+#SmallSigmaSet/To/mk
+    B.El B.To B.Trans
+    P.el P.ok
+    a1.el a2.el
+    (#SmallSigmaSet/To/.pred1
+        B.El B.To B.Trans
+        P.el P.ok
+        a1.el a1.el
+        a1.ok)
+    (bto12)
