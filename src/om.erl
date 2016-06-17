@@ -17,7 +17,7 @@ debug()      -> application:get_env(om,debug,false).
 % constants
 modes()      -> ["hurkens","normal","setoids","new-setoids", "new-posets"]
                 ++ ["src-hurkens", "russell","girard"].
-allmodes()   -> ["hurkens","normal","setoids","new-setoids"].
+allmodes()   -> ["hurkens","normal","setoids","new-setoids", "new-posets"].
 
 % providing functions
 
