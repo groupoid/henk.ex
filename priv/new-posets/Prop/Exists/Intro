@@ -1,7 +1,7 @@
 -- #Prop/Exists/Intro : ∀(T1: #Star)→ ∀(P2: T1→ #Prop/=El)→ ∀(t1: T1)→ P2 t1 → #Prop/Exists/@ T1 P2
 
 -- args
-λ (T1 : #Prop/=El) →
+λ (T1 : #Star) →
 λ (P2 : T1 → #Prop/=El) →
 λ (t1 : T1) →
 λ (p2 : P2 t1) →

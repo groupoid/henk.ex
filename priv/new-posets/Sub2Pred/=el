@@ -1,0 +1,36 @@
+--(B : Poset.Ob.{u, p}) (S : SubsetType.{u, p} B)
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg S
+λ (S.A.El : #SubsetType/@A/@El
+    B.El B.To B.Trans) →
+λ (S.A.To : #SubsetType/@A/@To
+    B.El B.To B.Trans
+    S.A.El) →
+λ (S.A.Trans : #SubsetType/@A/@Trans
+    B.El B.To B.Trans
+    S.A.El S.A.To) →
+λ (S.i.el : #SubsetType/@i/@el
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans) →
+λ (S.i.ok : #SubsetType/@i/@ok
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans
+    S.i.el) →
+λ (S.uniq : #SubsetType/@uniq
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans
+    S.i.el S.i.ok) →
+
+-- predicate arg
+λ (b.el : B.El) →
+
+-- res
+#Prop/Exists/@
+    (S.A.El)
+    (λ (a.el : S.A.El) →
+        B.To (S.i.el a.el) b.el))
