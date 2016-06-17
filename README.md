@@ -2,34 +2,35 @@ Om: Lambda Assembler
 ====================
 
 [![Build Status](https://travis-ci.org/groupoid/om.svg?branch=master)](https://travis-ci.org/groupoid/om)
+[![Gitter Chat](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/groupoid/om)
 
 Abstract
 --------
 
-Om is intended to be used as a back-end library to facilitate 
+Om is intended to be used as a back-end library to facilitate
 implementation of general purpose typed functional languages.
 
-Om is a low-level implementation of several Pure Type Systems - a class of typed 
+Om is a low-level implementation of several Pure Type Systems - a class of typed
 lambda calculi with pluggable features such as polymorphism, dependent types, universes
-and predicativity.  It includes a type checker, a compile time partial evaluator 
-and a compiler into Erlang. Om can be used with a wide range of type systems 
-which can be expressed with PTS triples, such as <b>System F<sub>ω<sub></b>, 
-<b>System F<sub>&lt;:</sub></b> or <b>Calculus of Constructions</b>. 
+and predicativity.  It includes a type checker, a compile time partial evaluator
+and a compiler into Erlang. Om can be used with a wide range of type systems
+which can be expressed with PTS triples, such as <b>System F<sub>ω<sub></b>,
+<b>System F<sub>&lt;:</sub></b> or <b>Calculus of Constructions</b>.
 
 Just like Morte, Om doesn't have built in recursive types. Instead, Exe language
 adds a layer of syntactic sugar and internally encodes types such as lists using
 F-algebras (so called impredicative Boehm-Berarducci encoding).
 
-Many other traditional features missing from Om such as let, arrow types, 
+Many other traditional features missing from Om such as let, arrow types,
 pattern matching can be implemented purely as macros or syntactic sugar on top
 of the Om core calculus.
 
 Although Om supports arbitrary PTSes, our primary focus is a particular yet
-unnamed PTS that can be seen as an extension of the classical non-inductive 
-Calculus of Constructions with predicative universes. We develop a way to encode 
+unnamed PTS that can be seen as an extension of the classical non-inductive
+Calculus of Constructions with predicative universes. We develop a way to encode
 inductive types using categorical semantics instead of adding them to the core
-language. A related works are Church, Parigot and Boehm-Berarducci encodings, 
-although they are inherently impredicative so they cannot be used with 
+language. A related works are Church, Parigot and Boehm-Berarducci encodings,
+although they are inherently impredicative so they cannot be used with
 the chosen type system.
 
 This work is based on Henk lambda cube assembler, and the implementaton of its
@@ -58,7 +59,7 @@ To simplify debugging, Om terms have concrete text representation, and there is
 a minimalistic module system based on folders/files, just like in Morte.
 
 Om provides construction of the IR term from folder tree (parsing and name resolution
-for external references) as a utility. 
+for external references) as a utility.
 
 Users
 -----
