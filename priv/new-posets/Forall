@@ -1,0 +1,20 @@
+-- Forall (B : Poset.Ob) (P : [PredicateSet B]) : Prop
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+λ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+λ (P.ok : #@Ok
+    (#PredicateSet/=El
+        B.El B.To B.Trans)
+    (#PredicateSet/=To
+        B.El B.To B.Trans)
+    P.el) →
+
+-- res
+∀ (b.el : B.El) → ∀ (b.ok : #@Ok B.El B.To b.el) →
+P.el b.el
