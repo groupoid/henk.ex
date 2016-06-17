@@ -1,0 +1,6 @@
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+#Poset/Ob/@Trans

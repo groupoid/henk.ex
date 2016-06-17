@@ -1,0 +1,26 @@
+-- [A ⥤ B].el
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- field A
+λ (A.El : #SubsetType/@A/@El
+    B.El B.To B.Trans) →
+λ (A.To : #SubsetType/@A/@To
+    B.El B.To B.Trans
+    A.El) →
+λ (A.Trans : #SubsetType/@A/@Trans
+    B.El B.To B.Trans
+    A.El A.To) →
+
+--
+#@Ok
+    (#Poset/Hom/=El
+        A.El A.To A.Trans
+        B.El B.To B.Trans)
+    (#Poset/Hom/=To
+        A.El A.To A.Trans
+        B.El B.To B.Trans)
+    
