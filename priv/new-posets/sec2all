@@ -1,0 +1,99 @@
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+λ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+λ (P.ok : #@Ok
+    (#PredicateSet/=El
+        B.El B.To B.Trans)
+    (#PredicateSet/=To
+        B.El B.To B.Trans)
+    P.el) →
+
+-- (f : [B ⥤ SmallSigmaSet B P])
+λ (f.el :
+    #Poset/Hom/=El
+        B.El B.To B.Trans
+        (#SmallSigmaSet/=El
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=To
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=Trans
+            B.El B.To B.Trans
+            P.el P.ok)) →
+λ (f.ok : #@Ok
+    (#Poset/Hom/=El
+        B.El B.To B.Trans
+        (#SmallSigmaSet/=El
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=To
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=Trans
+            B.El B.To B.Trans
+            P.el P.ok))
+    (#Poset/Hom/=To
+        B.El B.To B.Trans
+        (#SmallSigmaSet/=El
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=To
+            B.El B.To B.Trans
+            P.el P.ok)
+        (#SmallSigmaSet/=Trans
+            B.El B.To B.Trans
+            P.el P.ok))
+    f.el) →
+
+-- (sec : isSection B (Pred2Sub B P) f)
+λ (sec : #isSection
+    B.El B.To B.Trans
+    (#Pred2Sub/=A/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=A/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=A/=Trans
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=i/=el
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=i/=ok
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=uniq
+        B.El B.To B.Trans
+        P.el P.ok)
+    f.el f.ok) →
+
+-- res : forall B P
+λ (b.el : B.El) → λ (b.ok : #@Ok B.El B.To b.el) →
+
+--
+(P.ok
+    (f.el b.el)
+    (#SmallSigmaSet/To/.to
+        B.El B.To B.Trans
+        P.el P.ok
+        (f.el b.el)
+        (f.el b.el)
+        (f.ok b.el b.ok b.el b.ok b.ok))
+    (b.el)
+    (b.ok)
+    (sec b.el b.ok b.el b.ok b.ok))
+
+--
+(#SmallSigmaSet/To/.pred1
+    B.El B.To B.Trans
+    P.el P.ok
+    (f.el b.el)
+    (f.el b.el)
+    (f.ok b.el b.ok b.el b.ok b.ok))
