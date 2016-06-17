@@ -1,4 +1,4 @@
--- #Prop/Prod2/pr1: ∀(P1: #Prop/=El)→ ∀(P2: P1→ #Prop/=El)→ #Prop/Sigma2 P1 P2 → P1
+-- #Prop/Sigma2/pr1: ∀(P1: #Prop/=El)→ ∀(P2: P1→ #Prop/=El)→ #Prop/Sigma2 P1 P2 → P1
 
 -- args
 λ (P1 : #Prop/=El) →
