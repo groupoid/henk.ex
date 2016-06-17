@@ -14,6 +14,11 @@ mode()       -> application:get_env(om,mode,"normal").
 debug(S)     -> application:set_env(om,debug,atom(S)).
 debug()      -> application:get_env(om,debug,false).
 
+% constants
+modes()      -> ["hurkens","normal","setoids","new-setoids", "new-posets"]
+                ++ ["src-hurkens", "russell","girard"].
+allmodes()   -> ["hurkens","normal","setoids","new-setoids"].
+
 % providing functions
 
 help(_)      -> help().
@@ -31,9 +36,6 @@ erase(X)     -> erase(X,[]).
 erase(T,C)   -> om_erase:erase(T,C).
 modes(_)     -> modes().
 allmodes(_)  -> allmodes().
-modes()      -> ["hurkens","normal","setoids","new-setoids"]
-                ++ ["new-posets", "src-hurkens", "russell","girard"].
-allmodes()   -> ["hurkens","normal","setoids","new-setoids"].
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
