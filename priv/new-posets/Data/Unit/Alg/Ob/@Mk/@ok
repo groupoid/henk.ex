@@ -1,8 +1,6 @@
 -- arg A
 λ (Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
 λ (Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To Carrier.El) →
-λ (Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans Carrier.El Carrier.To) →
 
 --
-λ (el : Carrier.El) →
 #@Ok Carrier.El Carrier.To
