@@ -1,0 +1,53 @@
+-- isSection (B : Poset.Ob.{u, p}) (S : SubsetType.{u, p} B) (f : [B ⥤ S.A]) : Prop
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg S
+λ (S.A.El : #SubsetType/@A/@El
+    B.El B.To B.Trans) →
+λ (S.A.To : #SubsetType/@A/@To
+    B.El B.To B.Trans
+    S.A.El) →
+λ (S.A.Trans : #SubsetType/@A/@Trans
+    B.El B.To B.Trans
+    S.A.El S.A.To) →
+λ (S.i.el : #SubsetType/@i/@el
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans) →
+λ (S.i.ok : #SubsetType/@i/@ok
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans
+    S.i.el) →
+λ (S.uniq : #SubsetType/@uniq
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans
+    S.i.el S.i.ok) →
+
+--
+λ (f.el : #Poset/Hom/=El
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans) →
+λ (f.ok : #@Ok
+    (#Poset/Hom/=El
+        B.El B.To B.Trans
+        S.A.El S.A.To S.A.Trans)
+    (#Poset/Hom/=To
+        B.El B.To B.Trans
+        S.A.El S.A.To S.A.Trans)
+    f.el) →
+
+--
+#Poset/Hom/=To
+    B.El B.To B.Trans
+    B.El B.To B.Trans
+    (#Poset/Mul/=el
+        B.El B.To B.Trans
+        S.A.El S.A.To S.A.Trans
+        B.El B.To B.Trans
+        S.i.el S.i.ok
+        f.el f.ok)
+    (#Poset/Id/=el
+        B.El B.To B.Trans)
