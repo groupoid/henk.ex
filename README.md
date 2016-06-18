@@ -45,11 +45,12 @@ Om intermediate representation is typical for a PTS:
 
 ```
     data Om: * :=
-         (star: nat → Om)             -- universe constants
-         (var: string → Om)           -- lambda abstractions
-         (pi: string → Om →  Om)      -- pi types
-         (arrow: string → Om → Om)    -- arrow types, a sugar for non-dependent cases of pi
-         (app: Om → Om → Om)          -- applications
+         (star: nat → Om)              -- universe constants
+         (var: name → Om)              -- variables
+         (lambda: name → Om → Om → Om) -- lambda abstractions
+         (pi: name → Om → Om → Om)     -- pi types
+         (arrow: Om → Om → Om)         -- arrow types (sugar for non-dependent cases of pi)
+         (app: Om → Om → Om)           -- applications
 ```
 
 Concrete syntax and modularity
