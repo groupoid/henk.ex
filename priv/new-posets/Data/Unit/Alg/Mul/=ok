@@ -1,0 +1,92 @@
+-- arg A1
+λ (A1.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+λ (A1.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A1.Carrier.El) →
+λ (A1.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A1.Carrier.El A1.Carrier.To A1.Mk.el) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+λ (A2.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A2.Carrier.El) →
+λ (A2.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A2.Carrier.El A2.Carrier.To A2.Mk.el) →
+
+-- arg A2
+λ (A3.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A3.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A3.Carrier.El) →
+λ (A3.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A3.Carrier.El A3.Carrier.To) →
+λ (A3.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A3.Carrier.El) →
+λ (A3.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A3.Carrier.El A3.Carrier.To A3.Mk.el) →
+
+-- B ⥤ C, A ⥤ B
+λ (m23.el : #Data/Unit/Alg/Hom/=El
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok) →
+λ (m23.ok : #Data/Unit/Alg/Hom/=Ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+    m23.el) →
+λ (m12.el : #Data/Unit/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
+λ (m12.ok : #Data/Unit/Alg/Hom/=Ok
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+    m12.el) →
+
+-- res
+#Data/Unit/Alg/Hom/To/mk
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+    (#Data/Unit/Alg/Mul/=el
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+        m23.el m23.ok
+        m12.el m12.ok)
+    (#Data/Unit/Alg/Mul/=el
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+        m23.el m23.ok
+        m12.el m12.ok)
+    (A3.Carrier.Trans
+        (m23.el (m12.el A1.Mk.el))
+        (m23.el A2.Mk.el)
+        (A3.Mk.el)
+        ((#Data/Unit/Alg/Hom/To/.equ
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+            m23.el m23.el
+            m23.ok)
+            (m12.el A1.Mk.el)
+            (m12.ok A1.Mk.el A1.Mk.ok A1.Mk.el A1.Mk.ok A1.Mk.ok)
+            A2.Mk.el
+            A2.Mk.ok
+            (#Data/Unit/Alg/Hom/To/.mk1
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+                m12.el m12.el
+                m12.ok))
+        (#Data/Unit/Alg/Hom/To/.mk1
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+            m23.el m23.el
+            m23.ok))
+    (#Poset/Mul/=ok
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans
+        m23.el
+        (#Data/Unit/Alg/Hom/To/.equ
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.Mk.el A3.Mk.ok
+            m23.el m23.el
+            m23.ok)
+        m12.el
+        (#Data/Unit/Alg/Hom/To/.equ
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+            m12.el m12.el
+            m12.ok))
