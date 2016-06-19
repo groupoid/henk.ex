@@ -1,0 +1,24 @@
+-- arg A1
+λ (A1.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+λ (A1.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A1.Carrier.El) →
+λ (A1.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A1.Carrier.El A1.Carrier.To A1.Mk.el) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+λ (A2.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A2.Carrier.El) →
+λ (A2.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A2.Carrier.El A2.Carrier.To A2.Mk.el) →
+
+--
+λ (m1 : #Data/Unit/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
+λ (m2 : #Data/Unit/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
+
+--
+(A2.Carrier.To (m1 A1.Mk.el) A2.Mk.el)

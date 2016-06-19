@@ -1,0 +1,18 @@
+-- arg A
+λ (A.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+λ (A.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A.Carrier.El) →
+λ (A.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A.Carrier.El A.Carrier.To A.Mk.el) →
+
+--
+#Data/Unit/Alg/Hom/To/mk
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok
+    (#Data/Unit/Alg/Id/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok)
+    (#Data/Unit/Alg/Id/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok)
+    A.Mk.ok
+    (#Poset/Id/=ok
+        A.Carrier.El A.Carrier.To A.Carrier.Trans)

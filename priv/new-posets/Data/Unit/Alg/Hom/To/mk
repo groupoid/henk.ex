@@ -19,41 +19,27 @@
 λ (m2 : #Data/Unit/Alg/Hom/=El
     A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
     A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
-λ (m3 : #Data/Unit/Alg/Hom/=El
-    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
-    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
 
 --
-λ (to12 : #Data/Unit/Alg/Hom/=To
+λ (mk1 : #Data/Unit/Alg/Hom/To/@mk1
     A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
     A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
     m1 m2) →
-λ (to23 : #Data/Unit/Alg/Hom/=To
+λ (equ : #Data/Unit/Alg/Hom/To/@equ
     A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
     A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
-    m2 m3) →
+    m1 m2) →
 
 --
-#Data/Unit/Alg/Hom/To/mk
-    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
-    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
-    m1 m3
-    (#Data/Unit/Alg/Hom/To/.mk1
+#Prop/Prod2/Intro
+    (#Data/Unit/Alg/Hom/To/@mk1
         A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
         A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
-        m1 m2
-        to12)
-    (#Poset/Hom/=Trans
-        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
-        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
-        m1 m2 m3
-        (#Data/Unit/Alg/Hom/To/.equ
-            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
-            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
-            m1 m2
-            to12)
-        (#Data/Unit/Alg/Hom/To/.equ
-            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
-            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
-            m2 m3
-            to23))
+        m1 m2)
+    (#Data/Unit/Alg/Hom/To/@equ
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+        m1 m2)
+    mk1
+    equ
+    
