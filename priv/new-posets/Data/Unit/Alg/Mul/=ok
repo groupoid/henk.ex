@@ -61,7 +61,12 @@
             m23.el m23.el
             m23.ok)
             (m12.el A1.Mk.el)
-            (m12.ok A1.Mk.el A1.Mk.ok A1.Mk.el A1.Mk.ok A1.Mk.ok)
+            ((#Data/Unit/Alg/Hom/To/.equ
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+                m12.el m12.el
+                m12.ok)
+                A1.Mk.el A1.Mk.ok A1.Mk.el A1.Mk.ok A1.Mk.ok)
             A2.Mk.el
             A2.Mk.ok
             (#Data/Unit/Alg/Hom/To/.mk1
