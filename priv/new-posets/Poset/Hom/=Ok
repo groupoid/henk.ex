@@ -1,0 +1,14 @@
+-- arg A
+λ (A.El : #Poset/Ob/@El) →
+λ (A.To : #Poset/Ob/@To A.El) →
+λ (A.Trans : #Poset/Ob/@Trans A.El A.To) →
+
+-- arg B
+λ (B.El : #Poset/Ob/@El) →
+λ (B.To : #Poset/Ob/@To B.El) →
+λ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+--
+#@Ok
+    (#Poset/Hom/=El A.El A.To A.Trans B.El B.To B.Trans)
+    (#Poset/Hom/=To A.El A.To A.Trans B.El B.To B.Trans)
