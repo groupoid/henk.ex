@@ -1,0 +1,33 @@
+-- arg e1, e2
+λ (e1 : #Data/Unit/Init/=Carrier/=El) →
+λ (e2 : #Data/Unit/Init/=Carrier/=El) →
+
+-- fun A1 : Alg.Ob
+∀ (A1.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+∀ (A1.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+∀ (A1.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+∀ (A1.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A1.Carrier.El) →
+∀ (A1.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A1.Carrier.El A1.Carrier.To A1.Mk.el) →
+
+-- fun A2 : Alg.Ob
+∀ (A2.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+∀ (A2.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+∀ (A2.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+∀ (A2.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A2.Carrier.El) →
+∀ (A2.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A2.Carrier.El A2.Carrier.To A2.Mk.el) →
+
+-- fun hom : [A1 ⟹ A2]
+∀ (hom.el : #Data/Unit/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok) →
+∀ (hom.ok : #Data/Unit/Alg/Hom/=Ok
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok
+    hom.el) →
+
+-- res
+A2.Carrier.To
+    (hom.el (e1
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.Mk.el A1.Mk.ok))
+    (e2
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.Mk.el A2.Mk.ok)
