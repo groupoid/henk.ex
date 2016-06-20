@@ -17,24 +17,16 @@
 λ (homBC.el : #Poset/Hom/=El
     B.El B.To B.Trans
     C.El C.To C.Trans) →
-λ (homBC.ok : #@Ok
-    (#Poset/Hom/=El
-        B.El B.To B.Trans
-        C.El C.To C.Trans)
-    (#Poset/Hom/=To
-        B.El B.To B.Trans
-        C.El C.To C.Trans)
+λ (homBC.ok : #Poset/Hom/=Ok
+    B.El B.To B.Trans
+    C.El C.To C.Trans
     homBC.el) →
 λ (homAB.el : #Poset/Hom/=El
     A.El A.To A.Trans
     B.El B.To B.Trans) →
-λ (homAB.ok : #@Ok
-    (#Poset/Hom/=El
-        A.El A.To A.Trans
-        B.El B.To B.Trans)
-    (#Poset/Hom/=To
-        A.El A.To A.Trans
-        B.El B.To B.Trans)
+λ (homAB.ok : #Poset/Hom/=Ok
+    A.El A.To A.Trans
+    B.El B.To B.Trans
     homAB.el) →
 
 -- res /To/ args

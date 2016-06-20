@@ -6,49 +6,33 @@
 -- arg P
 λ (P.el : #PredicateSet/=El
     B.El B.To B.Trans) →
-λ (P.ok : #@Ok
-    (#PredicateSet/=El
-        B.El B.To B.Trans)
-    (#PredicateSet/=To
-        B.El B.To B.Trans)
+λ (P.ok : #PredicateSet/=Ok
+    B.El B.To B.Trans
     P.el) →
 
 -- (f : [B ⥤ SmallSigmaSet B P])
-λ (f.el :
-    #Poset/Hom/=El
+λ (f.el : #Poset/Hom/=El
+    B.El B.To B.Trans
+    (#SmallSigmaSet/=El
         B.El B.To B.Trans
-        (#SmallSigmaSet/=El
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=To
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=Trans
-            B.El B.To B.Trans
-            P.el P.ok)) →
-λ (f.ok : #@Ok
-    (#Poset/Hom/=El
+        P.el P.ok)
+    (#SmallSigmaSet/=To
         B.El B.To B.Trans
-        (#SmallSigmaSet/=El
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=To
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=Trans
-            B.El B.To B.Trans
-            P.el P.ok))
-    (#Poset/Hom/=To
+        P.el P.ok)
+    (#SmallSigmaSet/=Trans
         B.El B.To B.Trans
-        (#SmallSigmaSet/=El
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=To
-            B.El B.To B.Trans
-            P.el P.ok)
-        (#SmallSigmaSet/=Trans
-            B.El B.To B.Trans
-            P.el P.ok))
+        P.el P.ok)) →
+λ (f.ok : #Poset/Hom/=Ok
+    B.El B.To B.Trans
+    (#SmallSigmaSet/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=Trans
+        B.El B.To B.Trans
+        P.el P.ok)
     f.el) →
 
 -- (sec : isSection B (Pred2Sub B P) f)

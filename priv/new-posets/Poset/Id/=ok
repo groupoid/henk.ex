@@ -1,4 +1,4 @@
--- #Poset/Id/=ok : ∀(A: #Poset/Ob/)→ #@Ok (#Poset/Hom/=El A A) (#Poset/Hom/=To A A) (#Poset/Id/=el A)
+-- #Poset/Id/=ok : ∀(A: #Poset/Ob/)→ (#Poset/Hom/=Ok A A) (#Poset/Id/=el A)
 
 -- arg A
 λ (A.El : #Poset/Ob/@El) →

@@ -6,35 +6,24 @@
 -- arg P
 λ (P.el : #PredicateSet/=El
     B.El B.To B.Trans) →
-λ (P.ok : #@Ok
-    (#PredicateSet/=El
-        B.El B.To B.Trans)
-    (#PredicateSet/=To
-        B.El B.To B.Trans)
+λ (P.ok : #PredicateSet/=Ok
+    B.El B.To B.Trans
     P.el) →
 
 --
 λ (a1.el : #SmallSigmaSet/=El
     B.El B.To B.Trans
     P.el P.ok) →
-λ (a1.ok : #@Ok
-    (#SmallSigmaSet/=El
-        B.El B.To B.Trans
-        P.el P.ok)
-    (#SmallSigmaSet/=To
-        B.El B.To B.Trans
-        P.el P.ok)
+λ (a1.ok : #SmallSigmaSet/=Ok
+    B.El B.To B.Trans
+    P.el P.ok
     a1.el) →
 λ (a2.el : #SmallSigmaSet/=El
     B.El B.To B.Trans
     P.el P.ok) →
-λ (a2.ok : #@Ok
-    (#SmallSigmaSet/=El
-        B.El B.To B.Trans
-        P.el P.ok)
-    (#SmallSigmaSet/=To
-        B.El B.To B.Trans
-        P.el P.ok)
+λ (a2.ok : #SmallSigmaSet/=Ok
+    B.El B.To B.Trans
+    P.el P.ok
     a2.el) →
 λ (bto12 : B.To a1.el a2.el) →
 

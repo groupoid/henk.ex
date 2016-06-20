@@ -8,11 +8,8 @@
 -- arg P
 λ (P.el : #PredicateSet/=El
     B.El B.To B.Trans) →
-λ (P.ok : #@Ok
-    (#PredicateSet/=El
-        B.El B.To B.Trans)
-    (#PredicateSet/=To
-        B.El B.To B.Trans)
+λ (P.ok : #PredicateSet/=Ok
+    B.El B.To B.Trans
     P.el) →
 
 --

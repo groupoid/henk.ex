@@ -30,13 +30,9 @@
 λ (f.el : #Poset/Hom/=El
     B.El B.To B.Trans
     S.A.El S.A.To S.A.Trans) →
-λ (f.ok : #@Ok
-    (#Poset/Hom/=El
-        B.El B.To B.Trans
-        S.A.El S.A.To S.A.Trans)
-    (#Poset/Hom/=To
-        B.El B.To B.Trans
-        S.A.El S.A.To S.A.Trans)
+λ (f.ok : #Poset/Hom/=Ok
+    B.El B.To B.Trans
+    S.A.El S.A.To S.A.Trans
     f.el) →
 
 --

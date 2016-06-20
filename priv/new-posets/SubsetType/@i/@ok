@@ -1,4 +1,4 @@
--- [A ⥤ B].el
+-- [A ⥤ B].ok
 
 -- arg B
 λ (B.El : #Poset/Ob/@El) →
@@ -16,11 +16,6 @@
     A.El A.To) →
 
 --
-#@Ok
-    (#Poset/Hom/=El
-        A.El A.To A.Trans
-        B.El B.To B.Trans)
-    (#Poset/Hom/=To
-        A.El A.To A.Trans
-        B.El B.To B.Trans)
-    
+#Poset/Hom/=Ok
+    A.El A.To A.Trans
+    B.El B.To B.Trans
