@@ -1,0 +1,32 @@
+-- arg A
+λ (A.Carrier.El : #Data/Unit/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Unit/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Unit/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+λ (A.Mk.el : #Data/Unit/Alg/Ob/@Mk/@el A.Carrier.El) →
+λ (A.Mk.ok : #Data/Unit/Alg/Ob/@Mk/@ok A.Carrier.El A.Carrier.To A.Mk.el) →
+
+--
+#Data/Unit/Alg/Hom/To/mk
+    #Data/Unit/Init/=Carrier/=El
+    #Data/Unit/Init/=Carrier/=To
+    #Data/Unit/Init/=Carrier/=Trans
+    #Data/Unit/Init/=Mk/=el
+    #Data/Unit/Init/=Mk/=ok
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok
+    (#Data/Unit/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok)
+    (#Data/Unit/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok)
+    A.Mk.ok
+    (   λ (u1.el : #Data/Unit/Init/=Carrier/=El) →
+        λ (u1.ok : #Data/Unit/Init/=Carrier/=Ok u1.el) →
+        λ (u2.el : #Data/Unit/Init/=Carrier/=El) →
+        λ (u2.ok : #Data/Unit/Init/=Carrier/=Ok u2.el) →
+        λ (uto12 : #Data/Unit/Init/=Carrier/=To u1.el u2.el) →
+        uto12
+            A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok
+            A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok
+            (#Data/Unit/Alg/Id/=el
+                A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok)
+            (#Data/Unit/Alg/Id/=ok
+                A.Carrier.El A.Carrier.To A.Carrier.Trans A.Mk.el A.Mk.ok))
