@@ -10,14 +10,15 @@ type2(T,D) ->
 
 type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
-type({var,{N,I}},D)           -> assertVar(N,D), om:keyget(N,D,I);
-type({"→",{I,O}},D)           -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(star(om:type(I,D)),star(om:type(O,[{N,om:normalize(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> star(om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
+type({var,{N,I}},D)           -> om:varMsg(N,D), om:keyget(N,D,I);
+type({"→",{I,O}},D)           -> {star,om:hierarchy(om:starMsg(I,om:type(I,D)),om:starMsg(O,om:type(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(om:starMsg(I,om:type(I,D)),om:starMsg(O,om:type(O,[{N,om:normalize(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> om:starMsg(I,om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
 type({app,{F,A}},D)           -> T = om:type(F,D),
-                                 assertFunc(T),
+                                 om:funcMsg(F,T),
                                  {{"∀",{N,0}},{I,O}} = T,
-                                 om:eq(I,om:type(A,D)),
+                                 Q = om:type(A,D),
+                                 om:eqMsg(F,I,A,Q),
                                  om:normalize(subst(O,N,A)).
 
 normalize2(T) -> NT=normalize(T),
@@ -68,6 +69,6 @@ star(_)               -> erlang:error("*").
 assertFunc({{"∀",N},{I,O}}) -> true;
 assertFunc(T)               -> erlang:error(["∀",T]).
 
-assertVar(Name,Bind)        -> assertVar(Name,Bind,proplists:is_defined(Name,Bind)).
-assertVar(Name,Bind,true)   -> true;
-assertVar(Name,Bind,false)  -> erlang:error(["free var", Name, Bind]).
+assertVar(N,B)        -> assertVar(N,B,proplists:is_defined(N,B)).
+assertVar(N,B,true)   -> true;
+assertVar(N,B,false)  -> erlang:error(["free var", N, proplists:get_keys(B)]).
