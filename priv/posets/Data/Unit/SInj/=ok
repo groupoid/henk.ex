@@ -1,0 +1,26 @@
+-- arg P, mk
+λ (P.el : #Data/Unit/Predicate/=El) →
+λ (P.ok : #Data/Unit/Predicate/=Ok P.el) →
+λ (mk : P.el #Data/Unit/Init/=Mk/=el) →
+
+-- res : Alg.Hom.To.mk (Sigma P mk) Init el el
+#Data/Unit/Alg/Hom/To/mk
+    (#Data/Unit/Sigma/=Carrier/=El P.el P.ok mk)
+    (#Data/Unit/Sigma/=Carrier/=To P.el P.ok mk)
+    (#Data/Unit/Sigma/=Carrier/=Trans P.el P.ok mk)
+    (#Data/Unit/Sigma/=Mk/=el P.el P.ok mk)
+    (#Data/Unit/Sigma/=Mk/=ok P.el P.ok mk)
+    #Data/Unit/Init/=Carrier/=El
+    #Data/Unit/Init/=Carrier/=To
+    #Data/Unit/Init/=Carrier/=Trans
+    #Data/Unit/Init/=Mk/=el
+    #Data/Unit/Init/=Mk/=ok
+    (#Data/Unit/SInj/=el P.el P.ok mk)
+    (#Data/Unit/SInj/=el P.el P.ok mk)
+    (#Data/Unit/Init/=Mk/=ok)
+    -- Pred2Sub.i.ok Init.Carrier P
+    (#Pred2Sub/=i/=ok
+        #Data/Unit/Init/=Carrier/=El
+        #Data/Unit/Init/=Carrier/=To
+        #Data/Unit/Init/=Carrier/=Trans
+        P.el P.ok)
