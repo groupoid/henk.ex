@@ -1,0 +1,20 @@
+#Data/Unit/Alg/Hom/To/mk
+    #Data/Unit/Init/=Carrier/=El
+    #Data/Unit/Init/=Carrier/=To
+    #Data/Unit/Init/=Carrier/=Trans
+    #Data/Unit/Init/=Mk/=el
+    #Data/Unit/Init/=Mk/=ok
+    #Data/Unit/Init/=Carrier/=El
+    #Data/Unit/Init/=Carrier/=To
+    #Data/Unit/Init/=Carrier/=Trans
+    #Data/Unit/Init/=Mk/=el
+    #Data/Unit/Init/=Mk/=ok
+    (#Data/Unit/recur/forOb/=el
+        #Data/Unit/Init/=Carrier/=El
+        #Data/Unit/Init/=Carrier/=To
+        #Data/Unit/Init/=Carrier/=Trans
+        #Data/Unit/Init/=Mk/=el
+        #Data/Unit/Init/=Mk/=ok)
+    #Data/Unit/IId/=el
+    #Data/Unit/recur/forId/==mk1
+    #Data/Unit/recur/forId/==equ
