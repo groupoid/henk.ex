@@ -1,0 +1,8 @@
+-- induc
+#sec2all
+    #Data/Unit/Init/=Carrier/=El
+    #Data/Unit/Init/=Carrier/=To
+    #Data/Unit/Init/=Carrier/=Trans
+    P.el P.ok
+    (#Data/Unit/recurP/forOb/=el P.el P.ok mk)
+    (#Data/Unit/section P.ok P.el mk)

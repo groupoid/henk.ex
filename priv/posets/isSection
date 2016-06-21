@@ -26,7 +26,7 @@
     S.A.El S.A.To S.A.Trans
     S.i.el S.i.ok) →
 
---
+-- f : [B -> S.A]
 λ (f.el : #Poset/Hom/=El
     B.El B.To B.Trans
     S.A.El S.A.To S.A.Trans) →
@@ -35,7 +35,7 @@
     S.A.El S.A.To S.A.Trans
     f.el) →
 
---
+-- res
 #Poset/Hom/=To
     B.El B.To B.Trans
     B.El B.To B.Trans
