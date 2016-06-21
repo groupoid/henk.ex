@@ -1,0 +1,7 @@
+-- arg P, mk
+λ (P.el : #Data/Unit/Predicate/=El) →
+λ (P.ok : #Data/Unit/Predicate/=Ok P.el) →
+λ (mk : P.el #Data/Unit/Init/=Mk/=el) →
+
+-- res
+#Data/Unit/Init/=Mk/=el
