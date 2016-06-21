@@ -4,62 +4,24 @@
 λ (mk : P.el #Data/Unit/Init/=Mk/=el) →
 
 -- res
-#Data/Unit/Alg/Hom/To/.equ
-    #Data/Unit/Init/=Carrier/=El
-    #Data/Unit/Init/=Carrier/=To
-    #Data/Unit/Init/=Carrier/=Trans
-    #Data/Unit/Init/=Mk/=el
-    #Data/Unit/Init/=Mk/=ok
-    #Data/Unit/Init/=Carrier/=El
-    #Data/Unit/Init/=Carrier/=To
-    #Data/Unit/Init/=Carrier/=Trans
-    #Data/Unit/Init/=Mk/=el
-    #Data/Unit/Init/=Mk/=ok
-    (#Data/Unit/Alg/Mul/=el
-        #Data/Unit/Init/=Carrier/=El
-        #Data/Unit/Init/=Carrier/=To
-        #Data/Unit/Init/=Carrier/=Trans
-        #Data/Unit/Init/=Mk/=el
-        #Data/Unit/Init/=Mk/=ok
-        (#Data/Unit/Sigma/=Carrier/=El P.el P.ok mk)
-        (#Data/Unit/Sigma/=Carrier/=To P.el P.ok mk)
-        (#Data/Unit/Sigma/=Carrier/=Trans P.el P.ok mk)
-        (#Data/Unit/Sigma/=Mk/=el P.el P.ok mk)
-        (#Data/Unit/Sigma/=Mk/=ok P.el P.ok mk)
-        #Data/Unit/Init/=Carrier/=El
-        #Data/Unit/Init/=Carrier/=To
-        #Data/Unit/Init/=Carrier/=Trans
-        #Data/Unit/Init/=Mk/=el
-        #Data/Unit/Init/=Mk/=ok
-        (#Data/Unit/SInj/=el P.el P.ok mk)
-        (#Data/Unit/SInj/=ok P.el P.ok mk)
-        (#Data/Unit/recurP/forOb/=el P.el P.ok mk)
-        (#Data/Unit/recurP/forOb/=ok P.el P.ok mk))
-    #Data/Unit/IId/=el
--- pair
-    (#Data/Unit/Endo/=Trans
-    --        (Alg.Mul.onEl Init (Sigma P mk) Init (SInj P mk) (recurP.forOb P mk))
-        (#Data/Unit/Alg/Mul/=el
+#Data/Unit/EndoSet/=Trans
+    --  (Poset.Mul.onEl Init.Carrier (SmallSigmaSet Init.Carrier P) Init.Carrier
+    --      (Pred2Sub.i Init.Carrier P) (recurP.forOb P mk))
+    (#Poset/Mul/=el
             #Data/Unit/Init/=Carrier/=El
             #Data/Unit/Init/=Carrier/=To
             #Data/Unit/Init/=Carrier/=Trans
-            #Data/Unit/Init/=Mk/=el
-            #Data/Unit/Init/=Mk/=ok
             (#Data/Unit/Sigma/=Carrier/=El P.el P.ok mk)
             (#Data/Unit/Sigma/=Carrier/=To P.el P.ok mk)
             (#Data/Unit/Sigma/=Carrier/=Trans P.el P.ok mk)
-            (#Data/Unit/Sigma/=Mk/=el P.el P.ok mk)
-            (#Data/Unit/Sigma/=Mk/=ok P.el P.ok mk)
             #Data/Unit/Init/=Carrier/=El
             #Data/Unit/Init/=Carrier/=To
             #Data/Unit/Init/=Carrier/=Trans
-            #Data/Unit/Init/=Mk/=el
-            #Data/Unit/Init/=Mk/=ok
             (#Data/Unit/SInj/=el P.el P.ok mk)
-            (#Data/Unit/SInj/=ok P.el P.ok mk)
+            (#Data/Unit/SInj/=ok.equ P.el P.ok mk)
             (#Data/Unit/recurP/forOb/=el P.el P.ok mk)
-            (#Data/Unit/recurP/forOb/=ok P.el P.ok mk))
-    --        (recur.forOb Init)
+            (#Data/Unit/recurP/forOb/=ok.equ P.el P.ok mk))
+    --        (recur.forOb.el Init)
         (#Data/Unit/recur/forOb/=el
             #Data/Unit/Init/=Carrier/=El
             #Data/Unit/Init/=Carrier/=To
@@ -68,7 +30,7 @@
             #Data/Unit/Init/=Mk/=ok)
     --        IId
         #Data/Unit/IId/=el
-    --        (recurP.forHom P mk)
-        (#Data/Unit/recurP/forHom P.el P.ok mk)
+    --        (recurP.forHom.equ P mk)
+        (#Data/Unit/recurP/forHom.equ P.el P.ok mk)
     --        recur.forId
-        #Data/Unit/recur/forId/= )
+        #Data/Unit/recur/forId/==equ

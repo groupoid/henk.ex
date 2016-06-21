@@ -4,7 +4,7 @@
 λ (mk : P.el #Data/Unit/Init/=Mk/=el) →
 
 -- res
-#Data/Unit/recur/forHom/=
+#Data/Unit/recur/forHom/==equ
     (#Data/Unit/Sigma/=Carrier/=El P.el P.ok mk)
     (#Data/Unit/Sigma/=Carrier/=To P.el P.ok mk)
     (#Data/Unit/Sigma/=Carrier/=Trans P.el P.ok mk)
