@@ -15,9 +15,9 @@ debug(S)     -> application:set_env(om,debug,atom(S)).
 debug()      -> application:get_env(om,debug,false).
 
 % constants
-modes()      -> ["hurkens","normal","setoids","new-setoids", "new-posets"]
+modes()      -> ["hurkens","normal","setoids","new-setoids", "posets"]
                 ++ ["src-hurkens", "russell","girard"].
-allmodes()   -> ["hurkens","normal","setoids","new-setoids", "new-posets"].
+allmodes()   -> ["posets"].
 
 % providing functions
 
@@ -117,7 +117,8 @@ console(S)   -> boot(),
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse([],pname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
-pipe(L)      -> lists:foldl(fun(X,{A,D}) ->
+pipe(L)      -> io:format("[~tp]",[L]),
+                lists:foldl(fun(X,{A,D}) ->
                 {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed,erased]).
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
