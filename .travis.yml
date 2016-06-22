@@ -12,4 +12,4 @@ notifications:
     on_start: change     # options: [always|never|change] default: always
 install: "./mad dep com pla bun om"
 #script: "./om extract all , test all"
-script: "travis_wait ./om test all"
+script: "travis_wait 49 ./om test all"
