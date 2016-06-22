@@ -59,8 +59,9 @@ allmodes(_)  -> allmodes().
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
 name(M,[],F) -> string:join([priv(mode()),F],"/");
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
-str(F)       -> om_tok:tokens([],unicode:characters_to_binary(F),0,{1,[]},[]).
-read(F)      -> om_tok:tokens([],file(F),0,{1,[]},[]).
+tokens(B)    -> om_tok:tokens([],B,0,{1,[]},[]).
+str(F)       -> tokens(unicode:characters_to_binary(F)).
+read(F)      -> tokens(file(F)).
 comp(F)      -> rev(tokens(F,"/")).
 normal(F)    -> om_type:normalize(F).
 cname(F)     -> hd(comp(F)).
@@ -160,4 +161,5 @@ file(F) -> case file:read_file(convert(F,[],element(2,os:type()))) of
 
 mad(F)  -> case mad_repl:load_file(F) of
                 {ok,Bin} -> Bin;
-                {error,_} -> <<>> end.
+                {error,_} -> erlang:error({"File not found",F}) % <<>>
+            end.
