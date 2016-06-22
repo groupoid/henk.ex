@@ -8,7 +8,8 @@
 % abstract caches identified by atoms
 caches() -> [ src, % source binary content of files
               term, % AST of parsed terms
-              type, % AST of types of terms
+              normal, % AST of normalized terms
+              type, % AST of (normalized) types of terms
               erased, % AST of erased terms
               extracted]. % for extracted erlang code
 
@@ -24,6 +25,7 @@ load(Cache,Key) -> case get(Cache,Key) of
 % to call other modules, to be called by load/2
 loader(src, Key) -> om:file(om:name({},[],Key));
 loader(term, Key) -> om:snd(om:parse(om:tokens(load(src,Key))));
+loader(normal, Key) -> om:normalize(load(term,Key));
 loader(type, Key) -> om:type(load(term,Key));
 loader(erased, Key) -> om:erase(load(term,Key));
 loader(extracted, MN) -> om:extract(MN).

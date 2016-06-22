@@ -10,20 +10,20 @@ type2(T,D) ->
 
 type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
-type({var,{N,I}},D)           -> om:varMsg(N,D), om:keyget(N,D,I);
-type({"→",{I,O}},D)           -> {star,om:hierarchy(om:starMsg(I,om:type(I,D)),om:starMsg(O,om:type(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(om:starMsg(I,om:type(I,D)),om:starMsg(O,om:type(O,[{N,om:normalize(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> om:starMsg(I,om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
+type({var,{N,I}},D)           -> om_messages:var(N,D), om:keyget(N,D,I);
+type({"→",{I,O}},D)           -> {star,om:hierarchy(om_messages:star(I,om:type(I,D)),om_messages:star(O,om:type(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(om_messages:star(I,om:type(I,D)),om_messages:star(O,om:type(O,[{N,om:normalize(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> om_messages:star(I,om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
 type({app,{F,A}},D)           -> T = om:type(F,D),
-                                 om:funcMsg(F,T),
+                                 om_messages:func(F,T),
                                  {{"∀",{N,0}},{I,O}} = T,
                                  Q = om:type(A,D),
-                                 om:eqMsg(F,I,A,Q),
+                                 om_messages:eq(F,I,A,Q),
                                  om:normalize(subst(O,N,A));
 type({remote,N},D)           -> om_cache:load(type,N).
 
 normalize2(T) -> NT=normalize(T),
-    om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
+    om:debug("normalized ~n (~tp) ~n => ~n (~tp) ~n ... ~n",[om:bin(T), om:bin(NT)]),
     NT.
 
 normalize(none)                          -> none;
@@ -34,6 +34,7 @@ normalize({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {normalize(I),norma
 normalize({app,{F,A}})                   -> NF=normalize(F),case NF of
     {{"λ",{N,0}},{I,O}} -> normalize(subst(O,N,A));
     _ -> {app,{NF,normalize(A)}} end; % be lazy
+normalize({remote,N})                    -> om_cache:load(normal,N);
 normalize(T)                             -> T.
 
 shift({var,{N,I}},N,P) when I>=P -> {var,{N,I+1}};
@@ -57,12 +58,15 @@ eq2(X,Y) ->
     om:debug("eq?: X = ~tp~n // Y = ~tp~n.................~n",[om:bin(X),om:bin(Y)]),
     eq(X,Y).
 
-eq(T,T)                                           -> true;
 %eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
 eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
-eq(A,B)                                           -> erlang:error(["==", A, B]).
+eq({box,N},{box,N1})          -> true;
+eq({star,N},{star,N})         -> true;
+eq({var,{N,I}},{var,{N,I}})   -> true;
+eq({remote,N},{remote,N})     -> true; % should not appear in normalized terms
+eq(A,B)                       -> erlang:error(["==", A, B]).
 
 star({star,N})        -> N;
 star(_)               -> erlang:error("*").
