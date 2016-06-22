@@ -9,7 +9,7 @@ notifications:
       - https://webhooks.gitter.im/e/1933b1879e62b09c6758
     on_success: always  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always
+    on_start: change     # options: [always|never|change] default: always
 install: "./mad dep com pla bun om"
 #script: "./om extract all , test all"
-script: "./om test all"
+script: "travis_wait ./om test all"
