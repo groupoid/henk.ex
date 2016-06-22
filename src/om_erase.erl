@@ -26,7 +26,9 @@ erase({app,{F,A}},D) -> {B1,S1} = om:erase(F,D), {B2,S2} = om:erase(A,D), om_typ
          true  -> {none,T};
          false -> case univ(S2) of
                        true  -> {B1,T};
-                       false -> {{app,{B1,B2}},T} end end.
+                       false -> {{app,{B1,B2}},T} end end;
+erase({remote,N},D)        -> {om_cache:load(erased,N),om_cache:load(type,N)}.
+
 
 univ({star,N})        -> true;
 univ({{"∀",N},{I,O}}) -> univ(O);

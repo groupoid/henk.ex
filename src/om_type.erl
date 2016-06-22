@@ -19,7 +19,8 @@ type({app,{F,A}},D)           -> T = om:type(F,D),
                                  {{"∀",{N,0}},{I,O}} = T,
                                  Q = om:type(A,D),
                                  om:eqMsg(F,I,A,Q),
-                                 om:normalize(subst(O,N,A)).
+                                 om:normalize(subst(O,N,A));
+type({remote,N},D)           -> om_cache:load(type,N).
 
 normalize2(T) -> NT=normalize(T),
     om:debug("normalize (~tp)=>(~tp)~n...~n",[om:bin(T), om:bin(NT)]),
