@@ -14,10 +14,10 @@ caches() -> [ src, % source binary content of files
               extracted]. % for extracted erlang code
 
 % cache ops, low-level, TODO
-cache_put(Cache,Key,Data) -> put({termcache,Cache,Key},Data),Data.
+cache_put(Cache,Key,Data) -> put({termcache,om:mode(),Cache,Key},Data),Data.
 %    whereis(termcache) ! {self(),{put,Cache,Key,Data}},
 %    receive {_,{res,D}} -> D end.
-cache_get(Cache,Key) -> case get({termcache,Cache,Key}) of
+cache_get(Cache,Key) -> case get({termcache,om:mode(),Cache,Key}) of
     undefined -> {none,{}}; X -> {some, X} end.
 %    whereis(termcache) ! {self(),{get,Cache,Key}},
 %    receive {_,{M,D}} -> {M,D} end.
