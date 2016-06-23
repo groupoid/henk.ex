@@ -115,7 +115,8 @@ scan()       -> om:debug(false),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
                 {mode(),pass(Passed),Res}.
-test(_)      -> All = om:all(),
+test(_)      -> om_cache:start(),
+                All = om:all(),
                 io:format("~tp~n",[om_parse:test()]),
                 io:format("~tp~n",[All]),
                 case lists:all(fun({Mode,Status,Tests}) -> Status == om:pass(0) end, All) of
