@@ -76,6 +76,7 @@ convert([H|T],Acc)  -> convert(T,[H|Acc]).
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ terms, types, erased ].
 boot()       -> [ ets:new(T,opt()) || T <- tables() ],
+                cache_start(),
                 [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
@@ -101,7 +102,7 @@ console(S)   -> boot(),
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse([],pname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
-pipe(L)      -> io:format("[~tp]",[L]),
+pipe(L)      -> %  io:format("[~tp]",[L]), % workaround for trevis timeout break
                 lists:foldl(fun(X,{A,D}) ->
                 {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed,erased]).
 pass(0)      -> "PASSED";
