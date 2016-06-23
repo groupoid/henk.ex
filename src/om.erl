@@ -8,6 +8,8 @@
 
 % env
 
+cache_start(_)-> cache_start().
+cache_start()-> om_cache:start().
 privdir()    -> application:get_env(om,priv,"priv").
 mode(S)      -> application:set_env(om,mode,S).
 mode()       -> application:get_env(om,mode,"normal").
@@ -78,7 +80,7 @@ boot()       -> [ ets:new(T,opt()) || T <- tables() ],
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
-start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
+start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]),cache_start(),  supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> boot(), mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
@@ -94,6 +96,7 @@ console(S)   -> boot(),
                 halt(lists:sum(Fold)).
 
 % test suite
+% TODO use cache in tests // no pipes!
 
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
@@ -115,8 +118,7 @@ scan()       -> om:debug(false),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
                 {mode(),pass(Passed),Res}.
-test(_)      -> om_cache:start(),
-                All = om:all(),
+test(_)      -> All = om:all(),
                 io:format("~tp~n",[om_parse:test()]),
                 io:format("~tp~n",[All]),
                 case lists:all(fun({Mode,Status,Tests}) -> Status == om:pass(0) end, All) of
