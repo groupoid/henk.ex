@@ -75,12 +75,11 @@ convert([H|T],Acc)  -> convert(T,[H|Acc]).
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ terms, types, erased ].
 boot()       -> [ ets:new(T,opt()) || T <- tables() ],
-                cache_start(),
                 [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
-start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]),cache_start(),  supervisor:start_link({local,om},om,[]).
+start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
 stop(_)      -> ok.
 init([])     -> boot(), mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
