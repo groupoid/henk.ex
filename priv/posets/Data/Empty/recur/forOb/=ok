@@ -1,0 +1,27 @@
+-- arg A
+λ (A.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+
+--
+#Data/Empty/Alg/Hom/To/mk
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    A.Carrier.El A.Carrier.To A.Carrier.Trans
+    (#Data/Empty/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans )
+    (#Data/Empty/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans )
+    (   λ (u1.el : #Data/Empty/Init/=Carrier/=El) →
+        λ (u1.ok : #Data/Empty/Init/=Carrier/=Ok u1.el) →
+        λ (u2.el : #Data/Empty/Init/=Carrier/=El) →
+        λ (u2.ok : #Data/Empty/Init/=Carrier/=Ok u2.el) →
+        λ (uto12 : #Data/Empty/Init/=Carrier/=To u1.el u2.el) →
+        uto12
+            A.Carrier.El A.Carrier.To A.Carrier.Trans
+            A.Carrier.El A.Carrier.To A.Carrier.Trans
+            (#Data/Empty/Alg/Id/=el
+                A.Carrier.El A.Carrier.To A.Carrier.Trans )
+            (#Data/Empty/Alg/Id/=ok
+                A.Carrier.El A.Carrier.To A.Carrier.Trans ))

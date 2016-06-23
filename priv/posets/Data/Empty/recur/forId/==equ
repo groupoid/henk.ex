@@ -1,0 +1,54 @@
+-- arg u1 u2 uto12
+λ (u1.el : #Data/Empty/Init/=Carrier/=El) →
+λ (u1.ok : #Data/Empty/Init/=Carrier/=Ok u1.el) →
+λ (u2.el : #Data/Empty/Init/=Carrier/=El) →
+λ (u2.ok : #Data/Empty/Init/=Carrier/=Ok u2.el) →
+λ (uto12 : #Data/Empty/Init/=Carrier/=To u1.el u2.el) →
+
+-- arg A1
+λ (A1.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+
+-- arg hom : A1 ==> A2
+λ (hom.el : #Data/Empty/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans ) →
+λ (hom.ok : #Data/Empty/Alg/Hom/=Ok
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    hom.el) →
+
+-- res
+uto12
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    (#Data/Empty/Alg/Mul/=el
+        #Data/Empty/Init/=Carrier/=El
+        #Data/Empty/Init/=Carrier/=To
+        #Data/Empty/Init/=Carrier/=Trans
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        hom.el hom.ok
+        (#Data/Empty/recur/forOb/=el
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans )
+        (#Data/Empty/recur/forOb/=ok
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans ))
+    (#Data/Empty/Alg/Mul/=ok
+        #Data/Empty/Init/=Carrier/=El
+        #Data/Empty/Init/=Carrier/=To
+        #Data/Empty/Init/=Carrier/=Trans
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        hom.el hom.ok
+        (#Data/Empty/recur/forOb/=el
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans )
+        (#Data/Empty/recur/forOb/=ok
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans ))

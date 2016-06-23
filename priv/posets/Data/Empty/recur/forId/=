@@ -1,0 +1,13 @@
+#Data/Empty/Alg/Hom/To/mk
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    (#Data/Empty/recur/forOb/=el
+        #Data/Empty/Init/=Carrier/=El
+        #Data/Empty/Init/=Carrier/=To
+        #Data/Empty/Init/=Carrier/=Trans)
+    #Data/Empty/IId/=el
+    #Data/Empty/recur/forId/==equ

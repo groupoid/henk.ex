@@ -1,0 +1,48 @@
+-- arg A1
+λ (A1.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+
+-- arg A2
+λ (A3.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A3.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A3.Carrier.El) →
+λ (A3.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A3.Carrier.El A3.Carrier.To) →
+
+-- B ⥤ C, A ⥤ B
+λ (m23.el : #Data/Empty/Alg/Hom/=El
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans ) →
+λ (m23.ok : #Data/Empty/Alg/Hom/=Ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans
+    m23.el) →
+λ (m12.el : #Data/Empty/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans ) →
+λ (m12.ok : #Data/Empty/Alg/Hom/=Ok
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    m12.el) →
+
+--
+#Poset/Mul/=el
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans
+    m23.el
+    (#Data/Empty/Alg/Hom/To/.equ
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans
+        m23.el m23.el
+        m23.ok)
+    m12.el
+    (#Data/Empty/Alg/Hom/To/.equ
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        m12.el m12.el
+        m12.ok)

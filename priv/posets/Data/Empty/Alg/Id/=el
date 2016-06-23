@@ -1,0 +1,8 @@
+-- arg A
+λ (A.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+
+-- res
+#Poset/Id/=el
+    A.Carrier.El A.Carrier.To A.Carrier.Trans

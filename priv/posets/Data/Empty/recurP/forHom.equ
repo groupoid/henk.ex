@@ -1,0 +1,14 @@
+-- arg P, mk
+λ (P.el : #Data/Empty/Predicate/=El) →
+λ (P.ok : #Data/Empty/Predicate/=Ok P.el) →
+
+-- res
+#Data/Empty/recur/forHom/==equ
+    (#Data/Empty/Sigma/=Carrier/=El P.el P.ok)
+    (#Data/Empty/Sigma/=Carrier/=To P.el P.ok)
+    (#Data/Empty/Sigma/=Carrier/=Trans P.el P.ok)
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    (#Data/Empty/SInj/=el P.el P.ok)
+    (#Data/Empty/SInj/=ok P.el P.ok)

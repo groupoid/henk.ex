@@ -1,0 +1,10 @@
+-- arg A
+λ (A.Carrier.El : #Data/Empty/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Empty/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Empty/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+
+-- arg
+λ (u : #Data/Empty/Init/=Carrier/=El) →
+
+--
+u A.Carrier.El A.Carrier.To A.Carrier.Trans 

@@ -1,0 +1,10 @@
+-- arg P, mk
+λ (P.el : #Data/Empty/Predicate/=El) →
+λ (P.ok : #Data/Empty/Predicate/=Ok P.el) →
+
+-- res
+#SmallSigmaSet/=Trans
+    #Data/Empty/Init/=Carrier/=El
+    #Data/Empty/Init/=Carrier/=To
+    #Data/Empty/Init/=Carrier/=Trans
+    P.el P.ok
