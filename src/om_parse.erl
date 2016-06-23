@@ -15,8 +15,12 @@ expr(P,[close                 |T], A,{V,D}) -> case rewind2(A,{D,D},[]) of
                                                     {{V1,D1},A1} -> expr2(P,T,A1,{V1,D1}) end;
 
 expr(P,[F,open,{var,L},colon  |T], Acc, {V,D}) when ?arr(F)   -> expr2(P,T,[{'$',{func(F),L}}|Acc],{V,D+1});
-expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when ?noh(C)   -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc],{V,D});
-expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr2(P,T,[ret(om:parse([],L))|Acc],{V,D});
+expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when ?noh(C)   ->
+expr2(P,T,[{app,{{C,Y},{remote,L}}}|Acc],{V,D});
+expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                ->
+expr2(P,T,[{remote,L}|Acc],{V,D});
+%expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when ?noh(C)   -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc],{V,D});
+%expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr2(P,T,[ret(om:parse([],L))|Acc],{V,D});
 expr(P,[{N,X}|T],           [{C,Y}|Acc],{V,D}) when ?nah(N,C) -> expr2(P,T,[{app,{{C,Y},{N,X}}}|Acc],{V,D});
 expr(P,[{N,X}                 |T], Acc, {V,D}) when ?noh(N)   -> expr2(P,T,[{N,X}|Acc],{V,D});
 expr(P,[open                  |T], Acc, {V,D})                -> expr2(P,T,[{open}|Acc],{V,D+1});
@@ -92,6 +96,7 @@ pad(D)                         -> lists:duplicate(D,"  ").
 
 print(any,D)                   -> ["any"];
 print(none,D)                  -> ["none"];
+print({remote,L},D)            -> ["#", om:cat([L])];
 print({var,{N,0}},D)           -> [ om:cat([N]) ];
 print({var,{N,I}},D)           -> [ om:cat([N]), "@", integer_to_list(I)];
 print({star,N},D)              -> [ "*",om:cat([N]) ];

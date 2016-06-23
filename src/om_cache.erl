@@ -14,8 +14,12 @@ caches() -> [ src, % source binary content of files
               extracted]. % for extracted erlang code
 
 % cache ops, low-level, TODO
-put(Cache,Key,Data) -> Data. % store into cache, returns Data stored
-get(Cache,Key) -> {none, "not implemented"}. % {some,Data} or {none,"why"}
+put(Cache,Key,Data) ->
+    whereis(termcache) ! {self(),{put,Cache,Key,Data}},
+    receive {_,{res,D}} -> D end.
+get(Cache,Key) ->
+    whereis(termcache) ! {self(),{get,Cache,Key}},
+    receive {_,{M,D}} -> {M,D} end.
 
 % cache ops, high-level
 has(Cache,Key) -> case get(Cache,Key) of {none,_} -> false; {some,_} -> true end.
@@ -29,3 +33,13 @@ loader(normal, Key) -> om:normalize(load(term,Key));
 loader(type, Key) -> om:type(load(term,Key));
 loader(erased, Key) -> om:erase(load(term,Key));
 loader(extracted, MN) -> om:extract(MN).
+
+% actor
+cache_actor(D) -> receive
+    {P,{put,Cache,Key,Data}} ->
+        P ! {self(),{res,Data}}, cache_actor([{{Cache,Key},Data}|D]);
+    {P,{get,Cache,Key}} -> case proplists:is_defined({Cache,Key},D) of
+        true -> P ! {self(), {some, proplists:get_value({Cache,Key},D)}};
+        false -> P ! {self(), {none, []}} end, cache_actor(D)
+    end.
+start() -> P = spawn(?MODULE, cache_actor, [[]]), register(termcache, P).
