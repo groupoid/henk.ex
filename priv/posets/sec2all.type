@@ -1,0 +1,62 @@
+-- arg B
+∀ (B.El : #Poset/Ob/@El) →
+∀ (B.To : #Poset/Ob/@To B.El) →
+∀ (B.Trans : #Poset/Ob/@Trans B.El B.To) →
+
+-- arg P
+∀ (P.el : #PredicateSet/=El
+    B.El B.To B.Trans) →
+∀ (P.ok : #PredicateSet/=Ok
+    B.El B.To B.Trans
+    P.el) →
+
+-- (f : [B ⥤ SmallSigmaSet B P])
+∀ (f.el : #Poset/Hom/=El
+    B.El B.To B.Trans
+    (#SmallSigmaSet/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=Trans
+        B.El B.To B.Trans
+        P.el P.ok)) →
+∀ (f.ok : #Poset/Hom/=Ok
+    B.El B.To B.Trans
+    (#SmallSigmaSet/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#SmallSigmaSet/=Trans
+        B.El B.To B.Trans
+        P.el P.ok)
+    f.el) →
+
+-- (sec : isSection B (Pred2Sub B P) f)
+∀ (sec : #isSection
+    B.El B.To B.Trans
+    (#Pred2Sub/=A/=El
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=A/=To
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=A/=Trans
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=i/=el
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=i/=ok
+        B.El B.To B.Trans
+        P.el P.ok)
+    (#Pred2Sub/=uniq
+        B.El B.To B.Trans
+        P.el P.ok)
+    f.el f.ok) →
+
+-- res : forall B P
+#Forall B.El B.To B.Trans P.el P.ok
