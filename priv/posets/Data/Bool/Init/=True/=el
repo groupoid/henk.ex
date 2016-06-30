@@ -1,0 +1,11 @@
+-- arg A
+λ (A.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+λ (A.True.el : #Data/Bool/Alg/Ob/@True/@el A.Carrier.El) →
+λ (A.True.ok : #Data/Bool/Alg/Ob/@True/@ok A.Carrier.El A.Carrier.To A.True.el) →
+λ (A.False.el : #Data/Bool/Alg/Ob/@False/@el A.Carrier.El) →
+λ (A.False.ok : #Data/Bool/Alg/Ob/@False/@ok A.Carrier.El A.Carrier.To A.False.el) →
+
+-- res
+A.True.el
