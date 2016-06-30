@@ -1,0 +1,13 @@
+-- #Prop/Prod2/@ : #Prop/=El→ #Prop/=El→ #Prop/=El
+
+-- args
+λ (P1 : #Prop/=El) →
+λ (P2 : #Prop/=El) →
+λ (P3 : #Prop/=El) →
+
+--
+∀ (Prod3 : #Prop/=El) →
+--
+∀ (Intro : P1 → P2 → P3 → Prod3) →
+--
+Prod3
