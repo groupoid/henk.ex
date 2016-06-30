@@ -1,0 +1,10 @@
+-- arg P, mk
+λ (P.el : #Data/Bool/Predicate/=El) →
+λ (P.ok : #Data/Bool/Predicate/=Ok P.el) →
+λ (true : P.el #Data/Bool/Init/=True/=el) →
+λ (false : P.el #Data/Bool/Init/=False/=el) →
+
+-- res
+#@Ok
+    (#Data/Bool/Sigma/=Carrier/=El P.el P.ok true false)
+    (#Data/Bool/Sigma/=Carrier/=To P.el P.ok true false)
