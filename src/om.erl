@@ -8,8 +8,6 @@
 
 % env
 
-cache_start(_)-> cache_start().
-cache_start()-> om_cache:start().
 privdir()    -> application:get_env(om,priv,"priv").
 mode(S)      -> application:set_env(om,mode,S).
 mode()       -> application:get_env(om,mode,"normal").
@@ -59,6 +57,12 @@ parse(X)     -> om_parse:expr2([],X,[],{0,0}).
 parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
 linear(C)    -> put(inc,0), R = om_parse:expr2([],C,[],{0,0}),
                 case {get(inc),length(C)} of {X,Y} when X =< Y * 2 -> R ; {X,Y} -> {error,{nonlinear,X,Y}} end.
+cache_src(N)       -> om_cache:load(src,N).
+cache_term(N)      -> om_cache:load(term,N).
+cache_normal(N)    -> om_cache:load(normal,N).
+cache_type(N)      -> om_cache:load(type,N).
+cache_erased(N)    -> om_cache:load(erased,N).
+cache_extracted(N) -> om_cache:load(extracted,N).
 
 % system functions
 
