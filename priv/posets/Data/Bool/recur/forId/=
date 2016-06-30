@@ -1,0 +1,27 @@
+#Data/Bool/Alg/Hom/To/mk
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
+    #Data/Bool/Init/=True/=el
+    #Data/Bool/Init/=True/=ok
+    #Data/Bool/Init/=False/=el
+    #Data/Bool/Init/=False/=ok
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
+    #Data/Bool/Init/=True/=el
+    #Data/Bool/Init/=True/=ok
+    #Data/Bool/Init/=False/=el
+    #Data/Bool/Init/=False/=ok
+    (#Data/Bool/recur/forOb/=el
+        #Data/Bool/Init/=Carrier/=El
+        #Data/Bool/Init/=Carrier/=To
+        #Data/Bool/Init/=Carrier/=Trans
+        #Data/Bool/Init/=True/=el
+        #Data/Bool/Init/=True/=ok
+        #Data/Bool/Init/=False/=el
+        #Data/Bool/Init/=False/=ok)
+    #Data/Bool/IId/=el
+    #Data/Bool/recur/forId/==true1
+    #Data/Bool/recur/forId/==false1
+    #Data/Bool/recur/forId/==equ

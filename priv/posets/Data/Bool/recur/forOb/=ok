@@ -1,0 +1,37 @@
+-- arg A
+λ (A.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+λ (A.True.el : #Data/Bool/Alg/Ob/@True/@el A.Carrier.El) →
+λ (A.True.ok : #Data/Bool/Alg/Ob/@True/@ok A.Carrier.El A.Carrier.To A.True.el) →
+λ (A.False.el : #Data/Bool/Alg/Ob/@False/@el A.Carrier.El) →
+λ (A.False.ok : #Data/Bool/Alg/Ob/@False/@ok A.Carrier.El A.Carrier.To A.False.el) →
+
+--
+#Data/Bool/Alg/Hom/To/mk
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
+    #Data/Bool/Init/=True/=el
+    #Data/Bool/Init/=True/=ok
+    #Data/Bool/Init/=False/=el
+    #Data/Bool/Init/=False/=ok
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok
+    (#Data/Bool/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok)
+    (#Data/Bool/recur/forOb/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok)
+    A.True.ok
+    A.False.ok
+    (   λ (u1.el : #Data/Bool/Init/=Carrier/=El) →
+        λ (u1.ok : #Data/Bool/Init/=Carrier/=Ok u1.el) →
+        λ (u2.el : #Data/Bool/Init/=Carrier/=El) →
+        λ (u2.ok : #Data/Bool/Init/=Carrier/=Ok u2.el) →
+        λ (uto12 : #Data/Bool/Init/=Carrier/=To u1.el u2.el) →
+        uto12
+            A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok
+            A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok
+            (#Data/Bool/Alg/Id/=el
+                A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok)
+            (#Data/Bool/Alg/Id/=ok
+                A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok))
