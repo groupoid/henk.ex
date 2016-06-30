@@ -106,7 +106,7 @@ console(S)   -> boot(),
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
 parsed(F)    -> case parse([],pname(F)) of {_,[X]} -> {X,[]}; _ -> {F,parsed} end.
-pipe(L)      -> %  io:format("[~tp]",[L]), % workaround for trevis timeout break
+pipe(L)      -> io:format("[~tp]",[L]), % workaround for trevis timeout break
                 lists:foldl(fun(X,{A,D}) ->
                 {N,E}=?MODULE:X(A), {N,[E|D]} end,{L,[]},[parsed,typed,erased]).
 pass(0)      -> "PASSED";
