@@ -1,0 +1,22 @@
+-- arg A1
+λ (A1.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+λ (A1.True.el : #Data/Bool/Alg/Ob/@True/@el A1.Carrier.El) →
+λ (A1.True.ok : #Data/Bool/Alg/Ob/@True/@ok A1.Carrier.El A1.Carrier.To A1.True.el) →
+λ (A1.False.el : #Data/Bool/Alg/Ob/@False/@el A1.Carrier.El) →
+λ (A1.False.ok : #Data/Bool/Alg/Ob/@False/@ok A1.Carrier.El A1.Carrier.To A1.False.el) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+λ (A2.True.el : #Data/Bool/Alg/Ob/@True/@el A2.Carrier.El) →
+λ (A2.True.ok : #Data/Bool/Alg/Ob/@True/@ok A2.Carrier.El A2.Carrier.To A2.True.el) →
+λ (A2.False.el : #Data/Bool/Alg/Ob/@False/@el A2.Carrier.El) →
+λ (A2.False.ok : #Data/Bool/Alg/Ob/@False/@ok A2.Carrier.El A2.Carrier.To A2.False.el) →
+
+--
+#Poset/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans

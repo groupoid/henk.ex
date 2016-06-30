@@ -1,0 +1,6 @@
+-- arg A
+λ (Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To Carrier.El) →
+
+--
+#@Ok Carrier.El Carrier.To

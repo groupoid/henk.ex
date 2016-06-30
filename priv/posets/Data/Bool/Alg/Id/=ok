@@ -1,0 +1,21 @@
+-- arg A1
+λ (A.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A.Carrier.El) →
+λ (A.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A.Carrier.El A.Carrier.To) →
+λ (A.True.el : #Data/Bool/Alg/Ob/@True/@el A.Carrier.El) →
+λ (A.True.ok : #Data/Bool/Alg/Ob/@True/@ok A.Carrier.El A.Carrier.To A.True.el) →
+λ (A.False.el : #Data/Bool/Alg/Ob/@False/@el A.Carrier.El) →
+λ (A.False.ok : #Data/Bool/Alg/Ob/@False/@ok A.Carrier.El A.Carrier.To A.False.el) →
+
+--
+#Data/Bool/Alg/Hom/To/mk
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok
+    A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok
+    (#Data/Bool/Alg/Id/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok)
+    (#Data/Bool/Alg/Id/=el
+        A.Carrier.El A.Carrier.To A.Carrier.Trans A.True.el A.True.ok A.False.el A.False.ok)
+    A.True.ok
+    A.False.ok
+    (#Poset/Id/=ok
+        A.Carrier.El A.Carrier.To A.Carrier.Trans)

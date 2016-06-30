@@ -1,0 +1,134 @@
+-- arg A1
+λ (A1.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A1.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A1.Carrier.El) →
+λ (A1.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A1.Carrier.El A1.Carrier.To) →
+λ (A1.True.el : #Data/Bool/Alg/Ob/@True/@el A1.Carrier.El) →
+λ (A1.True.ok : #Data/Bool/Alg/Ob/@True/@ok A1.Carrier.El A1.Carrier.To A1.True.el) →
+λ (A1.False.el : #Data/Bool/Alg/Ob/@False/@el A1.Carrier.El) →
+λ (A1.False.ok : #Data/Bool/Alg/Ob/@False/@ok A1.Carrier.El A1.Carrier.To A1.False.el) →
+
+-- arg A2
+λ (A2.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A2.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A2.Carrier.El) →
+λ (A2.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A2.Carrier.El A2.Carrier.To) →
+λ (A2.True.el : #Data/Bool/Alg/Ob/@True/@el A2.Carrier.El) →
+λ (A2.True.ok : #Data/Bool/Alg/Ob/@True/@ok A2.Carrier.El A2.Carrier.To A2.True.el) →
+λ (A2.False.el : #Data/Bool/Alg/Ob/@False/@el A2.Carrier.El) →
+λ (A2.False.ok : #Data/Bool/Alg/Ob/@False/@ok A2.Carrier.El A2.Carrier.To A2.False.el) →
+
+-- arg A3
+λ (A3.Carrier.El : #Data/Bool/Alg/Ob/@Carrier/@El) →
+λ (A3.Carrier.To : #Data/Bool/Alg/Ob/@Carrier/@To A3.Carrier.El) →
+λ (A3.Carrier.Trans : #Data/Bool/Alg/Ob/@Carrier/@Trans A3.Carrier.El A3.Carrier.To) →
+λ (A3.True.el : #Data/Bool/Alg/Ob/@True/@el A3.Carrier.El) →
+λ (A3.True.ok : #Data/Bool/Alg/Ob/@True/@ok A3.Carrier.El A3.Carrier.To A3.True.el) →
+λ (A3.False.el : #Data/Bool/Alg/Ob/@False/@el A3.Carrier.El) →
+λ (A3.False.ok : #Data/Bool/Alg/Ob/@False/@ok A3.Carrier.El A3.Carrier.To A3.False.el) →
+
+-- B ⥤ C, A ⥤ B
+λ (m23.el : #Data/Bool/Alg/Hom/=El
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok) →
+λ (m23.ok : #Data/Bool/Alg/Hom/=Ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+    m23.el) →
+λ (m12.el : #Data/Bool/Alg/Hom/=El
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok) →
+λ (m12.ok : #Data/Bool/Alg/Hom/=Ok
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+    A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+    m12.el) →
+
+--
+#Data/Bool/Alg/Hom/To/mk
+    A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+    A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+    (#Data/Bool/Alg/Mul/=el
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+        m23.el m23.ok
+        m12.el m12.ok)
+    (#Data/Bool/Alg/Mul/=el
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+        m23.el m23.ok
+        m12.el m12.ok)
+    -- .true1
+    (A3.Carrier.Trans
+        (m23.el (m12.el A1.True.el))
+        (m23.el A2.True.el)
+        (A3.True.el)
+        ((#Data/Bool/Alg/Hom/To/.equ
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+            m23.el m23.el
+            m23.ok)
+            (m12.el A1.True.el)
+            ((#Data/Bool/Alg/Hom/To/.equ
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+                m12.el m12.el
+                m12.ok)
+                A1.True.el A1.True.ok A1.True.el A1.True.ok A1.True.ok)
+            A2.True.el
+            A2.True.ok
+            (#Data/Bool/Alg/Hom/To/.true1
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+                m12.el m12.el
+                m12.ok))
+        (#Data/Bool/Alg/Hom/To/.true1
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+            m23.el m23.el
+            m23.ok))
+    -- .false1
+    (A3.Carrier.Trans
+        (m23.el (m12.el A1.False.el))
+        (m23.el A2.False.el)
+        (A3.False.el)
+        ((#Data/Bool/Alg/Hom/To/.equ
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+            m23.el m23.el
+            m23.ok)
+            (m12.el A1.False.el)
+            ((#Data/Bool/Alg/Hom/To/.equ
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+                m12.el m12.el
+                m12.ok)
+                A1.False.el A1.False.ok A1.False.el A1.False.ok A1.False.ok)
+            A2.False.el
+            A2.False.ok
+            (#Data/Bool/Alg/Hom/To/.false1
+                A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+                A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+                m12.el m12.el
+                m12.ok))
+        (#Data/Bool/Alg/Hom/To/.false1
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+            m23.el m23.el
+            m23.ok))
+    -- .equ
+    (#Poset/Mul/=ok
+        A1.Carrier.El A1.Carrier.To A1.Carrier.Trans
+        A2.Carrier.El A2.Carrier.To A2.Carrier.Trans
+        A3.Carrier.El A3.Carrier.To A3.Carrier.Trans
+        m23.el
+        (#Data/Bool/Alg/Hom/To/.equ
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            A3.Carrier.El A3.Carrier.To A3.Carrier.Trans A3.True.el A3.True.ok A3.False.el A3.False.ok
+            m23.el m23.el
+            m23.ok)
+        m12.el
+        (#Data/Bool/Alg/Hom/To/.equ
+            A1.Carrier.El A1.Carrier.To A1.Carrier.Trans A1.True.el A1.True.ok A1.False.el A1.False.ok
+            A2.Carrier.El A2.Carrier.To A2.Carrier.Trans A2.True.el A2.True.ok A2.False.el A2.False.ok
+            m12.el m12.el
+            m12.ok))
