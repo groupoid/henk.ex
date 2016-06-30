@@ -1,0 +1,4 @@
+#PredicateSet/=Trans
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
