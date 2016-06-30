@@ -28,7 +28,7 @@ load(Cache,Key) -> case cache_get(Cache,Key) of
         {none,_} -> cache_put(Cache,Key,loader(Cache,Key)); {some,S} -> S end.
 
 % to call other modules, to be called by load/2
-loader(src, Key) -> om:file(om:name({},[],Key));
+loader(src, Key) -> om:file(om:name(om:mode(),Key)); % TODO use filesystem or bundle ???
 loader(term, Key) -> om:snd(om:parse(om:tokens(load(src,Key))));
 loader(normal, Key) -> om:normalize(load(term,Key));
 loader(type, Key) -> om:type(load(term,Key));

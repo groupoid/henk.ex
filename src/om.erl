@@ -36,7 +36,9 @@ erase(T,C)   -> om_erase:erase(T,C).
 modes(_)     -> modes().
 allmodes(_)  -> allmodes().
 priv(Mode)   -> lists:concat([privdir(),"/",Mode]).
-name(M,[],F) -> string:join([priv(mode()),F],"/");
+name(M,[])   -> priv(mode());
+name(M,F)    -> string:join([priv(mode()),F],"/").
+name(M,[],F) -> name(M,F);
 name(M,P,F)  -> string:join([priv(mode()),P,F],"/").
 tokens(B)    -> om_tok:tokens([],B,0,{1,[]},[]).
 str(F)       -> tokens(unicode:characters_to_binary(F)).
@@ -111,13 +113,12 @@ pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
 all()        -> om:debug(false), lists:flatten([ begin om:mode(M), om:scan() end || M <- allmodes() ]).
-syscard()    -> [ {F} || F <- filelib:wildcard(name(mode(),"**/*","*")), filelib:is_dir(F) /= true ].
-wildcard()   -> lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem),
-                lists:sublist(A,length(om:priv(mode()))) == om:priv(mode()) ]).
-scan(_)      -> scan().
-scan()       -> om:debug(false),
+syscard(P)    -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
+wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
+scan()       -> scan([]).
+scan(P)      -> om:debug(false),
                 Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F),"/",cname(F)])}
-                     || {F} <- lists:umerge(wildcard(),syscard()),
+                     || {F} <- lists:umerge(wildcard(P),syscard(P)),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),
                 {mode(),pass(Passed),Res}.
