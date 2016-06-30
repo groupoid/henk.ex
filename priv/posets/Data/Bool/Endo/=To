@@ -1,0 +1,15 @@
+#Data/Bool/Alg/Hom/=To
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
+    #Data/Bool/Init/=True/=el
+    #Data/Bool/Init/=True/=ok
+    #Data/Bool/Init/=False/=el
+    #Data/Bool/Init/=False/=ok
+    #Data/Bool/Init/=Carrier/=El
+    #Data/Bool/Init/=Carrier/=To
+    #Data/Bool/Init/=Carrier/=Trans
+    #Data/Bool/Init/=True/=el
+    #Data/Bool/Init/=True/=ok
+    #Data/Bool/Init/=False/=el
+    #Data/Bool/Init/=False/=ok
