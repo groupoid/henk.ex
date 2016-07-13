@@ -1,3 +1,4 @@
+-- NOT USED
 --(B : Poset.Ob.{u, p}) (S : SubsetType.{u, p} B)
 
 -- arg B
@@ -31,6 +32,6 @@
 
 -- res
 #Prop/Exists/@
-    (S.A.El)
+    (S.A.El) -- FIXME add #Ok S.A
     (λ (a.el : S.A.El) →
         B.To (S.i.el a.el) b.el))
