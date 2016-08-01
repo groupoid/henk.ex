@@ -1,5 +1,5 @@
   λ (T : *)
 → λ (a: T)
-→ λ (equ: T → T → #Prop/@)
-→ λ (refl: ∀ (a : T) → equ a a)
+→ \ (equ: T → T → #Prop/@)
+→ \ (refl: ∀ (a : T) → equ a a)
 → refl a
