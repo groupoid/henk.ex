@@ -10,7 +10,8 @@ type2(T,D) ->
 
 type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
-type({var,{N,I}},D)           -> om_messages:var(N,D), om:keyget(N,D,I);
+type({var,{N,I}},D)           -> om_messages:var(N,D), 
+                                 om:keyget(N,D,I);
 type({"→",{I,O}},D)           -> {star,om:hierarchy(om_messages:star(I,om:type(I,D)),om_messages:star(O,om:type(O,D)))};
 type({{"∀",{N,0}},{I,O}},D)   -> {star,om:hierarchy(om_messages:star(I,om:type(I,D)),om_messages:star(O,om:type(O,[{N,om:normalize(I)}|D])))};
 type({{"λ",{N,0}},{I,O}},D)   -> om_messages:star(I,om:type(I,D)), NI = om:normalize(I), {{"∀",{N,0}},{NI,om:type(O,[{N,NI}|D])}};
