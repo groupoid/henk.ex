@@ -4,5 +4,5 @@
 → ∀ (Make:
     ∀ (_1 : a)
   → ∀ (_2 : b)
-  → Prod2)
+  → Prod2 a b)
 → Prod2
