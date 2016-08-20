@@ -1,8 +1,9 @@
   λ (A: *)
 → λ (B: A -> *)
-→ ∀ (Prod2: *)
+→ ∀ (Sigma: *)
 → ∀ (Make:
     ∀ (_1: A)
   → ∀ (_2: B _1)
-  → Prod2)
-→ Prod2
+  → Sigma)
+→ Sigma
+
