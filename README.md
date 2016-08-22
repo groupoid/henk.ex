@@ -1,5 +1,4 @@
 Om: Lambda Assembler
-====================
 
 [![Build Status](https://travis-ci.org/groupoid/om.svg?branch=master)](https://travis-ci.org/groupoid/om)
 [![Gitter Chat](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/groupoid/om)
@@ -10,8 +9,6 @@ OM is an implementation of Calculus of Constructions (CoC), the pure lambda calc
 It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM and LING.
 EXE is an implementation of Calculus of Inductive Constructions (CiC) that lives on top of CoC OM model.
 You may think of EXE as AST transformation of higher language (with HITs) to OM.
-
-[see older version of this document](https://github.com/groupoid/om/blob/master/README-old.md)
 
 Why new Dependent Language?
 ---------------------------
@@ -113,19 +110,19 @@ Likely Top Language would be a superset of the Internal Core sharing most of the
 
 ### Macrosystems
 
-#### [macro.new](https://github.com/groupoid/exe/blob/master/prelude/macro.new)
+#### [macro.new](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new)
 
 Proptypes of general macros built using `poset` approach. Here you can find different encodings
 for basic types
-[Nat](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Nat.macro),
-[Bool](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Bool.macro),
-[List](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.List.macro),
-[Prod](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Prod.macro),
-[Sum](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Sum.macro) along with
-[packing macros](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Pack.macro)
-and even [Free Monad](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.FreeMonad.macro).
+[Nat](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Nat.macro),
+[Bool](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Bool.macro),
+[List](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.List.macro),
+[Prod](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Prod.macro),
+[Sum](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Sum.macro) along with
+[packing macros](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Pack.macro)
+and even [Free Monad](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.FreeMonad.macro).
 
-#### [smart-simpleton](https://github.com/groupoid/exe/blob/master/prelude/smart-simpleton)
+#### [smart-simpleton](https://github.com/groupoid/exe/blob/master/priv/Macro/smart-simpleton)
 
 Most compact, final model of encodings with recursor and induction, the result of all theoretical EXE findings.
 
@@ -155,7 +152,7 @@ projection p by using equality on elements of `B`. In type theory besides depend
 used the dependent product `Pi`. In encoding of dependent types with fibrations there is a correspondence
 between elements of dependent and morphism-fibrations for projection `p`: such `(s: B → E)` that `s * p = I`.
 The example of this implementation could be seen in
-* EXE as [Macro](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Mini.macro#L71)
+* EXE as [Macro](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Mini.macro#L71)
 * OM as expanded term [Sectioning](https://github.com/groupoid/om/blob/master/priv/posets/sec2all)
 
 ### Induction
@@ -167,7 +164,7 @@ structure of F-algebra of the inductive type. Now we could apply recursor to E
 getting the map `(I → E)` from the initial object which in fact the section (fiber bundle) of fibration
 and thus defines the dependent function which is a proved value of induction principle.
 The example for `Bool` could be found in
-* EXE [Bool](https://github.com/groupoid/exe/blob/master/prelude/macro.new/Data.Bool.macro#L128)
+* EXE [Bool](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Bool.macro#L128)
 * OM [Induction](https://github.com/groupoid/om/blob/master/priv/posets/Data/Bool/induc)
 
 Summarizing we encode types of source lambda calculus with objects of selected category,
