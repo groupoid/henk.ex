@@ -29,7 +29,7 @@ extract(X)  ->  O = replace(om:pname(X),"/","."),
 save(X,Forms) -> om:debug("Forms: ~p~n",[Forms]),
                case compile:forms(om:flat(Forms),[debug_info]) of
                  {ok,Name,Bin} -> file:write_file(om:cat([ebin,"/",Name,".beam"]),Bin);
-                 Error -> io:format("Extract Error: ~p~n",[X]) end.
+                 Error -> io:format("Extract Error: ~p~n",[Forms]) end.
 
 extract(F,T,C) -> case ext(F,T,C) of
                        [] -> [];

@@ -1,6 +1,5 @@
--module(ch).
--description('Natural Encoding Schema').
-%-compile({parse_transform, dump}).
+-module(pa).
+-description('Parigot Encoding Schema').
 -compile(export_all).
 
 
@@ -76,10 +75,6 @@ zero   () ->                         fun (Succ) -> fun (Zero) -> Zero end end.
 succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> Succ((Nat(Succ))(Zero)) end end end.
                                                                  %ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
 
-pred   () ->              fun(N) -> fun (F) -> fun (X) -> 
-                 ((N(fun (G) -> fun (H) -> io:format("TICK~n"),
-                 H(G(F)) end end))( fun (U) -> X end ))( fun (U) -> U end ) end end end.
-
              % mapping to erlang integer
 
              nat   (0) -> 'Nat':'Zero'();
@@ -123,8 +118,27 @@ ma() -> ap('Morte':recursive(),[getLine(),putLine(),pure(),ch:nil()]).
 
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Cons/Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
-             spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () -> unnat(nat(1000000)) end)]) end),
+             spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive Nat Parigot: ~p~n",   [timer:tc(fun () -> unnat1(nat1(1000000)) end)]) end),
+             spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive Nat Church: ~p~n",   [timer:tc(fun () -> unnat(nat(1000000)) end)]) end),
              spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () -> unlist(list(lists:seq(1,1000000))) end)),'_'}]) end ),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
 
+unnat1(N) -> ap(N,nat1()).
+nat1() -> [fun(A) -> fun(B) -> unnat1(B) + 1 end end, 0].
+zero1() -> fun (F) -> fun (X) -> X end end.
+succ1() -> fun (Z) -> fun (F) -> fun (X) ->
+           (F(fun (F1) -> fun(X1) -> F((Z(F1))(X1)) end end))(Z) end end end.
+
+one1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(X1) end end))(zero1()) end end.
+two1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(X1)) end end))(one1()) end end.
+three1() -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(F1(X1))) end end))(two1()) end end.
+four1() -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(F1(F1(X1)))) end end))(three1()) end end.
+pred1()  -> begin
+            fun (N) -> (N(fun (_) -> fun(Pred) -> 
+            io:format("TICK~n"),
+            Pred end end))(N) end
+            end.
+
+nat1(0) -> zero1();
+nat1(I) -> (succ1())(nat1(I-1)).

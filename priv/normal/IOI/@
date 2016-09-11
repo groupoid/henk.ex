@@ -1,4 +1,6 @@
-    \(r : *)
-->  forall (x : *)
-->  (forall (s : *) -> s -> (s -> #IOI/F r s) -> x)
-->  x
+ \ (r : *)
+-> forall  (x : *)
+-> (forall (s : *)
+-> s
+-> (s -> #IOI/F r s) -> x)
+-> x
