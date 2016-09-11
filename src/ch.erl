@@ -76,7 +76,7 @@ zero   () ->                         fun (Succ) -> fun (Zero) -> Zero end end.
 succ   () ->            fun (Nat) -> fun (Succ) -> fun (Zero) -> Succ((Nat(Succ))(Zero)) end end end.
                                                                  %ap(Succ,[ap(Nat,[Succ,Zero])]) end end end.
 
-pred   () ->              fun(N) -> fun (F) -> fun (X) -> 
+pred   () ->              fun(N) -> fun (F) -> fun (X) ->
                  ((N(fun (G) -> fun (H) -> io:format("TICK~n"),
                  H(G(F)) end end))( fun (U) -> X end ))( fun (U) -> U end ) end end end.
 

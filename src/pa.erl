@@ -126,9 +126,11 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
 
 unnat1(N) -> ap(N,nat1()).
 nat1() -> [fun(A) -> fun(B) -> unnat1(B) + 1 end end, 0].
+nat2() -> [fun(A) -> fun(B) -> {succ,ap(B,nat2())} end end, zero].
 zero1() -> fun (F) -> fun (X) -> X end end.
-succ1() -> fun (Z) -> fun (F) -> fun (X) ->
-           (F(fun (F1) -> fun(X1) -> F((Z(F1))(X1)) end end))(Z) end end end.
+%succ1() -> fun (Z) -> fun (F) -> fun (X) ->
+%           (F(fun (F1) -> fun(X1) -> F((Z(F1))(X1)) end end))(Z) end end end.
+succ1() -> fun (Z) -> fun (F) -> fun (X) -> (F(Z))(Z) end end end.
 
 one1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(X1) end end))(zero1()) end end.
 two1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(X1)) end end))(one1()) end end.
