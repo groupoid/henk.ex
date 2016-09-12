@@ -1,6 +1,6 @@
 {application, om,
  [
-  {description, "OM CoC Intermediate λ Assembler"},
+  {description, "Trusted Depended λ Core"},
   {vsn, "1.0"},
   {registered, []},
   {applications, [kernel, stdlib]},

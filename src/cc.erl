@@ -1,9 +1,10 @@
--module(sc).
--description('Improved Encoding Schema').
+-module(cc).
+-description('Composition Continuator Encoding Schema').
 -compile(export_all).
 
+% Composition Continuator is
 
-% Erlang Partial Application
+% (F ,X: Type) ... \ (C: Type -> Type) -> C F X
 
 ap(Fun,Args) -> lists:foldl(fun(X,Acc) -> Acc(X) end,Fun,Args).
 
@@ -83,7 +84,7 @@ pred   () ->              fun(N) -> fun (F) -> fun (X) ->
              % mapping to erlang integer
 
              nat   (0) -> 'Nat':'Zero'();
-             nat   (I) -> ('Nat':'Succ'())(nat(I-1)). % fun (Succ) -> fun(Zero) -> Succ(((nat(I-1))(Succ))(Zero)) end end.
+             nat   (I) -> ('Nat':'Succ2'())(nat(I-1)). % fun (Succ) -> fun(Zero) -> Succ(((nat(I-1))(Succ))(Zero)) end end.
              unnat (N) -> ap(N,nat_()).
              plus(A,B) -> nat(erlang:'+'(unnat(A),unnat(B))).
 
@@ -130,15 +131,24 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
 
 unnat1(N) -> ap(N,nat1()).
-nat1() -> [fun (F) -> fun(X) -> F(X) + 1 end end, 0].
+nat1() -> [           fun (F) -> fun (X) -> F(X) + 1 end end,
+                      0 ].
 zero1() ->            fun (F) -> fun (X) -> X end end.
 succ1() -> fun (Z) -> fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(Z) end end end.
+                                            %(F(fun(C) -> (C(F))(X) end))(Z) end end end.
 
-one1()  -> fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(zero1()) end end.
-two1()  -> fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(one1()) end end.
-three1()  -> fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(two1()) end end.
+one1()  ->            fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(zero1()) end end.
+two1()  ->            fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(one1()) end end.
+three1()->            fun (F) -> fun (X) -> (F(fun(C) -> (C(F))(X) end))(two1()) end end.
+
 pred1() -> begin
-          fun (N) -> (N(fun (_) -> fun(Pred) -> 
+          fun (N) -> (N(fun (A) -> fun(Pred) -> 
+          io:format("TICK~n"),
+            Pred end end))(N) end
+          end.
+
+pred2() -> begin
+          fun (N) -> (N(fun (A) -> fun(Pred) -> 
           io:format("TICK~n"),
             Pred end end))(N) end
           end.

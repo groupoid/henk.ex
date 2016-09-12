@@ -125,7 +125,7 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
 
 unnat1(N) -> ap(N,nat1()).
-nat1() -> [fun(A) -> fun(B) -> unnat1(B) + 1 end end, 0].
+nat1() -> [fun(A) -> fun(B) -> ap(B,nat1()) + 1 end end, 0].
 nat2() -> [fun(A) -> fun(B) -> {succ,ap(B,nat2())} end end, zero].
 zero1() -> fun (F) -> fun (X) -> X end end.
 %succ1() -> fun (Z) -> fun (F) -> fun (X) ->
@@ -135,7 +135,7 @@ succ1() -> fun (Z) -> fun (F) -> fun (X) -> (F(Z))(Z) end end end.
 one1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(X1) end end))(zero1()) end end.
 two1()   -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(X1)) end end))(one1()) end end.
 three1() -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(F1(X1))) end end))(two1()) end end.
-four1() -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(F1(F1(X1)))) end end))(three1()) end end.
+four1()  -> fun (F) -> fun (X) -> (F(fun (F1) -> fun(X1) -> F1(F1(F1(F1(X1)))) end end))(three1()) end end.
 pred1()  -> begin
             fun (N) -> (N(fun (_) -> fun(Pred) -> 
             io:format("TICK~n"),
