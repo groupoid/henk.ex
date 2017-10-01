@@ -1,5 +1,5 @@
 -module(om).
--description('CoC Compiler').
+-description('Infinity CoC Compiler').
 -behaviour(supervisor).
 -include("om.hrl").
 -behaviour(application).
@@ -15,8 +15,8 @@ debug(S)     -> application:set_env(om,debug,atom(S)).
 debug()      -> application:get_env(om,debug,false).
 
 % constants
-allmodes()   -> ["normal","new-setoids", "posets"].
-modes()      -> ["normal"].
+allmodes()   -> ["normal","setoids", "posets"].
+modes()      -> allmodes().
 
 % providing functions
 
@@ -73,13 +73,14 @@ convert([H|T],Acc)  -> convert(T,[H|Acc]).
 
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ term, norm, type, erased ].
-boot()       -> [ ets:new(T,opt()) || T <- tables() ],
-                [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
+ets_boot()   -> [ ets:new(T,opt()) || T <- tables() ].
+boot()       -> ets_boot(), [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
 start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
-stop(_)      -> [ ets:delete(T) || T <- tables() ], ok.
+ets_clear()  -> [ ets:delete(T) || T <- tables() ].
+stop(_)      -> ets_clear(), ok.
 init([])     -> boot(), mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
 ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
@@ -105,8 +106,9 @@ pipe(L)      -> io:format("[~tp]",[L]), % workaround for trevis timeout break
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
-all()        -> om:debug(false), lists:flatten([ begin om:mode(M), om:scan() end || M <- allmodes() ]).
-syscard(P)    -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
+all()        -> om:debug(false), lists:flatten([ begin
+                ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]).
+syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
 wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
 scan()       -> scan([]).
 scan(P)      -> om:debug(false),

@@ -53,7 +53,7 @@ we have here basic I/O monads: IO (free monad, for limited I/O) and IOI (free co
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
-#### [setoids](https://github.com/groupoid/om/tree/master/priv/new-setoids)
+#### [setoids](https://github.com/groupoid/om/tree/master/priv/setoids)
 
 This is an implementation of Setoid structure, that provides us Equality. However
 we switched lately to more compact `poset` encoding.
