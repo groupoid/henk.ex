@@ -19,7 +19,7 @@ tokens(P,<<"->"/utf8, R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [a
 tokens(P,<<$(,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{t,[]},     [open   | stack(P,C,  Acc)]);
 tokens(P,<<$),        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{t,[]},     [close  | stack(P,C,  Acc)]);
 tokens(P,<<$*,        R/binary>>, L, {a,C}, Acc)  -> tokens(P,R,L,{a,[$*|C]}, Acc);
-tokens(P,<<$*,        R/binary>>, L, {X,C}, Acc)  -> tokens(P,R,L,{n,{star,[]}},        stack(P,C,Acc));
+tokens(P,<<$*,        R/binary>>, L, {X,C}, Acc)  -> tokens(P,R,L,{n,{star,C}},        stack(P,C,Acc));
 tokens(P,<<X,         R/binary>>, L, {n,{S,C}}, Acc) when ?is_num(X)  -> tokens(P,R,L,{n,{S,[X|C]}}, Acc);
 tokens(P,<<X,         R/binary>>, L, {n,{S,C}}, Acc)  -> tokens(P,R,L,{1,[]}, stack(P,{S,[C]},Acc));
 tokens(P,<<$:,        R/binary>>, L, {_,C}, Acc)  -> tokens(P,R,L,{1,[]},     [colon  | stack(P,C,  Acc)]);
@@ -49,7 +49,7 @@ stack(P,C,Ac) -> case om:rev(om:flat(C)) of [] -> Ac;
 inet(P,X,Acc) -> [{remote,{P,X}}|Acc].
 atom(X,Acc)   -> [list_to_atom(X)|Acc].
 name(X,Acc)   -> [{var,{X,-1}}|Acc].
-fix(X)        -> case lists:flatten(X) of [] -> "1"; A -> A end.
+fix(X)        -> case lists:flatten(lists:reverse(X)) of [] -> "1"; A -> A end.
 index(X,Acc)  -> [{star,list_to_integer(fix(X))}|Acc].
 ivar([N,I])   -> [N,I];
 ivar([N])     -> [N,"0"].

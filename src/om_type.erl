@@ -23,6 +23,7 @@ shift({{"λ",{N,0}},{I,O}},N,P)   -> {{"λ",{N,0}},{shift(I,N,P),shift(O,N,P+1)}
 shift({Q,{L,R}},N,P)             -> {Q,{shift(L,N,P),shift(R,N,P)}};
 shift(T,N,P)                     -> T.
 
+
 subst(Term,Name,Value)           -> subst(Term,Name,Value,0).
 subst({"→",        {I,O}},N,V,L) -> {"→",        {subst(I,N,V,L),subst(O,N,V,L)}};
 subst({{"∀",{N,0}},{I,O}},N,V,L) -> {{"∀",{N,0}},{subst(I,N,V,L),subst(O,N,shift(V,N,0),L+1)}};
@@ -77,3 +78,4 @@ type({app,{F,A}},D)           -> T = type(F,D),
 % 2. Normalization depends only on substitution
 % 3. The definitional equality is needed only for
 %    application typechecking (argument against domain of function).
+% 4. The typechecker is all about the Type, Equality and Substitution.
