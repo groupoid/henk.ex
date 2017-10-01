@@ -73,12 +73,12 @@ are trying to be and general purpose programming languages with proving faciliti
 predicative and impredicative universe hierachies and macro extensions. Other MLTT
 cores has additional axioms like Fixpoint and Induction (and even more) ---
 something we strive to escape, because it leads to clean and understandable core.
-No, we don't have Fixpoint, and yes, we implemented Induction principle in pure CoC.
+No, we don't have Fixpoint, and yes, we implemented Induction principle in pure PTS.
 
 \paragraph{}
 {\bf Extensible Language Design}. Encoding of inductive types is based on categorical
-semantic of compilation to CoC. All other syntax constructions are inductive
-definitions, plugged into the stream parser. AST of the CoC language is also
+semantic of compilation to PTS. All other syntax constructions are inductive
+definitions, plugged into the stream parser. AST of the PTS language is also
 defined in terms of inductive constructions and thus allowed in the macros.
 The language of polynomial functors (data and record) and core language of
 the process calculus (spawn, receive and send) are just macrosystem over CoC language,
@@ -512,19 +512,19 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 
 \begin{thebibliography}{9}
 
-\bibitem{henk0}      Henk Barendregt \textit{The Lambda Calculus. Its syntax and semantics} 1981
 \bibitem{henk1}      Henk Barendregt \textit{Lambda Calculus With Types} 2010
 \bibitem{henk}       Erik Meijer, Symon Peyton Jones \textit{Henk: a typed intermediate language} 1984
-% \bibitem{baastad}    P.Wadler \textit{Monads for functional programming}
 \bibitem{lof}        Per Martin-Löf \textit{Intuitionistic Type Theory} 1984
-
 \bibitem{curien1}    Pierre-Louis Curien \textit{Category theory: a programming language-oriented introduction}
+\bibitem{vene}       Varmo Vene \textit{Categorical programming with (co)inductive types} 2000
+\bibitem{pfenning}   Frank Pfenning \textit{Inductively defined types in the Calculus of Constructions} 1989
+
+%\bibitem{henk0}      Henk Barendregt \textit{The Lambda Calculus. Its syntax and semantics} 1981
+% \bibitem{baastad}    P.Wadler \textit{Monads for functional programming}
 % \bibitem{awodey}     S.Awodey \textit{Category Theory} 2010
 
 % Inductive Types Section
 
-\bibitem{vene}       Varmo Vene \textit{Categorical programming with (co)inductive types} 2000
-\bibitem{pfenning}   Frank Pfenning \textit{Inductively defined types in the Calculus of Constructions} 1989
 % \bibitem{recursive}  P.Wadler \textit{Recursive types for free} 2014 % http://homepages.inf.ed.ac.uk/wadler/papers/free-rectypes/free-rectypes.txt
 % \bibitem{debjer}       P.Dybjer \textit{Inductive Famalies} 1997
 % \bibitem{debjer2}      P.Dybjer \textit{Representing Inductively Defined Sets by Wellorderings in Martin Löf's Type Theory} 1996

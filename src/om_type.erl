@@ -56,7 +56,7 @@ eq({var,{N,I}},{var,{N,I}})                       -> true;
 eq({remote,N},{remote,N})                         -> true;
 eq(A,B)                                           -> {error,{"==", A, B}}.
 
-% NOTE: Box is legacy from CoC. In Infinity-CoC this is just indexed U.
+% NOTE: Box is legacy from CoC. In Infinity-PTS this is just indexed U.
 
 type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
