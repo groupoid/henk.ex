@@ -20,7 +20,7 @@ expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr(P,T,[{remo
 expr(P,[{N,X}|T],           [{C,Y}|Acc],{V,D}) when ?nah(N,C) -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc],{V,D});
 expr(P,[{N,X}                 |T], Acc, {V,D}) when ?noh(N)   -> expr(P,T,[{N,X}|Acc],{V,D});
 expr(P,[open                  |T], Acc, {V,D})                -> expr(P,T,[{open}|Acc],{V,D+1});
-expr(P,[box                   |T], Acc, {V,D})                -> expr(P,T,[{box,1}|Acc],{V,D});
+expr(P,[box                   |T], Acc, {V,D})                -> expr(P,T,[{box,2}|Acc],{V,D});
 expr(P,[arrow                 |T], Acc, {V,D})                -> expr(P,T,[{arrow}|Acc],{V,D});
 expr(P,[X                     |T], Acc, {V,D})                -> {error,{?reason1,hd(lists:flatten([X|T]))}}.
 
