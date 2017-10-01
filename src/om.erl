@@ -106,7 +106,8 @@ all(_)       -> all().
 all()        -> lists:flatten([ begin
                 ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]).
 syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
-wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
+wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A}
+                     || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
 scan()       -> scan([]).
 scan(P)      -> Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F),"/",cname(F)])}
                      || {F} <- lists:umerge(wildcard(P),syscard(P)),
