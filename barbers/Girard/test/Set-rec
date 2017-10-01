@@ -1,2 +1,0 @@
--- #Set-rec: \/(Set: *)-> \/(MkSet: \/(elem: *)-> \/(open: elem -> Set)-> Set)-> #Set -> Set
-(\(t: \/(Set: *)-> \/(MkSet: \/(elem: *)-> \/(open: elem -> Set)-> Set)-> #Set -> Set)-> t) #Set-rec

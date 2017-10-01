@@ -1,2 +1,0 @@
-∀(A : *) → ∀(B : *) → A → B → ∀(AND : *) → ∀(Intro : A → B → AND) → AND
-

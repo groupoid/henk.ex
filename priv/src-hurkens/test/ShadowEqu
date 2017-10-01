@@ -1,5 +1,0 @@
--- #ShadowEqu: #Shadow -> #Shadow -> #Prop
-
-\/(shA: #Shadow )->
-\/(shB: #Shadow )->
-#ShadowEqu shA shB

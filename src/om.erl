@@ -15,8 +15,8 @@ debug(S)     -> application:set_env(om,debug,atom(S)).
 debug()      -> application:get_env(om,debug,false).
 
 % constants
-allmodes()   -> ["hurkens","normal","setoids","new-setoids", "posets"].
-modes()      -> allmodes() ++ ["src-hurkens", "russell","girard"].
+allmodes()   -> ["normal","new-setoids", "posets"].
+modes()      -> ["normal"].
 
 % providing functions
 
@@ -27,7 +27,7 @@ print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract(_)   -> extract().
 extract()    -> om_extract:scan().
-normalize(T) -> om_type:normalize(T).
+norm(T)      -> om_type:norm(T).
 eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
 type(T,C)    -> om_type:type(T,C).
@@ -44,7 +44,6 @@ tokens(B)    -> om_tok:tokens([],B,0,{1,[]},[]).
 str(F)       -> tokens(unicode:characters_to_binary(F)).
 read(F)      -> tokens(file(F)).
 comp(F)      -> rev(tokens(F,"/")).
-normal(F)    -> om_type:normalize(F).
 cname(F)     -> hd(comp(F)).
 tname(F)     -> tname(F,[]).
 pname(F)     -> string:join(tl(tl(string:tokens(F,"/"))),"/").
@@ -55,16 +54,10 @@ fst({X,_})   -> X.
 snd({error,X}) -> {error,X};
 snd({_,[X]}) -> X;
 snd({_,X})   -> X.
-parse(X)     -> om_parse:expr2([],X,[],{0,0}).
-parse(T,C)   -> om_parse:expr2(T,read(name(mode(),T,C)),[],{0,0}).
+parse(X)     -> om_parse:expr([],X,[],{0,0}).
+parse(T,C)   -> om_parse:expr(T,read(name(mode(),T,C)),[],{0,0}).
 linear(C)    -> put(inc,0), R = om_parse:expr2([],C,[],{0,0}),
                 case {get(inc),length(C)} of {X,Y} when X =< Y * 2 -> R ; {X,Y} -> {error,{nonlinear,X,Y}} end.
-cache_src(N)       -> om_cache:load(src,N).
-cache_term(N)      -> om_cache:load(term,N).
-cache_normal(N)    -> om_cache:load(normal,N).
-cache_type(N)      -> om_cache:load(type,N).
-cache_erased(N)    -> om_cache:load(erased,N).
-cache_extracted(N) -> om_cache:load(extracted,N).
 
 % system functions
 
@@ -79,14 +72,14 @@ convert([$||T],Acc) -> convert(T,[61564|Acc]);
 convert([H|T],Acc)  -> convert(T,[H|Acc]).
 
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
-tables()     -> [ terms, types, erased ].
+tables()     -> [ term, norm, type, erased ].
 boot()       -> [ ets:new(T,opt()) || T <- tables() ],
                 [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
 start()      -> start(normal,[]).
 start(_,_)   -> unicode(), mad:info("~tp~n",[om:ver()]), supervisor:start_link({local,om},om,[]).
-stop(_)      -> ok.
+stop(_)      -> [ ets:delete(T) || T <- tables() ], ok.
 init([])     -> boot(), mode("normal"), {ok, {{one_for_one, 5, 10}, []}}.
 ver(_)       -> ver().
 ver()        -> {version,[keyget(I,element(2,application:get_all_key(om)))||I<-[description,vsn]]}.
@@ -139,8 +132,6 @@ atom(X)      -> list_to_atom(cat([X])).
 cat(X)       -> lists:concat(X).
 keyget(K,D)  -> proplists:get_value(K,D).
 keyget(K,D,I)  -> lists:nth(I+1,proplists:get_all_values(K,D)).
-hierarchy(Arg,Out) -> Out.           % impredicative
-%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
 
 file(F) -> case file:read_file(convert(F,[],element(2,os:type()))) of
                 {ok,Bin} -> Bin;
@@ -150,3 +141,39 @@ mad(F)  -> case mad_repl:load_file(F) of
                 {ok,Bin} -> Bin;
                 {error,_} -> erlang:error({"File not found",F}) % <<>>
             end.
+
+cache(X,Y,Z) -> om_cache:cache(X,Y,Z).
+
+-define(LOGGER, om_io).
+
+log_modules() -> [om].
+log_level() -> info.
+
+-define(LOG_MODULES, (application:get_env(om,log_modules,om))).
+-define(LOG_LEVEL,   (application:get_env(om,log_level,om))).
+
+log_level(none) -> 3;
+log_level(error) -> 2;
+log_level(warning) -> 1;
+log_level(_) -> 0.
+
+log(Module, String, Args, Fun) ->
+    case log_level(Fun) < log_level(?LOG_LEVEL:log_level()) of
+        true -> skip;
+        false -> case ?LOG_MODULES:log_modules() of
+            any -> ?LOGGER:Fun(Module, String, Args);
+            Allowed -> case lists:member(Module, Allowed) of
+                true -> ?LOGGER:Fun(Module, String, Args);
+                false -> skip end end end.
+
+info(Module, String, Args) -> log(Module,  String, Args, info).
+info(        String, Args) -> log(?MODULE, String, Args, info).
+info(        String      ) -> log(?MODULE, String, [],   info).
+
+warning(Module, String, Args) -> log(Module,  String, Args, warning).
+warning(        String, Args) -> log(?MODULE, String, Args, warning).
+warning(        String      ) -> log(?MODULE, String, [],   warning).
+
+error(Module, String, Args) -> log(Module,  String, Args, error).
+error(        String, Args) -> log(?MODULE, String, Args, error).
+error(        String)       -> log(?MODULE, String, [],   error).

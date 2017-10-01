@@ -1,1 +1,0 @@
-(\(t : #PropShadow -> #Prop) -> t) #PropShadowOkOk

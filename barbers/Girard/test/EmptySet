@@ -1,2 +1,0 @@
--- #EmptySet: #Set
-(\(t: #Set )-> t) #EmptySet

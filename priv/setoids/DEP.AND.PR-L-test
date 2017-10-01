@@ -1,2 +1,0 @@
--- #DEP.AND.PR-L-test
-(\(t : #DEP.AND.PR-L-type ) -> t) #DEP.AND.PR-L

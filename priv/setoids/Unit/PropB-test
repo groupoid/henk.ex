@@ -1,2 +1,0 @@
--- PropB-test
-(\(t : #Unit/PropB-type ) -> t) #Unit/PropB

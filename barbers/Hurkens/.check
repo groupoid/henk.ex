@@ -1,4 +1,0 @@
-#!/bin/bash
-time (morte < "$1" > "../output/$1.term" 2> "../output/$1.type")
-echo " "
-cat "../output/$1.type"

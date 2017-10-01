@@ -1,5 +1,0 @@
--- #DEP.AND.PR-L-type
-forall (A : #Prop ) ->
-forall (B : A -> #Prop ) ->
-forall (pair : #DEP.AND A B) ->
-  A

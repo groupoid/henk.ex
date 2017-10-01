@@ -1,1 +1,0 @@
-(\(t : \/(P : #Prop) -> #PropShadowOkOk (#PropShadow.Mk P)) -> t) #PropShadow.MkOkOk

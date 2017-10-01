@@ -1,2 +1,0 @@
--- recurType-test
-(\(t : #Unit/recurType-type ) -> t) #Unit/recurType

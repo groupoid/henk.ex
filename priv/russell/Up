@@ -1,6 +1,0 @@
--- #Up : (N)(NOk)->(#Power #Naive)
-
-\ (N : #Naive) ->
-\ (NOk : #NaiveOk N) ->
-
---

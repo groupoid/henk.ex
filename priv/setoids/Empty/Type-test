@@ -1,2 +1,0 @@
--- Type-test
-(\(t : #Empty/Type-type ) -> t) #Empty/Type

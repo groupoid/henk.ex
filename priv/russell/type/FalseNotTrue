@@ -1,1 +1,0 @@
-(\(t : \/(A : #Prop) -> (#EquProp A (#Not A)) -> #False) -> t) #FalseNotTrue

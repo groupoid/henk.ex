@@ -1,4 +1,0 @@
--- PropB-type
-forall(lim : #Unit/Type ) ->
-forall(prop : #Unit/PropA lim)  ->
-#Prop

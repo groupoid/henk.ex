@@ -1,1 +1,0 @@
-λ(A : *) → λ(B : *) → ∀(AND : *) → ∀(Intro : A → B → AND) → AND

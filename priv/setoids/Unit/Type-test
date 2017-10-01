@@ -1,2 +1,0 @@
--- Type-test
-(\(t : #Unit/Type-type ) -> t) #Unit/Type

@@ -1,1 +1,0 @@
-(\(t : \/(sh1 : #PropShadow) -> \/(sh2 : #PropShadow) -> \/(sh3 : #PropShadow) -> #PropShadowEqu sh1 sh2 -> #PropShadowEqu sh2 sh3 -> #PropShadowEqu sh1 sh3) -> t) #PropShadowTrans

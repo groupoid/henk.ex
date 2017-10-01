@@ -1,4 +1,0 @@
--- #Not : #Prop -> #Prop
-
-\ (A : #Prop) ->
-A -> #False

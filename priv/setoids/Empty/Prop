@@ -1,1 +1,0 @@
-\(lim : #Empty/Type ) -> #DEP.AND (#Empty/PropA lim) (#Empty/PropB lim)

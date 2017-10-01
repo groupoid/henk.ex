@@ -1,4 +1,0 @@
--- #DEP.AND-type
-forall(A : #Prop ) ->
-forall(B : A -> #Prop ) ->
-  *

@@ -1,7 +1,0 @@
--- #ElemShadowOkOk : #ElemShadow -> #Prop
-
--- arg
-\ (sh : #ElemShadow) ->
-
--- result
-#And (#ElemShadowOkOk sh) (#ElemShadowOkLim sh)

@@ -1,2 +1,0 @@
-\(sb: #SigmaBarber )->
-sb #Set (\(set: #Set )-> \(ok: #-In set set)-> set)

@@ -1,2 +1,0 @@
--- #ShadowRefl: \/(s: #Shadow )-> #ShadowEqu s s 
-(\(t: \/(s: #Shadow )-> #ShadowEqu s s)-> t) #ShadowRefl

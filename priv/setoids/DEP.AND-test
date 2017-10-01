@@ -1,2 +1,0 @@
--- #DEP.AND-test
-(\(t : #DEP.AND-type ) -> t) #DEP.AND

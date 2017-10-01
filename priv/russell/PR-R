@@ -1,6 +1,0 @@
--- #PR-R : \/(A : #Prop) -> \/(B : #Prop) -> #And A B -> B
-
-\ (A : #Prop) -> 
-\ (B : #Prop) -> 
-\ (and : #And A B) -> 
-and B (\(a : A) -> \(b : B) -> b)

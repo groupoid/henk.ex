@@ -1,6 +1,0 @@
--- #Bad : \/(N : #Naive) -> \/(NOk : #NaiveOk N) -> #Prop
-
-\ (N : #Naive) ->
-\ (NOk : #NaiveOk N) ->
-----
-#Not (#Good N)

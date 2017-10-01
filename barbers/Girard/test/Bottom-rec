@@ -1,2 +1,0 @@
--- #Bottom-rec: \/(T: *)-> #Bottom -> T
-(\(t: \/(T: *)-> #Bottom -> T)-> t) #Bottom-rec

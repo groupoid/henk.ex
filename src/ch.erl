@@ -1,6 +1,5 @@
 -module(ch).
 -description('Natural Encoding Schema').
-%-compile({parse_transform, dump}).
 -compile(export_all).
 
 

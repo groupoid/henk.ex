@@ -1,1 +1,0 @@
-(\(t : \/(A : #Prop) -> \/(B : #Prop) -> #And A B -> B) -> t) #PR-R

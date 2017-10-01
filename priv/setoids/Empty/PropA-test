@@ -1,2 +1,0 @@
--- PropA-test
-(\(t : #Empty/PropA-type ) -> t) #Empty/PropA

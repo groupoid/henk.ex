@@ -1,1 +1,0 @@
-(\(t : #ElemShadow -> #Prop) -> t) #ElemShadowOkLim

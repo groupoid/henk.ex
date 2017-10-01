@@ -1,2 +1,0 @@
--- recurProp-test
-(\(t : #Unit/recurProp-type ) -> t) #Unit/recurProp

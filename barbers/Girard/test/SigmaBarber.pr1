@@ -1,2 +1,0 @@
--- #SigmaBarber.pr1: #SigmaBarber -> #Set
-(\(t: #SigmaBarber -> #Set )-> t) #SigmaBarber.pr1

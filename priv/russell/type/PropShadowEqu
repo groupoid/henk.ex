@@ -1,1 +1,0 @@
-(\(t : #PropShadow -> #PropShadow -> #Prop) -> t) #PropShadowEqu

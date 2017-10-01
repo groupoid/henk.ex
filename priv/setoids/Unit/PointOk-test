@@ -1,2 +1,0 @@
--- PointOk-test
-(\(t : #Unit/PointOk-type ) -> t) #Unit/PointOk

@@ -1,5 +1,0 @@
-\ (A : #Prop ) ->
-\ (B : A -> #Prop ) ->
-forall (AND : #Prop ) ->
-forall (pair : forall (a : A)-> forall (b : B a)-> AND)->
-AND

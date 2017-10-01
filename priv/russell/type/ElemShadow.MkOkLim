@@ -1,1 +1,0 @@
-(\(t : \/(P : #Prop) -> \/(p : P) -> #ElemShadowOkLim (#ElemShadow.Mk P p)) -> t) #ElemShadow.MkOkLim

@@ -1,2 +1,0 @@
--- #Elem: #Set -> *
-(\(t: #Set -> *)-> t) #Elem

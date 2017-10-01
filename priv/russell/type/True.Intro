@@ -1,1 +1,0 @@
-(\(t : #True) -> t) #True.Intro
