@@ -2,35 +2,19 @@
 -description('Type Checker').
 -compile(export_all).
 
-hierarchy(Arg,Out) -> Out.           % impredicative
-%hierarchy(Arg,Out) -> max(Arg,Out). % predicative
+h(Arg,Out,impredicative) -> Out;
+h(Arg,Out,predicative)   -> max(Arg,Out).
+hierarchy(Arg,Out)       -> h(application:get_env(om,hierarchy,impredicative),Arg,Out).
 
-type({box,N},_)               -> {star,3};
-type({star,N},_)              -> {star,N+1};
-type({var,{N,I}},D)           -> true = var(N,D), om:keyget(N,D,I);
-type({"→",{I,O}},D)           -> {star,hierarchy(star(type(I,D)),star(type(O,D)))};
-type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type(I,D)),star(type(O,[{N,norm(I)}|D])))};
-type({{"λ",{N,0}},{I,O}},D)   -> star(type(I,D)),
-                                 NI = norm(I),
-                                 {{"∀",{N,0}},{NI,type(O,[{N,NI}|D])}};
-type({app,{F,A}},D)           -> T = type(F,D),
-                                 true = func(T),
-                                 {{"∀",{N,0}},{I,O}} = T,
-                                 Q = type(A,D),
-                                 true = eq(I,Q),
-                                 norm(subst(O,N,A));
-type({remote,N},D)            -> om:cache(type,N,D).
+star({star,N})          -> N;
+star(_)                 -> {error, "*" }.
 
-norm(none)                          -> none;
-norm(any)                           -> any;
-norm({"→",        {I,O}})           -> {{"∀",{'_',0}},{norm(I),norm(O)}};
-norm({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {norm(I),norm(O)}};
-norm({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {norm(I),norm(O)}};
-norm({app,{F,A}})                   -> case norm(F) of
-                                            {{"λ",{N,0}},{I,O}} -> norm(subst(O,N,A));
-                                                             NF -> {app,{NF,norm(A)}} end;
-norm({remote,N})                    -> om:cache(norm,N,[]);
-norm(T)                             -> T.
+func({{"∀",N},{I,O}})   -> true;
+func(T)                 -> {error, {"∀", T } }.
+
+var(N,B)                -> var(N,B,proplists:is_defined(N,B)).
+var(N,B,true)           -> true;
+var(N,B,false)          -> {error, { "free var", N, proplists:get_keys(B) }}.
 
 shift({var,{N,I}},N,P) when I>=P -> {var,{N,I+1}};
 shift({{"∀",{N,0}},{I,O}},N,P)   -> {{"∀",{N,0}},{shift(I,N,P),shift(O,N,P+1)}};
@@ -49,6 +33,17 @@ subst({var, {N,L}},       N,V,L) -> V;                       % index match
 subst({var, {N,I}},       N,V,L) when I>L -> {var, {N,I-1}}; % unshift
 subst(T,       _,_,_)            -> T.
 
+norm(none)                          -> none;
+norm(any)                           -> any;
+norm({remote,N})                    -> om:cache(norm,N,[]);
+norm({"→",        {I,O}})           -> {{"∀",{'_',0}},{norm(I),norm(O)}};
+norm({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {norm(I),norm(O)}};
+norm({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {norm(I),norm(O)}};
+norm({app,{F,A}})                   -> case norm(F) of
+                                            {{"λ",{N,0}},{I,O}} -> norm(subst(O,N,A));
+                                                             NF -> {app,{NF,norm(A)}} end;
+norm(T)                             -> T.
+
 eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
 eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
@@ -59,10 +54,27 @@ eq({var,{N,I}},{var,{N,I}})                       -> true;
 eq({remote,N},{remote,N})                         -> true;
 eq(A,B)                                           -> {error,{"==", A, B}}.
 
-star({star,N})          -> N;
-star(_)                 -> {error, "*" }.
-func({{"∀",N},{I,O}})   -> true;
-func(T)                 -> {error, {"∀", T } }.
-var(N,B)                -> var(N,B,proplists:is_defined(N,B)).
-var(N,B,true)           -> true;
-var(N,B,false)          -> {error, { "free var", N, proplists:get_keys(B) }}.
+% NOTE: Star and Box is legacy from CoC. In Infinity-CoC this is just indexed U.
+
+type({box,N},_)               -> {star,3};
+type({star,N},_)              -> {star,N+1};
+type({var,{N,I}},D)           -> true = var(N,D), om:keyget(N,D,I);
+type({remote,N},D)            -> om:cache(type,N,D);
+type({"→",{I,O}},D)           -> {star,hierarchy(star(type(I,D)),star(type(O,D)))};
+type({{"∀",{N,0}},{I,O}},D)   -> {star,hierarchy(star(type(I,D)),star(type(O,[{N,norm(I)}|D])))};
+type({{"λ",{N,0}},{I,O}},D)   -> star(type(I,D)),
+                                 NI = norm(I),
+                                 {{"∀",{N,0}},{NI,type(O,[{N,NI}|D])}};
+type({app,{F,A}},D)           -> T = type(F,D),
+                                 true = func(T),
+                                 {{"∀",{N,0}},{I,O}} = T,
+                                 Q = type(A,D),
+                                 true = eq(I,Q),
+                                 norm(subst(O,N,A)).
+
+% 1. Substitution depends only on shift
+% 2. Normalization depends only on subsctitution
+% 3. The definitional equality needed only for
+%    application typechecking (argument against domain of function).
+
+

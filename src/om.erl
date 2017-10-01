@@ -56,8 +56,6 @@ snd({_,[X]}) -> X;
 snd({_,X})   -> X.
 parse(X)     -> om_parse:expr([],X,[],{0,0}).
 parse(T,C)   -> om_parse:expr(T,read(name(mode(),T,C)),[],{0,0}).
-linear(C)    -> put(inc,0), R = om_parse:expr2([],C,[],{0,0}),
-                case {get(inc),length(C)} of {X,Y} when X =< Y * 2 -> R ; {X,Y} -> {error,{nonlinear,X,Y}} end.
 
 % system functions
 
@@ -95,7 +93,6 @@ console(S)   -> boot(),
                 halt(lists:sum(Fold)).
 
 % test suite
-% TODO use cache in tests // no pipes!
 
 typed(X)     -> try Y = om:type(X),  {X,[]} catch E:R -> {X,typed}  end.
 erased(X)    -> try A = om:erase(X), {A,[]} catch E:R -> {X,erased} end.
@@ -106,13 +103,12 @@ pipe(L)      -> io:format("[~tp]",[L]), % workaround for trevis timeout break
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
-all()        -> om:debug(false), lists:flatten([ begin
+all()        -> lists:flatten([ begin
                 ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]).
 syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
 wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A} || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
 scan()       -> scan([]).
-scan(P)      -> om:debug(false),
-                Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F),"/",cname(F)])}
+scan(P)      -> Res = [ { flat(element(2,pipe(F))), lists:concat([tname(F),"/",cname(F)])}
                      || {F} <- lists:umerge(wildcard(P),syscard(P)),
                         lists:member(lists:nth(2,tokens(F,"/")),modes()) ],
                 Passed = lists:foldl(fun({X,_},B) -> case X of [] -> B; _ -> B + 1 end end, 0, Res),

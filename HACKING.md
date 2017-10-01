@@ -1,7 +1,6 @@
 Om Hacking
 ==========
 
-
 Developers
 ----------
 

@@ -1,6 +1,6 @@
 {application, om,
  [
-  {description, "Trusted Depended λ Core"},
+  {description, "Trusted λ Core"},
   {vsn, "1.0"},
   {registered, []},
   {applications, [kernel, stdlib]},

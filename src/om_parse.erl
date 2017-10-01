@@ -17,8 +17,6 @@ expr(P,[close                 |T], A,{V,D}) -> case rewind(A,{D,D},[]) of
 expr(P,[F,open,{var,L},colon  |T], Acc, {V,D}) when ?arr(F)   -> expr(P,T,[{'$',{func(F),L}}|Acc],{V,D+1});
 expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when ?noh(C)   -> expr(P,T,[{app,{{C,Y},{remote,L}}}|Acc],{V,D});
 expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr(P,T,[{remote,L}|Acc],{V,D});
-%expr(P,[{remote,{_,L}}|T],  [{C,Y}|Acc],{V,D}) when ?noh(C)   -> expr2(P,T,[{app,{{C,Y},ret(om:parse([],L))}}|Acc],{V,D});
-%expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr2(P,T,[ret(om:parse([],L))|Acc],{V,D});
 expr(P,[{N,X}|T],           [{C,Y}|Acc],{V,D}) when ?nah(N,C) -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc],{V,D});
 expr(P,[{N,X}                 |T], Acc, {V,D}) when ?noh(N)   -> expr(P,T,[{N,X}|Acc],{V,D});
 expr(P,[open                  |T], Acc, {V,D})                -> expr(P,T,[{open}|Acc],{V,D+1});
