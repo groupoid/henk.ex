@@ -2,9 +2,9 @@
 -description('Type Checker').
 -compile(export_all).
 
-h(Arg,Out,impredicative) -> Out;
-h(Arg,Out,predicative)   -> max(Arg,Out).
-hierarchy(Arg,Out)       -> h(application:get_env(om,hierarchy,impredicative),Arg,Out).
+dep(Arg,Out,impredicative) -> Out;
+dep(Arg,Out,predicative)   -> max(Arg,Out).
+hierarchy(Arg,Out)         -> dep(Arg,Out,application:get_env(om,hierarchy,impredicative)).
 
 star({star,N})          -> N;
 star(_)                 -> {error, "*" }.
@@ -35,13 +35,13 @@ subst(T,       _,_,_)            -> T.
 
 norm(none)                          -> none;
 norm(any)                           -> any;
-norm({remote,N})                    -> om:cache(norm,N,[]);
 norm({"→",        {I,O}})           -> {{"∀",{'_',0}},{norm(I),norm(O)}};
 norm({{"∀",{N,0}},{I,O}})           -> {{"∀",{N,0}},  {norm(I),norm(O)}};
 norm({{"λ",{N,0}},{I,O}})           -> {{"λ",{N,0}},  {norm(I),norm(O)}};
 norm({app,{F,A}})                   -> case norm(F) of
                                             {{"λ",{N,0}},{I,O}} -> norm(subst(O,N,A));
                                                              NF -> {app,{NF,norm(A)}} end;
+norm({remote,N})                    -> om:cache(norm,N,[]);
 norm(T)                             -> T.
 
 eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
@@ -76,5 +76,4 @@ type({app,{F,A}},D)           -> T = type(F,D),
 % 2. Normalization depends only on subsctitution
 % 3. The definitional equality needed only for
 %    application typechecking (argument against domain of function).
-
 
