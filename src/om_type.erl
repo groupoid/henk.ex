@@ -4,6 +4,7 @@
 
 dep(Arg,Out,impredicative) -> Out;
 dep(Arg,Out,predicative)   -> max(Arg,Out).
+
 hierarchy(Arg,Out)         -> dep(Arg,Out,application:get_env(om,hierarchy,impredicative)).
 
 star({star,N})          -> N;
@@ -54,7 +55,7 @@ eq({var,{N,I}},{var,{N,I}})                       -> true;
 eq({remote,N},{remote,N})                         -> true;
 eq(A,B)                                           -> {error,{"==", A, B}}.
 
-% NOTE: Star and Box is legacy from CoC. In Infinity-CoC this is just indexed U.
+% NOTE: Box is legacy from CoC. In Infinity-CoC this is just indexed U.
 
 type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
@@ -73,7 +74,6 @@ type({app,{F,A}},D)           -> T = type(F,D),
                                  norm(subst(O,N,A)).
 
 % 1. Substitution depends only on shift
-% 2. Normalization depends only on subsctitution
-% 3. The definitional equality needed only for
+% 2. Normalization depends only on substitution
+% 3. The definitional equality is needed only for
 %    application typechecking (argument against domain of function).
-

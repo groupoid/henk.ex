@@ -1,10 +1,8 @@
-Om: Lambda Assembler
+Om — Lambda Assembler
+---------------------
 
 [![Build Status](https://travis-ci.org/groupoid/om.svg?branch=master)](https://travis-ci.org/groupoid/om)
 [![Gitter Chat](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/groupoid/om)
-
-Om Intermediate Language
-------------------------
 
    An intermediate Om language is based on Henk languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Later on in 2015 a new impementation of the ideas
@@ -28,12 +26,12 @@ Om Intermediate Language
                               | ∀ ( I : O ) → O
 ```
 
-OM is an implementation of Calculus of Constructions (CoC) with Infinite Number of Universes,
+OM is an implementation of PTS with Infinite Number of Universes,
 the pure lambda calculus with dependent types. It can be compiled (code extraction) to bytecode
 of Erlang virtual machines BEAM and LING.
 
-OM — Compact Core of Infinity-CoC
-------------------------
+OM — Trusted PTS with Infinite Universes
+----------------------------------------
 
 In repository OM you may found following parts of core:
 
@@ -66,8 +64,17 @@ It has only `Bool`, `Empty` and `Unit` encoded just to show the general idea.
 Dependent eliminator of `Bool` you can found
 here [Data/Bool](https://github.com/groupoid/om/tree/master/priv/posets/Data/Bool/)
 
+###
+
 Note: all these folders (modules) are encoded in plain CoC in OM repository to demonstrate
 you the basic principles how things work. Later all these should be written in EXE languages and translated to OM
 automatically. You may think of OM as the low-level typed assembler of type theory.
+
+Credits
+-------
+
+* Paul Lyutko
+* Maxim Sokhatsky
+* Andy Melnikov
 
 OM A HUM
