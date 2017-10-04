@@ -5,7 +5,7 @@ Om — Lambda Assembler
 [![Gitter Chat](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/groupoid/om)
 
    An intermediate Om language is based on Henk languages described first
-   by Erik Meyer and Simon Peyton Jones in 1997. Later on in 2015 a new impementation of the ideas
+   by Erik Meijer and Simon Peyton Jones in 1997. Later on in 2015 a new impementation of the ideas
    in Haskell appeared. It used Boem-Berrarducci encoding of recursive data types into non-recursive terms.
    Morte has constants, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
    one axiom and four deduction rules. The Om language resembles Henk and Morte both in design
@@ -22,8 +22,9 @@ Om — Lambda Assembler
 
     U ::= * < #number >
 
-    O ::= U | I | ( O ) | O O | λ ( I : O ) → O
-                              | ∀ ( I : O ) → O
+    O ::= U | I | ( O ) | O O
+            | λ ( I : O ) → O
+            | ∀ ( I : O ) → O
 ```
 
 OM is an implementation of PTS with Infinite Number of Universes,
