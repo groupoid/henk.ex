@@ -20,7 +20,7 @@ expr(P,[{remote,{_,L}}        |T], Acc, {V,D})                -> expr(P,T,[{remo
 expr(P,[{N,X}|T],           [{C,Y}|Acc],{V,D}) when ?nah(N,C) -> expr(P,T,[{app,{{C,Y},{N,X}}}|Acc],{V,D});
 expr(P,[{N,X}                 |T], Acc, {V,D}) when ?noh(N)   -> expr(P,T,[{N,X}|Acc],{V,D});
 expr(P,[open                  |T], Acc, {V,D})                -> expr(P,T,[{open}|Acc],{V,D+1});
-expr(P,[box                   |T], Acc, {V,D})                -> expr(P,T,[{box,2}|Acc],{V,D});
+expr(P,[box                   |T], Acc, {V,D})                -> expr(P,T,[{star,2}|Acc],{V,D});
 expr(P,[arrow                 |T], Acc, {V,D})                -> expr(P,T,[{arrow}|Acc],{V,D});
 expr(P,[X                     |T], Acc, {V,D})                -> {error,{?reason1,hd(lists:flatten([X|T]))}}.
 
@@ -84,18 +84,17 @@ pad(D)                         -> lists:duplicate(D,"  ").
 
 print(any,D)                   -> ["any"];
 print(none,D)                  -> ["none"];
-print({remote,L},D)            -> ["#", om:cat([L])];
+print({remote,L},D)            -> ["#", om:cat([L]) ];
 print({var,{N,0}},D)           -> [ om:cat([N]) ];
-print({var,{N,I}},D)           -> [ om:cat([N]), "@", integer_to_list(I)];
+print({var,{N,I}},D)           -> [ om:cat([N]), "@", integer_to_list(I) ];
+print({star,2},D)              -> [ "[]" ];
 print({star,N},D)              -> [ "*",om:cat([N]) ];
-print({box,N},D)               -> [ "[]",om:cat([N]) ];
 print({"→",{I,O}},D)           -> [ "(", print(I,D+1),"\n",pad(D),"→ ",print(O,D), ")\n" ];
-print({app,{I,O}},D)           -> [ "(",print(I,D)," ",print(O,D),")" ];
-print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
+print({app,{I,O}},D)           -> [ "(", print(I,D)," ",print(O,D),")" ];
+print({{"∀",{N,_}},{any,O}},D) -> [ "( ∀ ", om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
 print({{"∀",{N,_}},{I,O}},D)   -> [ "( ∀ (",om:cat([N]),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ];
-print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ",om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
+print({{"λ",{N,_}},{any,O}},D) -> [ "( λ ", om:cat([N]),"\n",pad(D),"→ ",print(O,D),")" ];
 print({{"λ",{N,_}},{I,O}},D)   -> [ "( λ (",om:cat([N]),": ",print(I,D+1),")\n",pad(D),"→ ",print(O,D),")" ].
-
 
 func(lambda) -> "λ";
 func(pi)     -> "∀";

@@ -50,15 +50,11 @@ eq({{"∀",{"_",0}},X},{"→",Y})                     -> eq(X,Y);
 eq({{"∀",{N1,0}},{I1,O1}},{{"∀",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({{"λ",{N1,0}},{I1,O1}},{{"λ",{N2,0}},{I2,O2}}) -> eq(I1,I2), eq(O1,subst(shift(O2,N1,0),N2,{var,{N1,0}},0));
 eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
-eq({box,N},{box,N1})                              -> true;
 eq({star,N},{star,N})                             -> true;
 eq({var,{N,I}},{var,{N,I}})                       -> true;
 eq({remote,N},{remote,N})                         -> true;
 eq(A,B)                                           -> {error,{"==", A, B}}.
 
-% NOTE: Box is legacy from CoC. In Infinity-PTS this is just indexed U.
-
-type({box,N},_)               -> {star,3};
 type({star,N},_)              -> {star,N+1};
 type({var,{N,I}},D)           -> true = var(N,D), om:keyget(N,D,I);
 type({remote,N},D)            -> om:cache(type,N,D);
@@ -76,6 +72,7 @@ type({app,{F,A}},D)           -> T = type(F,D),
 
 % 1. Substitution depends only on shift
 % 2. Normalization depends only on substitution
-% 3. The definitional equality is needed only for
-%    application typechecking (argument against domain of function).
-% 4. The typechecker is all about the Type, Equality and Substitution.
+% 3. The typechecker is all about the Typing, Equality and Substitution.
+% 4. The definitional equality is needed only for
+%    application typechecking (argument against domain of function),
+%    i.e. for beta-reduction.

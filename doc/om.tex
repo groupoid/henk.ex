@@ -69,11 +69,11 @@ are trying to be and general purpose programming languages with proving faciliti
 \section{Motivation}
 
 \paragraph{}
-{\bf No Fixpoint and Induction in Core}. We came up with pure CoC core having
-predicative and impredicative universe hierachies and macro extensions. Other MLTT
-cores has additional axioms like Fixpoint and Induction (and even more) ---
-something we strive to escape, because it leads to clean and understandable core.
-No, we don't have Fixpoint, and yes, we implemented Induction principle in pure PTS.
+{\bf From PTS to HTS}. We want to have flexible detachable
+layers on top of PTS core. Then Sigma for proving.
+Then well-founded trees or polynomial functors as known as data and record.
+Then higher path types, interval arithmetic, glue and comp for HIT.
+Each layers is driven by differenth math, the common in only the method -- category theory.
 
 \paragraph{}
 {\bf Extensible Language Design}. Encoding of inductive types is based on categorical
@@ -81,7 +81,7 @@ semantic of compilation to PTS. All other syntax constructions are inductive
 definitions, plugged into the stream parser. AST of the PTS language is also
 defined in terms of inductive constructions and thus allowed in the macros.
 The language of polynomial functors (data and record) and core language of
-the process calculus (spawn, receive and send) are just macrosystem over CoC language,
+the process calculus (spawn, receive and send) are just macrosystem over Om language,
 its syntax extensions.
 
 \paragraph{}
@@ -89,6 +89,7 @@ its syntax extensions.
 be Church-encoding variations. Most extended nowadays is Church-Boehm-Berrarducci encoding,
 which dedicated to inductive types. Another well known are Scott (lazyness),
 Parigot (lazyness and constant-time iterators) and CPS (continuations) encodings.
+However most of them require variations of Fixpoint types.
 
 \paragraph{}
 {\bf Proved Categorical Semantic}. There was modeled a math model (using
@@ -119,6 +120,7 @@ $$
 \end{cases}
 $$
 
+   \paragraph{}
    An intermediate Om language is based on Henk\cite{henk} languages described first
    by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lambda terms.
@@ -142,17 +144,12 @@ $$
     I ::= #identifier
     U ::= * < #number >
     O ::= U
-        | I
-        | ( O )
-        | O O
-        | O $\rightarrow$ O
+        | I | ( O ) | O O | O $\rightarrow$ O
         | $\lambda$ ( I : O ) $\rightarrow$ O
         | $\forall$ ( I : O ) $\rightarrow$ O
 \end{lstlisting}
 
 \subsection{Operational Semantics of OM}
-
-
 
 \subsection{Target Erlang VM and LLVM platforms}
 
@@ -234,33 +231,32 @@ $$
 
 \begin{lstlisting}[mathescape=true]
 
-        inductive Nat: * :=
-                  (zero: () $\rightarrow$ Nat)
-                  (succ: Nat $\rightarrow$ Nat)
+             data Nat: Type :=
+                  (Zero: Unit $\rightarrow$ Nat)
+                  (Succ: Nat $\rightarrow$ Nat)
 
-        inductive List: (A:*) $\rightarrow$ * :=
-                  (nil: () $\rightarrow$ list A)
-                  (cons: A $\rightarrow$ list A $\rightarrow$ list A)
+             data List (A: Type) : Type :=
+                  (Nil: Unit $\rightarrow$ List A)
+                  (Cons: A $\rightarrow$ List A $\rightarrow$ List A)
 
+           record list: Type :=
+                  (len: List A $\rightarrow$ integer)
+                  ((++): List A $\rightarrow$ List A $\rightarrow$ List A)
+                  (map: (A,B: Type) (A $\rightarrow$ B) $\rightarrow$ (List A $\rightarrow$ List B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (List A $\rightarrow$ List A))
 
-           record List: (A B: *) :=
-                  (len: list A $\rightarrow$ integer)
-                  ((++): list A $\rightarrow$ list A $\rightarrow$ list A)
-                  (map: (A $\rightarrow$ B) $\rightarrow$ (list A $\rightarrow$ list B))
-                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (list A $\rightarrow$ list A))
+           record String: List Nat := List.Nil
 
-           record String: List Nat := ()
-
-        inductive IO: * :=
+             data IO: Type :=
                   (getLine: (String $\rightarrow$ IO) $\rightarrow$ IO)
                   (putLint: String $\rightarrow$ IO)
                   (pure: () $\rightarrow$ IO)
 
-           record IO: * :=
+           record IO: Type :=
                   (data: String)
-                  ([>>=]: )
+                  ([>>=]: ...)
 
-           record Morte: * :=
+           record Morte: Type :=
                   (recursive: IO.replicateM Nat.Five
                               (IO.[>>=] IO.data Unit IO.getLine IO.putLine))
 
@@ -331,20 +327,20 @@ Lambek encoding is a categorical proof-representation of higher inductive types 
 \subsubsection*{Initial Object}
 
 \begin{lstlisting}[mathescape=true]
-    let I = data List: (A:*) $\rightarrow$ * :=
-                 (nil: List A)
-                 (cons: A $\rightarrow$ List A $\rightarrow$ List A)
+    data List (A: Type) : Type :=
+         (nil: List A)
+         (cons: A $\rightarrow$ List A $\rightarrow$ List A)
 
-           $F_A$ = 1 + A $\times$ X
+    $F_A$ = 1 + A $\times$ X
 
 \end{lstlisting}
 
 \subsubsection*{Construct corresponding F-Algebra}
 
 \begin{lstlisting}[mathescape=true]
-    record ListAlg: (A:*) $\rightarrow$ * :=
-           (X: *)
-           (nil: X)
+    record listAlg (A: Type) : Type :=
+           (X: Type)
+           (nil: Unit -> X)
            (cons: A $\rightarrow$ X $\rightarrow$ X)
 
 \end{lstlisting}
@@ -352,23 +348,21 @@ Lambek encoding is a categorical proof-representation of higher inductive types 
 \subsubsection*{Introduce List Morphisms}
 
 \begin{lstlisting}[mathescape=true]
-  infix '=' := Setoid.Ob.Equ
 
-  record ListMor: (A: *) $\rightarrow$ (x1 x2: ListAlg A) $\rightarrow$ * :=
-         (map: x1.X $\rightarrow$ x2.X)
-         (okNil: map x1.nil = x2.nil)
-         (okCons: $\forall$ (a: A) $\rightarrow\ \forall$ (x: x1)
-                  $\rightarrow$ map x1.cons a x = x2.cons a (map x))
+  record listMor   (A: Type) (x1,x2: ListAlg A) : Type :=
+         (map:     x1.X $\rightarrow$ x2.X)
+         (mapNil:  Path x2.X (map (x1.nil unit)) (x2.nil unit))
+         (mapCons: $\forall$ (a: A) $\rightarrow$ $\forall$ (x: x1) $\rightarrow$
+                   Path x2.X (map (x1.cons a x)) (x2.cons a (map x)))
 \end{lstlisting}
 
 \subsubsection*{Introduce connected points of List type}
 
 \begin{lstlisting}[mathescape=true]
-  record ListPoint: (A: *) $\rightarrow$ * :=
+  record listPoint (A: Type) : Type :=
          (point: $\forall$ (x: ListAlg A) -> x.X)
-         (pointOk:  $\forall$ (x1 x2: ListAlg A)
-                 $\rightarrow$ $\forall$ (m: ListMor A x1 x2)
-                 $\rightarrow$ Setoid.Ob.Equ (map m point x1) (point x2))
+         (map: $\forall$ (x1,x2: listAlg A) $\rightarrow$ $\forall$ (m: ListMor A x1 x2) $\rightarrow$
+               Path x2.X (m.map (point x1)) (point x2))
 
 \end{lstlisting}
 
@@ -512,42 +506,39 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 
 \begin{thebibliography}{9}
 
-\bibitem{henk1}      Henk Barendregt \textit{Lambda Calculus With Types} 2010
-\bibitem{henk}       Erik Meijer, Symon Peyton Jones \textit{Henk: a typed intermediate language} 1984
-\bibitem{lof}        Per Martin-Löf \textit{Intuitionistic Type Theory} 1984
-\bibitem{curien1}    Pierre-Louis Curien \textit{Category theory: a programming language-oriented introduction}
-\bibitem{vene}       Varmo Vene \textit{Categorical programming with (co)inductive types} 2000
-\bibitem{pfenning}   Frank Pfenning \textit{Inductively defined types in the Calculus of Constructions} 1989
+\subsection*{Category Theory}
+\bibitem{maclane}    S.MacLane \textit{Categories for the Working Mathematician} 1972
+\bibitem{lawvere}    W.Lawvere \textit{Conceptual Mathematics} 1997
+\bibitem{curien}     P.Curien \textit{Category theory: a programming language-oriented introduction} 2008
 
-%\bibitem{henk0}      Henk Barendregt \textit{The Lambda Calculus. Its syntax and semantics} 1981
-% \bibitem{baastad}    P.Wadler \textit{Monads for functional programming}
-% \bibitem{awodey}     S.Awodey \textit{Category Theory} 2010
+\subsection*{Pure Type Systems}
+\bibitem{martinlof}  P.Martin-Löf \textit{Intuitionistic Type Theory} 1984
+\bibitem{coquand}    T.Coquand \textit{The Calculus of Constructions.} 1988
+\bibitem{henk}       E.Meijer \textit{Henk: a typed intermediate language} 1997
+\bibitem{barendregt} H.Barendregt \textit{Lambda Calculus With Types} 2010
 
-% Inductive Types Section
+\subsection*{Inductive Type Systems}
+\bibitem{pfenning}   F.Pfenning \textit{Inductively defined types in the Calculus of Constructions} 1989
+\bibitem{wadler}     P.Wadler \textit{Recursive types for free} 1990
+\bibitem{gambino}    N.Gambino \textit{Wellfounded Trees and Dependent Polynomial Functors} 1995
+\bibitem{dybjer}     P.Dybjer \textit{Inductive Famalies} 1997
+\bibitem{jacobs}     B.Jacobs \textit{(Co)Algebras) and (Co)Induction} 1997
+\bibitem{vene}       V.Vene \textit{Categorical programming with (co)inductive types} 2000
+\bibitem{guevers}    H.Geuvers \textit{Dependent (Co)Inductive Types are Fibrational Dialgebras} 2015
 
-% \bibitem{recursive}  P.Wadler \textit{Recursive types for free} 2014 % http://homepages.inf.ed.ac.uk/wadler/papers/free-rectypes/free-rectypes.txt
-% \bibitem{debjer}       P.Dybjer \textit{Inductive Famalies} 1997
-% \bibitem{debjer2}      P.Dybjer \textit{Representing Inductively Defined Sets by Wellorderings in Martin Löf's Type Theory} 1996
-% \bibitem{basold}       H.Basold,H.Geuvers \textit{Dependent Inductive and Coinductive Types are Fibrational Dialgebras} 2015
-% \bibitem{jay}          B.Jay \textit{A semantics for shape}
-% \bibitem{gambino}      N.Gambino,M.Hyland \textit{Wellfounded Trees and Dependent Polynomial Functors} 1995
-% \bibitem{container}    M.Abbott,T.Altenkirch,N.Ghani, \textit{Categories of Containers} 2005
-
-% \bibitem{baer}       A.Baer \textit{Programming with Algebraic Effects and Handlers} 2012
-% \bibitem{lawvere}    William Lawvere. \textit{Conceptual Mathematics} 1997.
+% \subsection*{Pi Calculus}
 % \bibitem{comm}       Robin Milner. \textit{A Calculus of Communicating Systems.} 1986.
 % \bibitem{commpi}     Robin Milner. \textit{Communicating and Mobile Systems: The $\pi$-calculus.} 1999.
 % \bibitem{polypi}     Robin Milner. \textit{The Polyadic $\pi$-Calculus: A Tutorial.} 1993.
-% \bibitem{coqhuet}    T.Coquand, G.Huet \textit{The Calculus of Constructions.} 1988
-% \bibitem{chipvm}     A.Chlipala \textit{Certified Programming with Dependent Types} 2015
-% \bibitem{idris}      E.Brady \textit{Programming in IDRIS: A Tutorial} 2015
-% \bibitem{mcbrideapp} C.McBride, R.Patterson \textit{Applicative programming with effects} 2002
-% \bibitem{andjelko}   S.Andjelkovic \textit{A family of universes for generic programming} 2011
-% \bibitem{alacarte}   W.Swierstra \textit{Data types a` la carte} 2011
-\bibitem{catlogic}     Bart Jacobs \textit{Categorical Logic and Type Theory} 1999
-% \bibitem{pointfree}  A.Cuhna,J.Pinto,J.Proenca \textit{A Framework for Point-Free Program Transformation}
-% \bibitem{kaes}       S.Kaes \textit{http://tuprints.ulb.tu-darmstadt.de/epda/000544/diss.pdf} 2005
-% \bibitem{cpo}        NA.Danielsson,J.Hughes,J.Gibbons \textit{Fast and Loose Reasoning is Morally Correct} 2006
+
+\subsection*{Homotopy Type Systems}
+\bibitem{streicher0} T.Streicher \textit{A groupoid model refutes uniqueness of identity proofs} 1994
+\bibitem{streicher}  T.Streicher \textit{The Groupoid Interpretation of Type Theory} 1996
+\bibitem{jacobs2}    B.Jacobs \textit{Categorical Logic and Type Theory} 1999
+\bibitem{awodey}     S.Awodey \textit{Homotopy Type Theory and Univalent Foundations} 2013
+\bibitem{huber}      S.Huber \textit{A Cubical Type Theory} 2015
+\bibitem{joyal}      A.Joyal \textit{What is an elementary higher topos} 2014
+\bibitem{mortberg}   A.Mortberg \textit{Cubical Type Theory: a constructive univalence axiom} 2017
 
 \end{thebibliography}
 \newpage
