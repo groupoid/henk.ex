@@ -122,7 +122,7 @@ $$
 
    \paragraph{}
    An intermediate Om language is based on Henk\cite{henk} languages described first
-   by Erik Meyer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
+   by Erik Meijer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
    of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lambda terms.
    It is based only on one type constructor $\Pi$, its special case $\lambda$ and theirs eliminators:
    $apply$ and $curry$, infinity number of universes,
@@ -149,7 +149,113 @@ $$
         | $\forall$ ( I : O ) $\rightarrow$ O
 \end{lstlisting}
 
-\subsection{Operational Semantics of OM}
+\newpage
+
+   \subsection{Hierarchy}
+
+\begin{lstlisting}[mathescape=true]
+dep Arg Out impredicative $\rightarrow$ Out
+dep Arg Out predicative   $\rightarrow$ max Arg Out
+
+h Arg Out $\rightarrow$ dep Arg Out om:hierarchy(impredicative)
+\end{lstlisting}
+
+   \subsection{Universes}
+
+\begin{lstlisting}[mathescape=true]
+star (:star,N) $\rightarrow$ N
+star _         $\rightarrow$ (:error, "*")
+\end{lstlisting}
+
+   \subsection{Functions}
+
+\begin{lstlisting}[mathescape=true]
+func ((:forall,),(I,O)) $\rightarrow$ true
+func T                  $\rightarrow$ (:error,(:forall,T))
+\end{lstlisting}
+
+   \subsection{Variables}
+
+\begin{lstlisting}[mathescape=true]
+var N B                $\rightarrow$ var N B (proplists:is_defined N B)
+var N B true           $\rightarrow$ true
+var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)))
+\end{lstlisting}
+
+   \subsection{Shift}
+
+\begin{lstlisting}[mathescape=true]
+sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
+sh ((:forall,(N,0)),(I,O)),N,P) $\rightarrow$ ((:forall,(N,0)),sh I N P,sh O N P+1)
+sh ((:lambda,(N,0)),(I,O)),N,P) $\rightarrow$ ((:lambda,(N,0)),sh I N P,sh O N P+1)
+sh (Q,(L,R),N,P)                $\rightarrow$ (Q,sh L N P,sh R N P)
+sh (T,N,P)                      $\rightarrow$ T
+\end{lstlisting}
+
+   \subsection{Substitution}
+
+\begin{lstlisting}[mathescape=true]
+sub Term Name Value               $\rightarrow$ sub Term Name Value 0
+sub (:arrow,         (I,O)) N V L $\rightarrow$ (:arrow,         sub I N V L,sub O N V L);
+sub ((:forall,(N,0)),(I,O)) N V L $\rightarrow$ ((:forall,(N,0)),sub I N V L,sub O N(sh V N 0)L+1)
+sub ((:forall,(F,X)),(I,O)) N V L $\rightarrow$ ((:forall,(F,X)),sub I N V L,sub O N(sh V F 0)L)
+sub ((:lambda,(N,0)),(I,O)) N V L $\rightarrow$ ((:lambda,(N,0)),sub I N V L,sub O N(sh V N 0)L+1)
+sub ((:lambda,(F,X)),(I,O)) N V L $\rightarrow$ ((:lambda,(F,X)),sub I N V L,sub O N(sh V F 0)L)
+sub (:app,           (F,A)) N V L $\rightarrow$ (:app,sub F N V L,sub A N V L)
+sub (:var,           (N,L)) N V L $\rightarrow$ V
+sub (:var,           (N,I)) N V L when I>L $\rightarrow$ (:var,(N,I-1))
+sub T                       _ _ _ $\rightarrow$ T.
+\end{lstlisting}
+
+   \subsection{Normalization}
+
+\begin{lstlisting}[mathescape=true]
+norm :none                   $\rightarrow$ :none
+norm :any                    $\rightarrow$ :any
+norm (:app,(F,A))            $\rightarrow$ case norm F of
+                                ((:lambda,(N,0)),(I,O)) $\rightarrow$ norm (subst O N A)
+                                                     NF $\rightarrow$ (:app,(NF,norm A)) end
+norm (:remote,N)             $\rightarrow$ cache (norm N [])
+norm (:arrow,         (I,O)) $\rightarrow$ ((:forall,("_",0)),(norm I,norm O))
+norm ((:forall,(N,0)),(I,O)) $\rightarrow$ ((:forall,(N,0)),    (norm I,norm O))
+norm ((:lambda,(N,0)),(I,O)) $\rightarrow$ ((:lambda,(N,0)),    (norm I,norm O))
+norm T                       $\rightarrow$ T
+\end{lstlisting}
+
+   \subsection{Definitional Equality}
+
+\begin{lstlisting}[mathescape=true]
+eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
+eq (:app,(F1,A1))         (:app,(F2,A2)) $\rightarrow$ let true = eq F1 F2 in eq A1 A2
+eq (:star,N)              (:star,N)      $\rightarrow$ true
+eq (:var,(N,I))           (:var,(N,I))   $\rightarrow$ true
+eq (:remote,N)            (:remote,N)    $\rightarrow$ true
+eq ((:farall,(N1,0)),(I1,O1))
+   ((:forall,(N2,0)),(I2,O2)) $\rightarrow$
+   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+eq ((:lambda,(N1,0)),(I1,O1))
+   ((:lambda,(N2,0)),(I2,O2)) $\rightarrow$
+   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
+\end{lstlisting}
+
+   \subsection{Type Checker}
+
+\begin{lstlisting}[mathescape=true]
+type (:star,N)               _ $\rightarrow$ (:star,N+1)
+type (:var,(N,I))            D $\rightarrow$ let true = var N D in keyget N D I
+type (:remote,N)             D $\rightarrow$ cache type N D
+type (:arrow,(I,O))          D $\rightarrow$ (:star,h(star(type I D)),star(type O D))
+type ((:forall,(N,0)),(I,O)) D $\rightarrow$ (:star,h(star(type I D)),star(type O [(N,norm I)|D]))
+type ((:lambda,(N,0)),(I,O)) D $\rightarrow$ let star (type I D),
+                                  NI = norm I in ((:forall,(N,0)),(NI,type(O,[(N,NI)|D])))
+type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
+                                  true = func T,
+                                  ((:forall,(N,0)),(I,O)) = T,
+                                  Q = type A D,
+                                  true = eq I Q in norm (subst O N A)
+\end{lstlisting}
+
 
 \subsection{Target Erlang VM and LLVM platforms}
 
@@ -262,6 +368,7 @@ $$
 
 \end{lstlisting}
 
+
 \newpage
    \subsection{Inductive Types}
 
@@ -340,7 +447,7 @@ Lambek encoding is a categorical proof-representation of higher inductive types 
 \begin{lstlisting}[mathescape=true]
     record listAlg (A: Type) : Type :=
            (X: Type)
-           (nil: Unit -> X)
+           (nil: Unit $\rightarrow$ X)
            (cons: A $\rightarrow$ X $\rightarrow$ X)
 
 \end{lstlisting}
@@ -360,7 +467,7 @@ Lambek encoding is a categorical proof-representation of higher inductive types 
 
 \begin{lstlisting}[mathescape=true]
   record listPoint (A: Type) : Type :=
-         (point: $\forall$ (x: ListAlg A) -> x.X)
+         (point: $\forall$ (x: ListAlg A) $\rightarrow$ x.X)
          (map: $\forall$ (x1,x2: listAlg A) $\rightarrow$ $\forall$ (m: ListMor A x1 x2) $\rightarrow$
                Path x2.X (m.map (point x1)) (point x2))
 
