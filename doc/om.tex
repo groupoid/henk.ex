@@ -455,7 +455,6 @@ Lambek encoding is a categorical proof-representation of higher inductive types 
 \subsubsection*{Introduce List Morphisms}
 
 \begin{lstlisting}[mathescape=true]
-
   record listMor   (A: Type) (x1,x2: ListAlg A) : Type :=
          (map:     x1.X $\rightarrow$ x2.X)
          (mapNil:  Path x2.X (map (x1.nil unit)) (x2.nil unit))
