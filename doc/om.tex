@@ -23,7 +23,7 @@
     \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types for Erlang/OTP applications.\\}\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
-    \vspace{4cm}   {\Large Kyiv 2016}
+    \vspace{4cm}   {\Large Kyiv 2017}
 
 \end{center}
 
@@ -309,67 +309,6 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
 \end{lstlisting}
 
 \newpage
-
-   \subsection{Pure Macro Types}
-
-   \begin{center}
-   \begin{tabular}{ll}
-   CASE   & Control Branch Pattern Matching\\
-   LET    & Variable Bind\\
-   DATA   & Inductive Tree\\
-   RECORD & Coinductive Tuple\\
-   \end{tabular}
-   \end{center}
-
-   \subsection{Effectful Macro Types}
-
-   \begin{center}
-   \begin{tabular}{ll}
-   SPAWN   & Spawn IOI Corecursion\\
-   TRY     & Exception Effect\\
-   SEND    & Send Message to IOI Cofree Comonad\\
-   RECEIVE & Control Branch Pattern Matching\\
-   \end{tabular}
-   \end{center}
-
-
-\subsection{Prelude Base Library}
-
-\begin{lstlisting}[mathescape=true]
-
-             data Nat: Type :=
-                  (Zero: Unit $\rightarrow$ Nat)
-                  (Succ: Nat $\rightarrow$ Nat)
-
-             data List (A: Type) : Type :=
-                  (Nil: Unit $\rightarrow$ List A)
-                  (Cons: A $\rightarrow$ List A $\rightarrow$ List A)
-
-           record list: Type :=
-                  (len: List A $\rightarrow$ integer)
-                  ((++): List A $\rightarrow$ List A $\rightarrow$ List A)
-                  (map: (A,B: Type) (A $\rightarrow$ B) $\rightarrow$ (List A $\rightarrow$ List B))
-                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (List A $\rightarrow$ List A))
-
-           record String: List Nat := List.Nil
-
-             data IO: Type :=
-                  (getLine: (String $\rightarrow$ IO) $\rightarrow$ IO)
-                  (putLint: String $\rightarrow$ IO)
-                  (pure: () $\rightarrow$ IO)
-
-           record IO: Type :=
-                  (data: String)
-                  ([>>=]: ...)
-
-           record Morte: Type :=
-                  (recursive: IO.replicateM Nat.Five
-                              (IO.[>>=] IO.data Unit IO.getLine IO.putLine))
-
-\end{lstlisting}
-
-
-\newpage
    \subsection{Inductive Types}
 
   \paragraph{}
@@ -410,7 +349,6 @@ $$
 \end{cases}
 $$
 
-
 \paragraph{}
   where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
   $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
@@ -426,143 +364,8 @@ $$
 \end{cases}
 $$
 
-\include{basic}
-\newpage
-\subsection{Lambek Encoding}
-Lambek encoding is a categorical proof-representation of higher inductive types encoding.
-
-\subsubsection*{Initial Object}
-
 \begin{lstlisting}[mathescape=true]
-    data List (A: Type) : Type :=
-         (nil: List A)
-         (cons: A $\rightarrow$ List A $\rightarrow$ List A)
-
-    $F_A$ = 1 + A $\times$ X
-
-\end{lstlisting}
-
-\subsubsection*{Construct corresponding F-Algebra}
-
-\begin{lstlisting}[mathescape=true]
-    record listAlg (A: Type) : Type :=
-           (X: Type)
-           (nil: Unit $\rightarrow$ X)
-           (cons: A $\rightarrow$ X $\rightarrow$ X)
-
-\end{lstlisting}
-
-\subsubsection*{Introduce List Morphisms}
-
-\begin{lstlisting}[mathescape=true]
-  record listMor   (A: Type) (x1,x2: ListAlg A) : Type :=
-         (map:     x1.X $\rightarrow$ x2.X)
-         (mapNil:  Path x2.X (map (x1.nil unit)) (x2.nil unit))
-         (mapCons: $\forall$ (a: A) $\rightarrow$ $\forall$ (x: x1) $\rightarrow$
-                   Path x2.X (map (x1.cons a x)) (x2.cons a (map x)))
-\end{lstlisting}
-
-\subsubsection*{Introduce connected points of List type}
-
-\begin{lstlisting}[mathescape=true]
-  record listPoint (A: Type) : Type :=
-         (point: $\forall$ (x: ListAlg A) $\rightarrow$ x.X)
-         (map: $\forall$ (x1,x2: listAlg A) $\rightarrow$ $\forall$ (m: ListMor A x1 x2) $\rightarrow$
-               Path x2.X (m.map (point x1)) (point x2))
-
-\end{lstlisting}
-
-\subsubsection*{Theorems Section}
-
-\begin{center}
-%\begin{tabular}{l}
-$$
-\begin{tikzcd}
-  lim\ U \arrow{d}[left]{\pi_i} \\
-  X_i 
-\end{tikzcd}
-\Longrightarrow
-\begin{tikzcd}
-  F\ lim\ U \arrow{d}[left]{F\ \pi_i} \\
-  F\ X_i 
-\end{tikzcd}
-\Longrightarrow
-lim\left\{
-\begin{tikzcd}
-  F\ lim\ U \arrow{d}[left]{F\ \pi_i} \\
-  F\ X_i 
-\end{tikzcd}
-\right\}
-$$
-%\end{tabular}
-\end{center}
-
-\newpage
-\subsubsection*{Basic Ornaments}
-
-Our encoding allows you to precise control the type of encoded parameter.
-There is only three cases and three equations: 1) for unit; 2) particular
-functorial type over a parameter type and 3) recursive embedding such as
-in Cons constructor.
-
-q — is a limit in Dialg P category. The constructor body is calculated
-with q applied to forgetful functor U.
-
-$$
-\begin{cases}
-q_{P,D,G} : End\ P\ (G'(-),G'(-)) \rightarrow P\ (Lim\ G',Lim\ G') \\
-P : Set^{op} \times Set \rightarrow Set \\
-U : Dialg\ P \rightarrow Set \\
-G : D \rightarrow Dialg\ P \\
-G' = UG : D \rightarrow Set \\
-U (Lim\ G) = Lim\ G'
-\end{cases}
-$$
-
-\subsubsection*{Unit}
-
-Like for Bool or Nil constructors encoding.
-
-$$
-\begin{cases}
-P_0(A,B) =  B \\
-q_0\ e : Lim\ G' \\
-q_0\ e = e
-\end{cases}
-$$
-
-\subsubsection*{Fixed Type}
-
-Like for Cons first parameter.
-
-$$
-\begin{cases}
-P_1(A,B) = X \rightarrow P(A,B) \\
-q_1\ e : X \rightarrow P ( Lim\ G',  Lim\ G' ) \\
-q_1\ e\ x\ A = e\ A\ x
-\end{cases}
-$$
-
-\subsubsection*{Recursive Parameters}
-
-Like for Cons second parameter. This case is a key in encoding recursive
-   data types such as {\bf Lists} and recursive record types such as {\bf Streams}.
-
-$$
-\begin{cases}
-P_2(A,B) = A \rightarrow P(A,B) \\
-q_2\ e : Lim\ G' \rightarrow P ( Lim\ G',  Lim\ G' ) \\
-q_2\ e\ I\ A = e\ A\ (I\ A)
-\end{cases}
-$$
-
-\newpage
-\vspace{0.2cm}
-\subsection{Data, Polymorphic Functions and Theorems}
-\vspace{0.4cm}
-
-\begin{lstlisting}[mathescape=true]
-        inductive list: (A: *) $\rightarrow$ * :=
+             data list: (A: *) $\rightarrow$ * :=
                   (nil: list A)
                   (cons: A $\rightarrow$ list A $\rightarrow$ list A)
 \end{lstlisting}
@@ -573,7 +376,6 @@ cons = \lambda\ x\ \rightarrow \lambda\ xs \rightarrow \lambda\ list \rightarrow
 nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow nil\\
 \end{cases}
 $$
-\\
 \begin{lstlisting}[mathescape=true]
            record lists: (A B: *) :=
                   (len: list A $\rightarrow$ integer)
@@ -609,7 +411,43 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 }
 
 \newpage
+\subsection{Prelude Base Library}
 
+\begin{lstlisting}[mathescape=true]
+
+             data Nat: Type :=
+                  (Zero: Unit $\rightarrow$ Nat)
+                  (Succ: Nat $\rightarrow$ Nat)
+
+             data List (A: Type) : Type :=
+                  (Nil: Unit $\rightarrow$ List A)
+                  (Cons: A $\rightarrow$ List A $\rightarrow$ List A)
+
+           record list: Type :=
+                  (len: List A $\rightarrow$ integer)
+                  ((++): List A $\rightarrow$ List A $\rightarrow$ List A)
+                  (map: (A,B: Type) (A $\rightarrow$ B) $\rightarrow$ (List A $\rightarrow$ List B))
+                  (filter: (A $\rightarrow$ bool) $\rightarrow$ (List A $\rightarrow$ List A))
+
+           record String: List Nat := List.Nil
+
+             data IO: Type :=
+                  (getLine: (String $\rightarrow$ IO) $\rightarrow$ IO)
+                  (putLint: String $\rightarrow$ IO)
+                  (pure: () $\rightarrow$ IO)
+
+           record IO: Type :=
+                  (data: String)
+                  ([>>=]: ...)
+
+           record Morte: Type :=
+                  (recursive: IO.replicateM Nat.Five
+                              (IO.[>>=] IO.data Unit IO.getLine IO.putLine))
+
+\end{lstlisting}
+
+
+\newpage
 \begin{thebibliography}{9}
 
 \subsection*{Category Theory}
