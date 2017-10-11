@@ -149,6 +149,155 @@ $$
         | $\forall$ ( I : O ) $\rightarrow$ O
 \end{lstlisting}
 
+Equivalent tree encoding for parsed terms is following:
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+    Inductive OM := Star: nat $\rightarrow$ OM
+                  | Var: name $\rightarrow$ OM
+                  | App: OM $\rightarrow$ OM $\rightarrow$ OM
+                  | Lambda: name $\rightarrow$ OM $\rightarrow$ OM $\rightarrow$ OM
+                  | Arrow: OM $\rightarrow$ OM $\rightarrow$ OM
+                  | Pi: name $\rightarrow$ OM $\rightarrow$ OM $\rightarrow$ OM.
+\end{lstlisting}
+
+\newpage
+\subsection{Universes}
+
+The OM language is a higher-order dependently typed lambda calculus,
+an extension of Coquand's Calculus of Constructions
+with the predicative/impredicative hierarchy of indexed universes.
+This extension is motivated avoiding paradoxes in dependent theory.
+Also there is no fixpoint axiom needed for the definition
+of infinity term dependance.
+
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+    U_0 : U_1 : U_2 : U_3 : ...
+
+    U_0 --- propositions
+    U_1 --- values and sets
+    U_2 --- types
+    U_3 --- sorts
+\end{lstlisting}
+
+\begin{equation}
+\tag{S}
+\dfrac
+{o : Nat}
+{Type_o}
+\end{equation}
+
+\subsection{Predicative Universes}
+
+All terms obey the A ranking inside the sequence of S universes,
+and the complexity R of the dependent term is equal to a maximum of
+the term's complexity and its dependency.
+The universes system is completely described by the following
+PTS notation (due to Barendregt):
+
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+    $S$    (n : nat) = U n
+    $A_1$ (n m : nat) = U n : U m where m > n      - cumulative
+    $R_1$ (m n : nat) = U m $\rightarrow$ U n : U (max m n)  - predicative
+\end{lstlisting}
+
+Note that predicative universes are incompatible with Church lambda term encoding.
+You can switch predicative vs impredicative uninverses by typecheker parameter.
+
+\[
+\tag{$A_1$}
+\dfrac{i: Nat, j: Nat, i < j}{Type_i : Type_j}
+\]
+
+\[
+\tag{$R_1$}
+\dfrac{i : Nat, j : Nat}{Type_i \rightarrow Type_j : Type_{max(i,j)} }
+\]
+
+\subsection{Impredicative Universes}
+Propositional contractible bottom space is the only
+available extension to predicative hierarchy that not leads to inconsistency.
+However there is another option to have infinite
+impredicative hierarchy.
+
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+    $A_2$   (n : nat) = U n : U (n + 1)   - non-cumulative
+    $R_2$ (m n : nat) = U m $\rightarrow$ U n : U n - impredicative
+\end{lstlisting}
+
+\begin{equation}
+\tag{$A_2$}
+\dfrac
+{i: Nat}
+{Type_i : Type_{i+1}}
+\end{equation}
+
+\begin{equation}
+\tag{$R_2$}
+\dfrac
+{i : Nat,\ \ \ \ j : Nat}
+{Type_i \rightarrow Type_{j} : Type_{j}}
+\end{equation}
+
+\subsection{Single Axiom Language}
+
+This langauge is called one axiom language (or pure) as eliminator
+and introduction adjoint functors inferred from type formation rule.
+The only computation rule of Pi type is called beta-reduction.
+
+\begin{lstlisting}[mathescape=true]
+    $\forall$ (x: A) $\rightarrow$ B x : Type
+    $\lambda$ (x: A) $\rightarrow$ b : B x
+    f a : B [a/x]
+    ( $\lambda$ (x: A) $\rightarrow$ b) a = b[a/x] : B[a/x]
+
+\end{lstlisting}
+
+
+                        \begin{equation}
+                        \tag{$\Pi$-formation}
+                        \dfrac
+                        {x:A \vdash B : Type}
+                        {\Pi\ (x:A) \rightarrow B : Type}
+                        \end{equation}
+
+                        \begin{equation}
+                        \tag{$\lambda$-intro}
+                        \dfrac
+                        {x:A \vdash b : B}
+                        {\lambda\ (x:A) \rightarrow b : \Pi\ (x: A) \rightarrow B }
+                        \end{equation}
+
+                        \begin{equation}
+                        \tag{$App$-elimination}
+                        \dfrac
+                        {f: (\Pi\ (x:A) \rightarrow B)\ \ \ a: A}
+                        {f\ a : B\ [a/x]}
+                        \end{equation}
+
+                        \begin{equation}
+                        \tag{$\beta$-computation}
+                        \dfrac
+                        {x:A \vdash b: B\ \ \ a:A}
+                        {(\lambda\ (x:A) \rightarrow b)\ a = b\ [a/x] : B\ [a/x]}
+                        \end{equation}
+
+\vspace{0.5cm}
+                    This language could be embedded in itself and used
+                    as Logical Framework for the Pi type:
+
+\vspace{0.5cm}
+\begin{lstlisting}[mathescape=true]
+Record Pi (A: Type) :=
+    intro: (A $\rightarrow$ Type) $\rightarrow$ Type
+    lambda: (B: A $\rightarrow$ Type) $\rightarrow$ $\forall$ (a: A) $\rightarrow$ B a $\rightarrow$ intro B
+    app: (B: A $\rightarrow$ Type) $\rightarrow$ intro B $\rightarrow$ $\forall$ (a: A) $\rightarrow$ B a
+    app-lam (B: A $\rightarrow$ Type) (f: $\forall$ (a: A) $\rightarrow$ B a): $\forall$ (a: A) $\rightarrow$ app (fun f) a ==> f a
+    lam-app (B: A $\rightarrow$ Type) (p: intro B): fun ($\lambda$ (a: A) $\rightarrow$ app p a) ==> p.
+\end{lstlisting}
+
 \newpage
 
    \subsection{Hierarchy}
