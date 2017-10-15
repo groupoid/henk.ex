@@ -20,10 +20,11 @@
 
 \vspace{3cm}
 
-    \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types for Erlang/OTP applications.\\}\par
+    \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types
+                               and Strong Normalization for Erlang/OTP applications.\\}\par
     \vspace{0.3cm} {\Large Technical Article\par}
     \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
-    \vspace{4cm}   {\Large Kyiv 2017}
+    \vspace{4cm}   {\Large Kyiv 2016---2017}
 
 \end{center}
 
@@ -35,8 +36,9 @@
 
 \vspace{1cm}
 
-%\vspace{0.5cm}
+\subsection{History}
 
+%\vspace{0.5cm}
 \paragraph{}
 {\bf LISP}. Untyped lambda calculus was discovered as an inner language of the space
 at origin (Curry, Church, 1932). This language was manifested as LISP (McCarthy, 1958)
@@ -61,12 +63,21 @@ ACL2 (Boyer, Kaufmann, Moore, 1996) and Otter (McCune, 1996).
 \paragraph{}
 {\bf MLTT}. Contemporary provers (built upon consistent Martin-Löf Type Theory, 1972)
 like Agda, Coq, Lean, F*, Idris are based on Barendregt
-and Coquand' CoC with different flavours of inifinity universe hierarchies
-and Calculus of Inductive Constructions. Some of them are automated and some
-are trying to be and general purpose programming languages with proving facilities.
+and Coquand' Calculus of Constructions with different flavours of inifinity universe hierarchies
+and Calculus of Inductive Constructions for modeling polynomial functors of well-founded trees.
+Some of them are automated and some are trying to be and general purpose
+programming languages with proving facilities, like Idris, Coq (coq.io), Agda (M-Alonso).
+
+\subsection{Background}
+From the partical point of view there are exists two approaches.
+One involve the usage of two languages: meta language for your models
+and separate language for prover, like in {\bf HOL}, {\bf Andromeda}. The second
+approach propose embedding models into single language. Such langauge should be powerful
+enough for proving properties of higher inductive types. The only available prover that fits
+this criteria today is {\bf cubicaltt}.
 
 \newpage
-\section{Motivation}
+\section{Motivation and Vision}
 
 \paragraph{}
 {\bf From PTS to HTS}. We want to have flexible detachable
@@ -98,6 +109,33 @@ cathegory of (co)algebras built with given set of (de)constructors.
 We call such encoding in honour of Lambek lemma that leeds us to the
 equality of (co)initial object and (co)limit in the categories of (co)algebras.
 Such encoding works with dependent types and its consistency is proved in Lean model.
+
+\paragraph{}
+{\bf General Architecture}. This article covers only the central part of
+of the proving system, the {\bf OM} intermediate language with strong
+normalization properties and extraction to Erlang/OTP bytecode.
+
+\begin{center}
+\begin{tikzpicture}
+\tikzstyle{every initial by arrow}=[]
+    \node (a) at (0,0) {\bf Interpreter};
+    \node (b) at (0,5) {\bf Extractor};
+    \node (c) at (5,0) {\bf Prover};
+    \node (d) at (5,5) {\bf Library};
+    \node (e) at (2.5,2.5) {\bf OM};
+    \draw [->] (b) to node [left] {Runs} (a);
+    \draw [->] (c) to node [below] {Compiles} (a);
+    \draw [->] (c) to node [above] {Impl} (a);
+    \draw [->] (e) to node [above,sloped] {Erase} (a);
+    \draw [->] (d) to node [above,sloped] {Normalize} (e);
+    \draw [->] (d) to node [below,sloped] {Desugar} (e);
+    \draw [->] (d) to node [above] {Extracts} (b);
+    \draw [->] (c) to node [right] {Impl} (d);
+    \draw [->] (e) to node [above,sloped] {Extracts} (b);
+    \draw [->] (c) to node [below,sloped] {Desugar} (e);
+    \draw [->] (c) to node [above,sloped] {Impl} (e);
+\end{tikzpicture}
+\end{center}
 
 \newpage
 \section{Intermediate Language Om}
@@ -290,12 +328,16 @@ The only computation rule of Pi type is called beta-reduction.
 
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
-Record Pi (A: Type) :=
-    intro: (A $\rightarrow$ Type) $\rightarrow$ Type
-    lambda: (B: A $\rightarrow$ Type) $\rightarrow$ $\forall$ (a: A) $\rightarrow$ B a $\rightarrow$ intro B
-    app: (B: A $\rightarrow$ Type) $\rightarrow$ intro B $\rightarrow$ $\forall$ (a: A) $\rightarrow$ B a
-    app-lam (B: A $\rightarrow$ Type) (f: $\forall$ (a: A) $\rightarrow$ B a): $\forall$ (a: A) $\rightarrow$ app (fun f) a ==> f a
-    lam-app (B: A $\rightarrow$ Type) (p: intro B): fun ($\lambda$ (a: A) $\rightarrow$ app p a) ==> p.
+
+record Pi (A: Type) :=
+       (intro:  (A $\rightarrow$ Type) $\rightarrow$ Type)
+       (lambda: (B: A $\rightarrow$ Type) $\rightarrow$ pi A B $\rightarrow$ intro B)
+       (app:    (B: A $\rightarrow$ Type) $\rightarrow$ intro B $\rightarrow$ pi A B)
+       (applam: (B: A $\rightarrow$ Type) (f: pi A B) $\rightarrow$ (a: A) $\rightarrow$
+                Path (B a) ((app B (lambda B f)) a) (f a))
+       (lamapp: (B: A $\rightarrow$ Type) (p: intro B) $\rightarrow$
+                Path (intro B) (lambda B ($\lambda$ (a:A) $\rightarrow$ app B p a)) p)
+
 \end{lstlisting}
 
 \newpage
@@ -458,21 +500,24 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
 \end{lstlisting}
 
 \newpage
-   \subsection{Inductive Types}
+  \subsection{Inductive Types}
 
   \paragraph{}
-  There is two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$ or $F_A\ X = A + X\times X$),
-  in other words the recursion with a base (terminated with a bounded value), lists are trees are
-  examples of such recursive structures (so we call induction recursive sums); and the second
-  is greatest fixed point or recursion withour base (as $F_A\ X = A\times X $) --- such kind of
-  recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
-\\
-  Natural Numbers: $\mu\ X \rightarrow 1 + X$ \\
-  List A: $\mu\ X \rightarrow 1 + A \times X$ \\
-  Lambda calculus: $\mu\ X \rightarrow 1 + X \times X + X$ \\
-  Stream: $\nu\ X \rightarrow A \times X$ \\
-  Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$ \\
-  Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$ \\
+  There are two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$
+  or $F_A\ X = A + X\times X$), in other words the recursion with a base (terminated with a bounded value),
+  lists and trees are examples of such recursive structures (so we call induction recursive sums);
+  and the second is greatest fixed point or recursion withour a base (as $F_A\ X = A\times X $) ---
+  such kind of recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
+
+  \subsection{Polynomial Functors}
+  Least fixed point trees are called well-founded trees and encode polynomial functors.
+
+  \paragraph{} Natural Numbers: $\mu\ X \rightarrow 1 + X$
+  \paragraph{} List A: $\mu\ X \rightarrow 1 + A \times X$
+  \paragraph{} Lambda calculus: $\mu\ X \rightarrow 1 + X \times X + X$
+  \paragraph{} Stream: $\nu\ X \rightarrow A \times X$
+  \paragraph{} Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$
+  \paragraph{} Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$
 
   \paragraph{}
   As we know there are several ways to appear for variable in recursive algebraic type.
