@@ -455,6 +455,7 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
    Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
 
 \newpage
+
    \section{Exe Macrosystem}
 
    Exe is a general purpose functional language with functors, lambdas on types, recursive algebraic types,
@@ -463,6 +464,38 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
    This language intended to be useful enough to encode KVS (database), N2O (web framework) and
    BPE (processes) applications.
 
+
+   \subsection{BNF}
+
+\begin{lstlisting}[mathescape=true]
+    <> ::= #option
+    [] ::= #list
+     | ::= #sum
+     1 ::= #unit
+     I ::= #identifier
+
+     U ::= Type < #nat >
+     T ::= 1 | ( I : O ) T
+     F ::= 1 | I : O = O , F
+     B ::= 1 | [ | I [ I ] $\rightarrow$ O ]
+     L ::= 1 | I T
+     O ::= I | ( O ) |
+           U | O $\rightarrow$ O
+             | O O
+             | $\lambda$ ( I : O ) $\rightarrow$ O
+             | fst O
+             | snd O
+             | ( I : O ) * O
+             | ( I : O ) $\rightarrow$ O
+             | data   I T : O := T
+             | record I T : O := T
+             | let F in O
+             | case O B
+             | receive B
+             | spawn O O
+             | send O O
+\end{lstlisting}
+\vspace{2cm}
    \subsection{Compiler Passes}
 
    The underlying OM typechecker and compiler is a target language for EXE general purpose language.
@@ -476,27 +509,33 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
    \end{tabular}
    \end{center}
 
-   \subsection{BNF}
+\newpage
+   \subsection{AST}
+
+    The model in Cubical and Coq of the Exe language is available at
+    infinity\footnote{https://github.com/groupoid/infinity/tree/master/base} repository of groupoid organization.
 
 \begin{lstlisting}[mathescape=true]
-    <> ::= #option
-    [] ::= #list
-     I ::= #identifier
-     U ::= * < #number >
-     O ::= I | ( O ) |
-           U | O $\rightarrow$ O | O O
-             | $\lambda$ ( I : O ) $\rightarrow$ O
-             | $\forall$ ( I : O ) $\rightarrow$ O
-     L ::= I | L I
-     A ::= O | A $\rightarrow$ A | ( L : O )
-     F ::= $\empty$ | F ( I : O ) | ()
-     E ::= O | E data L : A := F
-             | E record L : A < extend F > := F
-             | E let F in E
-             | E case E [ | I O $\rightarrow$ E ]
-             | E receive E [ | I O $\rightarrow$ E ]
-             | E spawn E raise L := E
-             | E send E to E
+ data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
+ data branch (A: U) =        br (n: name) (args: list name) (term: A)
+ data label (A: U)  =       lab (n: name) (t: tele A)
+ data ind
+    = star                        (n: nat)
+    | var    (n: name)            (i: nat)
+    | app              (f a: ind)
+    | lambda (x: name) (d c: ind)
+    | pi     (x: name) (d c: ind)
+    | sigma  (n: name) (a b: ind)
+    | arrow            (d c: ind)
+    | pair             (a b: ind)
+    | fst              (p:   ind)
+    | snd              (p:   ind)
+    | id               (a b: ind)
+    | idpair           (a b: ind)
+    | idelim           (a b c d e: ind)
+    | data_  (n: name) (t: tele ind) (labels:   list (label ind))
+    | case   (n: name) (t: ind)      (branches: list (branch ind))
+    | ctor   (n: name)               (args:     list ind)
 \end{lstlisting}
 
 \newpage
