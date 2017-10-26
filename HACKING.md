@@ -199,25 +199,35 @@ Typechecking:
 Scan modules in current mode:
 
 ```erlang
-> om:mode("erased").
+> om:mode("normal").
 ok
 > om:scan().
-PASSED
-[{true,"priv/erased/Bool/False"},
- {true,"priv/erased/Bool/True"},
- {true,"priv/erased/Bool/id"},
- {true,"priv/erased/List/Cons"},
- {true,"priv/erased/List/Nil"},
- {true,"priv/erased/List/id"},
- {true,"priv/erased/Nat/Succ"},
- {true,"priv/erased/Nat/Zero"},
- {true,"priv/erased/Nat/id"},
- {true,"priv/erased/Prod/Mk"},
- {true,"priv/erased/Prod/id"},
- {true,"priv/erased/Prod/pr1"},
- {true,"priv/erased/Prod/pr2"},
- {true,"priv/erased/Ret/Error"},
- {true,"priv/erased/Ret/Io"},
- {true,"priv/erased/Ret/Ok"},
- {true,"priv/erased/Ret/id"}]
+["priv/normal/id"]
+{"normal","PASSED",
+ [{[],"priv/normal/Bool/@"},
+  {[],"priv/normal/Bool/False"},
+  {[],"priv/normal/Bool/True"},
+  {[],"priv/normal/Bool/[&&]"},
+  {[],"priv/normal/Bool/[||]"},
+  {[],"priv/normal/Bool/and"},
+  {[],"priv/normal/Bool/eif"},
+  {[],"priv/normal/Bool/eiff"},
+  {[],"priv/normal/Bool/if"},
+  {[],"priv/normal/Bool/iff"},
+  {[],"priv/normal/Bool/induction_on.type"},
+  {[],"priv/normal/Bool/not"},
+  {[],"priv/normal/Bool/or"},
+  {[],"priv/normal/Cmd/@"},
+  {[],"priv/normal/Cmd/Bind"},
+  {[],"priv/normal/Cmd/Monad"},
+  {[],"priv/normal/Cmd/Monad.old"},
+  {[],"priv/normal/Cmd/Pure"},
+  {[],"priv/normal/Cmd/[>>=]"},
+  {[],"priv/normal/Cmd/embed"},
+  {[],"priv/normal/Cmd/lift"},
+  {[],"priv/normal/Cmd/map"},
+  {[],"priv/normal/Cmd/sequence_"},
+  {[],[...]},
+  {[],...},
+  {...}|...]}
 ```
