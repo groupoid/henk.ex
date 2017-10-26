@@ -69,9 +69,14 @@ convert([$:|T],Acc) -> convert(T,[61498|Acc]);
 convert([$||T],Acc) -> convert(T,[61564|Acc]);
 convert([H|T],Acc)  -> convert(T,[H|Acc]).
 
+on_compile(App, [_,Type,Ctor|_]) ->
+    [ ets:delete(X,lists:concat([Type,"/",Ctor])) || X <- [term, type, norm]];
+on_compile(App, Rest) -> ok.
+
 opt()        -> [ set, named_table, { keypos, 1 }, public ].
 tables()     -> [ term, norm, type, erased ].
-ets_boot()   -> [ ets:new(T,opt()) || T <- tables() ].
+ets_boot()   -> application:set_env(active,compile_on_priv,true),
+                application:set_env(active,on_compile,{?MODULE,on_compile}), [ ets:new(T,opt()) || T <- tables() ].
 boot()       -> ets_boot(), [ code:del_path(S) || S <- code:get_path(), string:str(S,"stdlib") /= 0 ].
 unicode()    -> io:setopts(standard_io, [{encoding, unicode}]).
 main(A)      -> unicode(), case A of [] -> mad:main(["sh"]); A -> console(A) end.
