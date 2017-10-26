@@ -20,7 +20,7 @@ Session example with Om:
 > om:modes().
 ["erased","girard","hurkens","normal","setoids"]
 > om:mode("normal").
-> om:extract().
+>  om_extract:extract("priv/normal").
 >
 Active: module loaded: {reloaded,'List'}
 Active: module loaded: {reloaded,'Maybe'}
@@ -150,12 +150,6 @@ Extract Erlang Modules:
 > om:extract("priv/normal/List").
 ok
 Active: module loaded: {reloaded,'List'}
-> om:mode("normal").
-> om:extract().
-ok
-Active: module loaded: {reloaded,'Bool'}
-Active: module loaded: {reloaded,'List'}
-```
 
 ### main
 
