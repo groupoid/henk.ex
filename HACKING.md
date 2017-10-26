@@ -20,7 +20,7 @@ Session example with Om:
 > om:modes().
 ["erased","girard","hurkens","normal","setoids"]
 > om:mode("normal").
-> om:extract().
+>  om_extract:extract("priv/normal").
 >
 Active: module loaded: {reloaded,'List'}
 Active: module loaded: {reloaded,'Maybe'}
@@ -74,6 +74,8 @@ This information is subject to change.
 Set the environment folder:
 
 ```erlang
+> om:modes().
+["normal","setoids","posets"]
 > om:mode("normal").
 ok
 ```
@@ -83,24 +85,37 @@ ok
 Inline some terms:
 
 ```erlang
-> om:a("\\(x:*)->\\(y:#List/id)->y").
+> om:a("\\(x:*)->\\(y:#List/pure)->y").
 {{"λ",{x,0}},
- {{star,1},
-  {{"λ",{y,0}},
-   {{{"λ",{'X',0}},
-     {{star,1},
-      {{"λ",{'Cons',0}},
-       {{star,1},{{"λ",{'Nil',0}},{{star,1},{var,{'X',0}}}}}}}},
-    {var,{y,0}}}}}}
+ {{star,1},{{"λ",{y,0}},{{remote,"List/pure"},{var,{y,0}}}}}}
 ```
 
-### term
+### norm
 
-Check how term inlining and loading works:
+Normalization expand remote terms:
 
 ```erlang
- > om:a("#List/map") == om:term("List/map").
- true
+11> om:a("#List/map").
+{remote,"List/map"}
+12> om:norm(om:a("#List/map")).
+{{"λ",{a,0}},
+ {{star,1},
+  {{"λ",{b,0}},
+   {{star,1},
+    {{"λ",{f,0}},
+     {{{"∀",{'_',0}},{{var,{a,0}},{var,{b,0}}}},
+      {{"λ",{xs,0}},
+       {{{"∀",{'List',0}},
+         {{star,1},
+          {{"∀",{'Cons',0}},
+           {{{"∀",{head,0}},{{var,{a,0}},{{"∀",{...}},{{...},...}}}},
+            {{"∀",{'Nil',0}},{{var,{'List',...}},{var,{...}}}}}}}},
+        {app,{{app,{{app,{{var,{xs,0}},{{"∀",{...}},{{...},...}}}},
+                    {{"λ",{head,0}},{{var,{a,...}},{{[...],...},{...}}}}}},
+              {{"λ",{'List',0}},
+               {{star,1},
+                {{"λ",{'Cons',0}},
+                 {{{[...],...},{...}},{{...},...}}}}}}}}}}}}}}}
 ```
 
 ### show
@@ -108,29 +123,58 @@ Check how term inlining and loading works:
 Use internal functions:
 
 ```erlang
-> om:show("priv/normal/List/@").
+>  om:show("List/@").
 
-===[ File: priv/normal/List/@ ]==========
-Cat: λ(a : *) → ∀(List : *) → ∀(Cons : ∀(head : a) → ∀(tail : List) → List) → ∀(Nil : List) → List
-Term: 279
-{{"λ",{a,0}},
+( λ (A: *1)
+→ ( ∀ (List: *1)
+→ ( ∀ (Cons: ( ∀ (Head: A)
+  → ( ∀ (Tail: (List
+    → List)
+)
+  → List)))
+→ ( ∀ (Nil: List)
+→ List))))
+
+{{"λ",{'A',0}},
  {{star,1},
   {{"∀",{'List',0}},
    {{star,1},
     {{"∀",{'Cons',0}},
-     {{{"∀",{head,0}},
-       {{var,{a,0}},
-        {{"∀",{tail,0}},{{var,{'List',0}},{var,{'List',0}}}}}},
+     {{{"∀",{'Head',0}},
+       {{var,{'A',0}},
+        {{"∀",{'Tail',0}},
+         {{"→",{{var,{'List',0}},{var,{'List',0}}}},
+          {var,{'List',0}}}}}},
       {{"∀",{'Nil',0}},{{var,{'List',0}},{var,{'List',0}}}}}}}}}}
 ```
 
-### parse
+### parse, str
 
-Parse raw expressions:
+Wrong Typecheck Example:
 
 ```erlang
-> om:parse("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))").
-{[],
+> A = om:str("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))").
+[pi,open,
+ {var,{a,0}},
+ colon,
+ {star,1},
+ close,arrow,lambda,open,
+ {var,{b,0}},
+ colon,
+ {star,1},
+ arrow,
+ {star,1},
+ arrow,
+ {star,1},
+ close,arrow,lambda,open,
+ {var,{c,0}},
+ colon,
+ {star,1},
+ arrow,
+ {var,{a,0}},
+ close,arrow,open,open|...]
+> B = om:parse(A).
+{{3,3},
  [{{"∀",{a,0}},
    {{star,1},
     {{"λ",{b,0}},
@@ -140,6 +184,8 @@ Parse raw expressions:
         {app,{{app,{{app,{{var,{b,0}},{app,{{var,...},{...}}}}},
                     {var,{a,0}}}},
               {var,{a,0}}}}}}}}}}]}
+> om:type(om:snd(B)).
+** exception error: no match of right hand side value {error,{"==",{star,1},{var,{a,0}}}}
 ```
 
 ### extract
@@ -147,14 +193,33 @@ Parse raw expressions:
 Extract Erlang Modules:
 
 ```erlang
-> om:extract("priv/normal/List").
+> om_extract:extract("priv/normal/List").
 ok
 Active: module loaded: {reloaded,'List'}
-> om:mode("normal").
-> om:extract().
+> om_extract:extract("priv/normal").
 ok
-Active: module loaded: {reloaded,'Bool'}
-Active: module loaded: {reloaded,'List'}
+>
+Active: module loaded: {loaded_new,normal}
+Active: module loaded: {loaded_new,'Prod'}
+Active: module loaded: {loaded_new,'Cmd'}
+Active: module loaded: {loaded_new,'Unit'}
+Active: module loaded: {loaded_new,'Prop'}
+Active: module loaded: {loaded_new,'Monoid'}
+Active: module loaded: {loaded_new,'Nat'}
+Active: module loaded: {loaded_new,'Path'}
+Active: module loaded: {loaded_new,'IO'}
+Active: module loaded: {loaded_new,'IOI'}
+Active: module loaded: {loaded_new,'Maybe'}
+Active: module loaded: {loaded_new,'Simple'}
+Active: module loaded: {loaded_new,'Frege'}
+Active: module loaded: {loaded_new,'Mon'}
+Active: module loaded: {loaded_new,'Sigma'}
+Active: module loaded: {loaded_new,'List'}
+Active: module loaded: {loaded_new,'Bool'}
+Active: module loaded: {loaded_new,'StrictPos'}
+Active: module loaded: {loaded_new,'Morte'}
+Active: module loaded: {loaded_new,'String'}
+Active: module loaded: {loaded_new,'Monad'}
 ```
 
 ### main
@@ -184,20 +249,39 @@ Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 
 Typechecking:
 
-```
-> om:type("DEP.AND.PR-L-test").
-** exception error: ["∀",
-                     {app,{{{"λ",{'B',0}},
-                            {{{"∀",{"_",0}},{{var,{'A',0}},{star,1}}},
-                             {{"∀",{'AND',0}},
-                              {{star,1},
-                               {{"∀",{pair,0}},
-                                {{{"∀",{a,0}},
-                                  {{var,{'A',0}},
-                                   {{"∀",{b,0}},
-                                    {{app,{{var,{'B',...}},{var,{...}}}},{var,{'AND',0}}}}}},
-                                 {var,{'AND',0}}}}}}}},
-                           {var,{'B',0}}}}]
+```erlang
+> om:type(om:a("#IO/[>>=]")).
+{{"∀",{a,0}},
+ {{star,1},
+  {{"∀",{b,0}},
+   {{star,1},
+    {{"∀",{m,0}},
+     {{{"∀",{'IO',0}},
+       {{star,1},
+        {{"∀",{'GetLine_',0}},
+         {{{"∀",{'_',0}},
+           {{{"∀",{'_',0}},
+             {{{"∀",{'List',0}},{{star,1},{{...},...}}},{var,{'IO',0}}}},
+            {var,{'IO',0}}}},
+          {{"∀",{'PutLine_',0}},
+           {{{"∀",{'_',0}},
+             {{{"∀",{'List',...}},{{star,...},{...}}},
+              {{"∀",{...}},{{...},...}}}},
+            {{"∀",{'Pure_',0}},
+             {{{"∀",{...}},{{...},...}},{var,{...}}}}}}}}}},
+      {{"∀",{f,0}},
+       {{{"∀",{'_',0}},
+         {{var,{a,0}},
+          {{"∀",{'IO',0}},
+           {{star,1},
+            {{"∀",{'GetLine_',0}},
+             {{{"∀",{...}},{{...},...}},{{[...],...},{...}}}}}}}},
+        {{"∀",{'IO',0}},
+         {{star,1},
+          {{"∀",{'GetLine_',0}},
+           {{{"∀",{'_',0}},{{{"∀",{...}},{{...},...}},{var,{...}}}},
+            {{"∀",{'PutLine_',0}},
+             {{{[...],...},{...}},{{...},...}}}}}}}}}}}}}}}
 ```
 
 ### scan
@@ -205,25 +289,35 @@ Typechecking:
 Scan modules in current mode:
 
 ```erlang
-> om:mode("erased").
+> om:mode("normal").
 ok
 > om:scan().
-PASSED
-[{true,"priv/erased/Bool/False"},
- {true,"priv/erased/Bool/True"},
- {true,"priv/erased/Bool/id"},
- {true,"priv/erased/List/Cons"},
- {true,"priv/erased/List/Nil"},
- {true,"priv/erased/List/id"},
- {true,"priv/erased/Nat/Succ"},
- {true,"priv/erased/Nat/Zero"},
- {true,"priv/erased/Nat/id"},
- {true,"priv/erased/Prod/Mk"},
- {true,"priv/erased/Prod/id"},
- {true,"priv/erased/Prod/pr1"},
- {true,"priv/erased/Prod/pr2"},
- {true,"priv/erased/Ret/Error"},
- {true,"priv/erased/Ret/Io"},
- {true,"priv/erased/Ret/Ok"},
- {true,"priv/erased/Ret/id"}]
+["priv/normal/id"]
+{"normal","PASSED",
+ [{[],"priv/normal/Bool/@"},
+  {[],"priv/normal/Bool/False"},
+  {[],"priv/normal/Bool/True"},
+  {[],"priv/normal/Bool/[&&]"},
+  {[],"priv/normal/Bool/[||]"},
+  {[],"priv/normal/Bool/and"},
+  {[],"priv/normal/Bool/eif"},
+  {[],"priv/normal/Bool/eiff"},
+  {[],"priv/normal/Bool/if"},
+  {[],"priv/normal/Bool/iff"},
+  {[],"priv/normal/Bool/induction_on.type"},
+  {[],"priv/normal/Bool/not"},
+  {[],"priv/normal/Bool/or"},
+  {[],"priv/normal/Cmd/@"},
+  {[],"priv/normal/Cmd/Bind"},
+  {[],"priv/normal/Cmd/Monad"},
+  {[],"priv/normal/Cmd/Monad.old"},
+  {[],"priv/normal/Cmd/Pure"},
+  {[],"priv/normal/Cmd/[>>=]"},
+  {[],"priv/normal/Cmd/embed"},
+  {[],"priv/normal/Cmd/lift"},
+  {[],"priv/normal/Cmd/map"},
+  {[],"priv/normal/Cmd/sequence_"},
+  {[],[...]},
+  {[],...},
+  {...}|...]}
 ```
