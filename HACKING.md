@@ -153,12 +153,39 @@ Use internal functions:
 Wrong Typecheck Example:
 
 ```erlang
-4> om:type(om:snd(om:parse(om:str("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))")))).
+> A = om:str("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))").
+[pi,open,
+ {var,{a,0}},
+ colon,
+ {star,1},
+ close,arrow,lambda,open,
+ {var,{b,0}},
+ colon,
+ {star,1},
+ arrow,
+ {star,1},
+ arrow,
+ {star,1},
+ close,arrow,lambda,open,
+ {var,{c,0}},
+ colon,
+ {star,1},
+ arrow,
+ {var,{a,0}},
+ close,arrow,open,open|...]
+> B = om:parse(A).
+{{3,3},
+ [{{"∀",{a,0}},
+   {{star,1},
+    {{"λ",{b,0}},
+     {{"→",{{star,1},{"→",{{star,1},{star,1}}}}},
+      {{"λ",{c,0}},
+       {{"→",{{star,1},{var,{a,0}}}},
+        {app,{{app,{{app,{{var,{b,0}},{app,{{var,...},{...}}}}},
+                    {var,{a,0}}}},
+              {var,{a,0}}}}}}}}}}]}
+> om:type(om:snd(B)).
 ** exception error: no match of right hand side value {error,{"==",{star,1},{var,{a,0}}}}
-     in function  om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 70)
-     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 66)
-     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 65)
-     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 62)
 ```
 
 ### extract
@@ -166,9 +193,33 @@ Wrong Typecheck Example:
 Extract Erlang Modules:
 
 ```erlang
-> om:extract("priv/normal/List").
+> om_extract:extract("priv/normal/List").
 ok
 Active: module loaded: {reloaded,'List'}
+> om_extract:extract("priv/normal").
+ok
+>
+Active: module loaded: {loaded_new,normal}
+Active: module loaded: {loaded_new,'Prod'}
+Active: module loaded: {loaded_new,'Cmd'}
+Active: module loaded: {loaded_new,'Unit'}
+Active: module loaded: {loaded_new,'Prop'}
+Active: module loaded: {loaded_new,'Monoid'}
+Active: module loaded: {loaded_new,'Nat'}
+Active: module loaded: {loaded_new,'Path'}
+Active: module loaded: {loaded_new,'IO'}
+Active: module loaded: {loaded_new,'IOI'}
+Active: module loaded: {loaded_new,'Maybe'}
+Active: module loaded: {loaded_new,'Simple'}
+Active: module loaded: {loaded_new,'Frege'}
+Active: module loaded: {loaded_new,'Mon'}
+Active: module loaded: {loaded_new,'Sigma'}
+Active: module loaded: {loaded_new,'List'}
+Active: module loaded: {loaded_new,'Bool'}
+Active: module loaded: {loaded_new,'StrictPos'}
+Active: module loaded: {loaded_new,'Morte'}
+Active: module loaded: {loaded_new,'String'}
+Active: module loaded: {loaded_new,'Monad'}
 ```
 
 ### main
