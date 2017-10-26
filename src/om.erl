@@ -109,7 +109,8 @@ pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
 all()        -> lists:flatten([ begin
-                ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]).
+                ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]),
+                application:stop(om), application:start(om), om:mode("normal").
 syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
 wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A}
                      || {A,B} <- ets:tab2list(filesystem), lists:sublist(A,length(Q)) == Q ]).
