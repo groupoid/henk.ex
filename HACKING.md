@@ -124,22 +124,17 @@ Term: 279
       {{"∀",{'Nil',0}},{{var,{'List',0}},{var,{'List',0}}}}}}}}}}
 ```
 
-### parse
+### parse, str
 
-Parse raw expressions:
+Wrong Typecheck Example:
 
 ```erlang
-> om:parse("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))").
-{[],
- [{{"∀",{a,0}},
-   {{star,1},
-    {{"λ",{b,0}},
-     {{"→",{{star,1},{"→",{{star,1},{star,1}}}}},
-      {{"λ",{c,0}},
-       {{"→",{{star,1},{var,{a,0}}}},
-        {app,{{app,{{app,{{var,{b,0}},{app,{{var,...},{...}}}}},
-                    {var,{a,0}}}},
-              {var,{a,0}}}}}}}}}}]}
+4> om:type(om:snd(om:parse(om:str("∀ (a: *) → λ (b: * → * → *) → λ (c: * → a) → (((b (c a)) a) a))")))).
+** exception error: no match of right hand side value {error,{"==",{star,1},{var,{a,0}}}}
+     in function  om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 70)
+     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 66)
+     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 65)
+     in call from om_type:type/2 (/Users/maxim/depot/groupoid/om/src/om_type.erl, line 62)
 ```
 
 ### extract
@@ -150,6 +145,7 @@ Extract Erlang Modules:
 > om:extract("priv/normal/List").
 ok
 Active: module loaded: {reloaded,'List'}
+```
 
 ### main
 
