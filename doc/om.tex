@@ -13,24 +13,23 @@
 \end{minipage}
 \begin{minipage}[t]{12cm}
     \begin{flushright}
-        \textsc{{\Large {\bf {\color{Blue}syn}{\color{OrangeRed}rc} research center s.r.o.}}}\\
-        \textsc{Roháčova 141/18, Praha 3 13000, Czech Republic}\\
+        \textsc{{\Large Groupoid Infinity}}\\
+        \textsc{Kyiv, Ukraine}\\
     \end{flushright}
 \end{minipage}
 
 \vspace{3cm}
-
-    \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types
-                               and Strong Normalization for Erlang/OTP applications.\\}\par
-    \vspace{0.3cm} {\Large Technical Article\par}
-    \vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
-    \vspace{4cm}   {\Large Kyiv 2016---2017}
+\vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types and Strong Normalization for Erlang/OTP applications.\\}\par
+\vspace{0.3cm} {\Large Technical Article\par}
+\vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
+\vspace{4cm}   {\Large Kyiv 2016---2017}
 
 \end{center}
 
 \newpage
 \vspace{2cm}
 \tableofcontents
+
 \newpage
 \section{Introduction}
 
@@ -38,7 +37,6 @@
 
 \subsection{History}
 
-%\vspace{0.5cm}
 \paragraph{}
 {\bf LISP}. Untyped lambda calculus was discovered as an inner language of the space
 at origin (Curry, Church, 1932). This language was manifested as LISP (McCarthy, 1958)
@@ -68,13 +66,19 @@ and Calculus of Inductive Constructions for modeling polynomial functors of well
 Some of them are automated and some are trying to be and general purpose
 programming languages with proving facilities, like Idris, Coq (coq.io), Agda (M-Alonso).
 
+\paragraph{}
+{\bf Cubical Type Theory}
+The further extensions of MLTT theory is a Homotopy Types needed
+for reasoning about abstract shapes and multidimentional path types.
+The Cubical approach was chosen in favour of Globular and Simplical
+due to computability of Voevodsky's univalence axiom.
+
 \subsection{Background}
 From the partical point of view there are exists two approaches.
 One involve the usage of two languages: meta language for your models
-and separate language for prover, like in {\bf HOL}, {\bf Andromeda}. The second
-approach propose embedding models into single language. Such langauge should be powerful
-enough for proving properties of higher inductive types. The only available prover that fits
-this criteria today is {\bf cubicaltt}.
+and separate language for prover, like in {\bf HOL}, {\bf Andromeda}.
+The second approach propose embedding models into single language.  The only available prover that fits
+this criteria today is {\bf cubicaltt}. The more 
 
 \newpage
 \section{Motivation and Vision}
@@ -120,9 +124,9 @@ normalization properties and extraction to Erlang/OTP bytecode.
 \tikzstyle{every initial by arrow}=[]
     \node (a) at (0,0) {\bf Interpreter};
     \node (b) at (0,5) {\bf Extractor};
-    \node (c) at (5,0) {\bf Prover};
+    \node (c) at (5,0) {\bf Induction};
     \node (d) at (5,5) {\bf Library};
-    \node (e) at (2.5,2.5) {\bf OM};
+    \node (e) at (2.5,2.5) {\bf PTS};
     \draw [->] (b) to node [left] {Runs} (a);
     \draw [->] (c) to node [below] {Compiles} (a);
     \draw [->] (c) to node [above] {Impl} (a);
@@ -294,37 +298,37 @@ The only computation rule of Pi type is called beta-reduction.
 \end{lstlisting}
 
 
-                        \begin{equation}
-                        \tag{$\Pi$-formation}
-                        \dfrac
-                        {x:A \vdash B : Type}
-                        {\Pi\ (x:A) \rightarrow B : Type}
-                        \end{equation}
+\begin{equation}
+\tag{$\Pi$-formation}
+\dfrac
+{x:A \vdash B : Type}
+{\Pi\ (x:A) \rightarrow B : Type}
+\end{equation}
 
-                        \begin{equation}
-                        \tag{$\lambda$-intro}
-                        \dfrac
-                        {x:A \vdash b : B}
-                        {\lambda\ (x:A) \rightarrow b : \Pi\ (x: A) \rightarrow B }
-                        \end{equation}
+\begin{equation}
+\tag{$\lambda$-intro}
+\dfrac
+{x:A \vdash b : B}
+{\lambda\ (x:A) \rightarrow b : \Pi\ (x: A) \rightarrow B }
+\end{equation}
 
-                        \begin{equation}
-                        \tag{$App$-elimination}
-                        \dfrac
-                        {f: (\Pi\ (x:A) \rightarrow B)\ \ \ a: A}
-                        {f\ a : B\ [a/x]}
-                        \end{equation}
+\begin{equation}
+\tag{$App$-elimination}
+\dfrac
+{f: (\Pi\ (x:A) \rightarrow B)\ \ \ a: A}
+{f\ a : B\ [a/x]}
+\end{equation}
 
-                        \begin{equation}
-                        \tag{$\beta$-computation}
-                        \dfrac
-                        {x:A \vdash b: B\ \ \ a:A}
-                        {(\lambda\ (x:A) \rightarrow b)\ a = b\ [a/x] : B\ [a/x]}
-                        \end{equation}
+\begin{equation}
+\tag{$\beta$-computation}
+\dfrac
+{x:A \vdash b: B\ \ \ a:A}
+{(\lambda\ (x:A) \rightarrow b)\ a = b\ [a/x] : B\ [a/x]}
+\end{equation}
 
 \vspace{0.5cm}
-                    This language could be embedded in itself and used
-                    as Logical Framework for the Pi type:
+This language could be embedded in itself and used
+as Logical Framework for the Pi type:
 
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
@@ -342,30 +346,35 @@ record Pi (A: Type) :=
 
 \newpage
 
-   \subsection{Hierarchy}
+\subsection{Hierarchy}
+H returns the target Universe of B term dependendance on A. Thereare two dependance rules known
+as predicative and impredicative which returns max universe or universe of last term respectively.
 
 \begin{lstlisting}[mathescape=true]
-dep Arg Out impredicative $\rightarrow$ Out
-dep Arg Out predicative   $\rightarrow$ max Arg Out
+dep A B impredicative $\rightarrow$ B
+dep A B predicative   $\rightarrow$ max A B
 
 h Arg Out $\rightarrow$ dep Arg Out om:hierarchy(impredicative)
 \end{lstlisting}
 
-   \subsection{Universes}
+\subsection{Universes}
+Star returns the number of Universe. If argument is not Universe it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 star (:star,N) $\rightarrow$ N
 star _         $\rightarrow$ (:error, "*")
 \end{lstlisting}
 
-   \subsection{Functions}
+\subsection{Functions}
+Func returns true if the argument is functional space. Otherwise returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 func ((:forall,),(I,O)) $\rightarrow$ true
 func T                  $\rightarrow$ (:error,(:forall,T))
 \end{lstlisting}
 
-   \subsection{Variables}
+\subsection{Variables}
+Var returns true if the var $N$ is defined in dictionary $B$. Otherwise returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 var N B                $\rightarrow$ var N B (proplists:is_defined N B)
@@ -373,7 +382,8 @@ var N B true           $\rightarrow$ true
 var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)))
 \end{lstlisting}
 
-   \subsection{Shift}
+\subsection{Shift}
+Shift renames var N in N
 
 \begin{lstlisting}[mathescape=true]
 sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
@@ -383,7 +393,7 @@ sh (Q,(L,R),N,P)                $\rightarrow$ (Q,sh L N P,sh R N P)
 sh (T,N,P)                      $\rightarrow$ T
 \end{lstlisting}
 
-   \subsection{Substitution}
+\subsection{Substitution}
 
 \begin{lstlisting}[mathescape=true]
 sub Term Name Value               $\rightarrow$ sub Term Name Value 0
@@ -398,7 +408,7 @@ sub (:var,           (N,I)) N V L when I>L $\rightarrow$ (:var,(N,I-1))
 sub T                       _ _ _ $\rightarrow$ T.
 \end{lstlisting}
 
-   \subsection{Normalization}
+\subsection{Normalization}
 
 \begin{lstlisting}[mathescape=true]
 norm :none                   $\rightarrow$ :none
@@ -413,7 +423,7 @@ norm ((:lambda,(N,0)),(I,O)) $\rightarrow$ ((:lambda,(N,0)),    (norm I,norm O))
 norm T                       $\rightarrow$ T
 \end{lstlisting}
 
-   \subsection{Definitional Equality}
+\subsection{Definitional Equality}
 
 \begin{lstlisting}[mathescape=true]
 eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
@@ -450,20 +460,41 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
 
 \subsection{Target Erlang VM and LLVM platforms}
 
-   \paragraph{}
-   This works expect to compile to limited target platforms. For now Erlang, Haskell and LLVM is awaiting.
-   Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines.
+\paragraph{}
+This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
+Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines. This language
+allows you to define trusted operations in System F and extract this routines to Erlang/OTP platform
+and plug as trusted resourses. As example we also provide infinite coinductive process creation
+and inductive shell that linked to Erlang/OTP IO functions directly.
+
+\subsection{Recursive Example}
+
+\begin{lstlisting}[mathescape=true]
+(#IO/replicateM #Nat/Five) ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine)
+\end{lstlisting}
+
+\subsection{Corecursive Example}
+
+\begin{lstlisting}[mathescape=true]
+( \\ (r: *1)
+-> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
+    ( \\ (m: (#Maybe/@ #IOI/data))
+      -> (((((#Maybe/maybe #IOI/data) m) ((#IOI/F r) (#Maybe/@ #IOI/data)))
+          ( \\ (str: #IOI/data)
+            -> ((((#IOI/putLine r) (#Maybe/@ #IOI/data)) str) (#Maybe/Nothing #IOI/data))))
+         (((#IOI/getLine r) (#Maybe/@ #IOI/data)) (#Maybe/Just #IOI/data))))))
+\end{lstlisting}
+
 
 \newpage
+\section{Language with Inductive Types}
 
-   \section{Language with Inductive Types}
+Exe is a general purpose functional language with functors,
+lambdas on types, recursive algebraic types, higher order functions,
+corecursion, free monad for effects encoding. It compiles
+to a small MLTT core of dependent type system with inductive types and equality.
 
-   Exe is a general purpose functional language with functors,
-   lambdas on types, recursive algebraic types, higher order functions,
-   corecursion, free monad for effects encoding. It compiles
-   to a small MLTT core of dependent type system with inductive types and equality.
-
-   \subsection{BNF}
+\subsection{BNF}
 
 \begin{lstlisting}[mathescape=true]
     <> ::= #option

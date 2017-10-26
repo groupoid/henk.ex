@@ -21,3 +21,8 @@ sandbox
 /tale.pdf
 *.synctex.gz
 /log
+*.toc
+*.aux
+*.fdb_latexmk
+*.fls
+*.out

@@ -108,7 +108,11 @@ getLine() ->           fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:a
 putLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), ch:ap(IO,[S]) end end.
 pure()    ->           fun(IO) -> IO end.
 
+cogetLine() ->         fun(IO)-> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
+coputLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), coma() end end.
+copure() -> fun (_) -> fun (X) -> X end end.
 ma() -> ap('Morte':recursive(),[getLine(),putLine(),pure(),ch:nil()]).
+coma() -> ap('Morte':corecursive(),[copure(),cogetLine(),coputLine(),pure(),copure()]).
 
 % marshaling sample
 
