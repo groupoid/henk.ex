@@ -1,4 +1,4 @@
   λ (FIO : *)
-→ λ (GetLine_ : (FIO → FIO) → FIO)
+→ λ (GetLine_ : (#IO/data → FIO) → FIO)
 → λ (PutLine_ : #IO/data → FIO → FIO)
 → GetLine_
