@@ -75,28 +75,14 @@ This information is subject to change.
 ### Result AST
 
 ```erlang
-     {  star,          Universe  }  -- universe
-     { {"λ",{Name,I}}, {In,Out}  }  -- lambda
-     { {"∀",{Name,I}}, {In,Out}  }  -- pi
-     {  "→",           {In,Out}  }  -- anonymous pi
-     {  var,           {Name,I}  }  -- var
-     {  app,           {Fun,Arg} }  -- app
-```
-
-### Intermediate AST
-
-```erlang
-     {  open     }
-     {  close    }
-     {  arrow    }
-     {  colon    }
-     {  lambda   }
-     {  pi       }
-     {  var,      {Name,Depth} }
-     {  app,      {Fun,Arg}    }
-     {  typevar,  {Name,Depth} }    -- argument name,
-                                       transforms to lambda or pi
-                                       during rewind
+data pts
+    = star             (n: nat)
+    | var    (n: name) (n: nat)
+    | remote (n: name) (n: nat)
+    | app                       (f a: pts)
+    | lambda (x: name)          (d c: pts)
+    | arrow                     (d c: pts)
+    | pi     (x: name)          (d c: pts)
 ```
 
 ## Commands
