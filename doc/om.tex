@@ -20,9 +20,9 @@
 
 \vspace{3cm}
 \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types and Strong Normalization for Erlang/OTP applications.\\}\par
-\vspace{0.3cm} {\Large Technical Article\par}
-\vspace{0.3cm} {\Large Maxim Sokhatsky, Synrc Research Center\par}
-\vspace{4cm}   {\Large Kyiv 2016---2017}
+%\vspace{0.3cm} {\Large Technical Article\par}
+\vspace{0.3cm} {\Large Maxim Sokhatsky\par}
+\vspace{4cm}   {\Large 2016---2017}
 
 \end{center}
 
@@ -76,9 +76,9 @@ due to computability of Voevodsky's univalence axiom.
 \subsection{Background}
 From the partical point of view there are exists two approaches.
 One involve the usage of two languages: meta language for your models
-and separate language for prover, like in {\bf HOL}, {\bf Andromeda}.
-The second approach propose embedding models into single language.  The only available prover that fits
-this criteria today is {\bf cubicaltt}. The more 
+and separate language for prover, like in {\bf HOL}, {\bf Andromeda} or {\bf NuPRL}, {\bf TLA+}, {\bf Twelf}.
+The second approach propose embedding models into a unified language.
+And certified programs are extrated as proofs from that models. This is a land of MLTT provers.
 
 \newpage
 \section{Motivation and Vision}
@@ -117,16 +117,18 @@ Such encoding works with dependent types and its consistency is proved in Lean m
 \paragraph{}
 {\bf General Architecture}. This article covers only the central part of
 of the proving system, the {\bf OM} intermediate language with strong
-normalization properties and extraction to Erlang/OTP bytecode.
+normalization properties and extraction to {\bf Erlang/OTP} bytecode.
+Also we describe briefly the prototype of {\bf EXE} language enriched
+with inductive constructions.
 
 \begin{center}
 \begin{tikzpicture}
 \tikzstyle{every initial by arrow}=[]
-    \node (a) at (0,0) {\bf Interpreter};
+    \node (a) at (0,0) {\bf Erlang/OTP};
     \node (b) at (0,5) {\bf Extractor};
-    \node (c) at (5,0) {\bf Induction};
+    \node (c) at (5,0) {\bf EXE};
     \node (d) at (5,5) {\bf Library};
-    \node (e) at (2.5,2.5) {\bf PTS};
+    \node (e) at (2.5,2.5) {\bf OM};
     \draw [->] (b) to node [left] {Runs} (a);
     \draw [->] (c) to node [below] {Compiles} (a);
     \draw [->] (c) to node [above] {Impl} (a);
@@ -635,7 +637,7 @@ $spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
      O ::= I | ( O ) |
            U | O $\rightarrow$ O
              | O O
-             | $\lambda$ ( I : O ) $\rightarrow$ O
+             | fun ( I : O ) $\rightarrow$ O
              | fst O
              | snd O
              | id O O O
@@ -655,7 +657,7 @@ $spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
 \subsection{AST}
 
 The model in Cubical and Coq of the Exe language is available at
-infinity\footnote{https://github.com/groupoid/infinity/tree/master/base}
+infinity\footnote{https://github.com/groupoid/infinity/tree/master/priv}
 repository of groupoid organization.
 
 \begin{lstlisting}[mathescape=true]
