@@ -74,6 +74,8 @@ This information is subject to change.
 Set the environment folder:
 
 ```erlang
+> om:modes().
+["normal","setoids","posets"]
 > om:mode("normal").
 ok
 ```
@@ -83,24 +85,37 @@ ok
 Inline some terms:
 
 ```erlang
-> om:a("\\(x:*)->\\(y:#List/id)->y").
+> om:a("\\(x:*)->\\(y:#List/pure)->y").
 {{"λ",{x,0}},
- {{star,1},
-  {{"λ",{y,0}},
-   {{{"λ",{'X',0}},
-     {{star,1},
-      {{"λ",{'Cons',0}},
-       {{star,1},{{"λ",{'Nil',0}},{{star,1},{var,{'X',0}}}}}}}},
-    {var,{y,0}}}}}}
+ {{star,1},{{"λ",{y,0}},{{remote,"List/pure"},{var,{y,0}}}}}}
 ```
 
-### term
+### norm
 
-Check how term inlining and loading works:
+Normalization expand remote terms:
 
 ```erlang
- > om:a("#List/map") == om:term("List/map").
- true
+11> om:a("#List/map").
+{remote,"List/map"}
+12> om:norm(om:a("#List/map")).
+{{"λ",{a,0}},
+ {{star,1},
+  {{"λ",{b,0}},
+   {{star,1},
+    {{"λ",{f,0}},
+     {{{"∀",{'_',0}},{{var,{a,0}},{var,{b,0}}}},
+      {{"λ",{xs,0}},
+       {{{"∀",{'List',0}},
+         {{star,1},
+          {{"∀",{'Cons',0}},
+           {{{"∀",{head,0}},{{var,{a,0}},{{"∀",{...}},{{...},...}}}},
+            {{"∀",{'Nil',0}},{{var,{'List',...}},{var,{...}}}}}}}},
+        {app,{{app,{{app,{{var,{xs,0}},{{"∀",{...}},{{...},...}}}},
+                    {{"λ",{head,0}},{{var,{a,...}},{{[...],...},{...}}}}}},
+              {{"λ",{'List',0}},
+               {{star,1},
+                {{"λ",{'Cons',0}},
+                 {{{[...],...},{...}},{{...},...}}}}}}}}}}}}}}}
 ```
 
 ### show
@@ -108,19 +123,28 @@ Check how term inlining and loading works:
 Use internal functions:
 
 ```erlang
-> om:show("priv/normal/List/@").
+>  om:show("List/@").
 
-===[ File: priv/normal/List/@ ]==========
-Cat: λ(a : *) → ∀(List : *) → ∀(Cons : ∀(head : a) → ∀(tail : List) → List) → ∀(Nil : List) → List
-Term: 279
-{{"λ",{a,0}},
+( λ (A: *1)
+→ ( ∀ (List: *1)
+→ ( ∀ (Cons: ( ∀ (Head: A)
+  → ( ∀ (Tail: (List
+    → List)
+)
+  → List)))
+→ ( ∀ (Nil: List)
+→ List))))
+
+{{"λ",{'A',0}},
  {{star,1},
   {{"∀",{'List',0}},
    {{star,1},
     {{"∀",{'Cons',0}},
-     {{{"∀",{head,0}},
-       {{var,{a,0}},
-        {{"∀",{tail,0}},{{var,{'List',0}},{var,{'List',0}}}}}},
+     {{{"∀",{'Head',0}},
+       {{var,{'A',0}},
+        {{"∀",{'Tail',0}},
+         {{"→",{{var,{'List',0}},{var,{'List',0}}}},
+          {var,{'List',0}}}}}},
       {{"∀",{'Nil',0}},{{var,{'List',0}},{var,{'List',0}}}}}}}}}}
 ```
 
