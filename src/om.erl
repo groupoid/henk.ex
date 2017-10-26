@@ -8,6 +8,7 @@
 
 % env
 
+restart()    -> [ application:M(om) || M <- [stop,start] ].
 privdir()    -> application:get_env(om,priv,"priv").
 mode(S)      -> application:set_env(om,mode,S).
 mode()       -> application:get_env(om,mode,"normal").
@@ -25,8 +26,8 @@ help()       -> om_help:help().
 pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
-extract(X)   -> om_extract:extract(X).
-extract()    -> om_extract:extract("priv/normal").
+extract(X)   -> om_extract:extr(X).
+extract()    -> om_extract:extr("normal").
 norm(T)      -> om_type:norm(T).
 eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
@@ -108,9 +109,8 @@ pipe(L)      -> io:format("[~tp]~n",[L]), % workaround for trevis timeout break
 pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
-all()        -> X = lists:flatten([ begin
-                ets_clear(), ets_boot(), om:mode(M), om:scan() end || M <- allmodes() ]),
-                catch begin application:stop(om), application:start(om), om:mode("normal") end,
+all()        -> X = lists:flatten([ begin om:restart(), om:mode(M), om:scan() end || M <- allmodes() ]),
+                om:restart(), om:mode("normal"),
                 X.
 syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
 wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A}
