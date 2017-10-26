@@ -178,7 +178,7 @@ Pack/Unpack 1 000 000 Inductive Nat: {748433,1000000}
 
 Typechecking:
 
-```
+```erlang
 > om:type(om:a("#IO/[>>=]")).
 {{"∀",{a,0}},
  {{star,1},
