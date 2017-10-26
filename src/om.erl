@@ -25,8 +25,8 @@ help()       -> om_help:help().
 pwd(_)       -> mad_repl:cwd().
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
-extract(_)   -> extract().
-extract()    -> om_extract:scan().
+extract(X)   -> om_extract:extract(X).
+extract()    -> om_extract:extract("priv/normal").
 norm(T)      -> om_type:norm(T).
 eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
