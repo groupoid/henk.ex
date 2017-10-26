@@ -8,7 +8,7 @@
 
 % env
 
-restart()    -> [ application:M(om) || M <- [stop,start] ].
+restart()    -> ets_clear(), ets_boot().
 privdir()    -> application:get_env(om,priv,"priv").
 mode(S)      -> application:set_env(om,mode,S).
 mode()       -> application:get_env(om,mode,"normal").
