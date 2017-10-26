@@ -15,17 +15,19 @@ Session example with Om:
 ```erlang
 > om:all().
 ...
+
 > om:scan().
 ...
+
 > om:modes().
-["erased","girard","hurkens","normal","setoids"]
-> om:mode("normal").
->  om_extract:extract("priv/normal").
+["posets","normal","setoids"]
+> om:extract("normal").
 >
 Active: module loaded: {reloaded,'List'}
 Active: module loaded: {reloaded,'Maybe'}
 Active: module loaded: {reloaded,'Nat'}
 Active: module loaded: {reloaded,'Vector'}
+
 > ch:main().
 Zero: 0
 Cons/Nil: [2,1]
@@ -34,6 +36,36 @@ Two: 2
 ok
 Pack/Unpack 1 000 000 Inductive List: {714483,'_'}
 Pack/Unpack 1 000 000 Inductive Nat: {743755,1000000}
+
+```
+
+## Extract IO Sample
+
+```
+> om:show("Morte/recursive").
+
+((#IO/replicateM #Nat/Five) ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine))
+
+{app,{{app,{{remote,"IO/replicateM"},{remote,"Nat/Five"}}},
+      {app,{{app,{{app,{{app,{{remote,"IO/[>>=]"},
+                              {remote,"IO/data"}}},
+                        {remote,"Unit/@"}}},
+                  {remote,"IO/getLine"}}},
+            {remote,"IO/putLine"}}}}}
+
+> ch:ma().
+> 12
+: 12
+> 2341414
+: 2341414
+> kjhfjkashdfk
+: kjhfjkashdfk
+> 13
+: 13
+> 132
+: 132
+#Fun<List.28.113171260>
+
 ```
 
 ## Parser Term Specification
