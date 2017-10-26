@@ -1,5 +1,5 @@
 -module(om).
--description('Infinity CoC Compiler').
+-description('PTS Infinity Compiler').
 -behaviour(supervisor).
 -include("om.hrl").
 -behaviour(application).
