@@ -1,4 +1,4 @@
-\(r : *)
+\(r : *1)
 ->  #IOI/MkIO
     r
     (#Maybe/@ #IOI/data)

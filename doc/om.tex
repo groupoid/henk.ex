@@ -330,9 +330,7 @@ The only computation rule of Pi type is called beta-reduction.
 This language could be embedded in itself and used
 as Logical Framework for the Pi type:
 
-\vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
-
 record Pi (A: Type) :=
        (intro:  (A $\rightarrow$ Type) $\rightarrow$ Type)
        (lambda: (B: A $\rightarrow$ Type) $\rightarrow$ pi A B $\rightarrow$ intro B)
@@ -342,6 +340,21 @@ record Pi (A: Type) :=
        (lamapp: (B: A $\rightarrow$ Type) (p: intro B) $\rightarrow$
                 Path (intro B) (lambda B ($\lambda$ (a:A) $\rightarrow$ app B p a)) p)
 
+\end{lstlisting}
+
+We extend the $PTS\infty$ with remote AST node wich means remote file loading
+from trusted storage, anyway this will be checked by typechecker. We deny recursion
+over remote node. We also add index to var for simplified de Bruin indexes.
+
+\begin{lstlisting}[mathescape=true]
+data pts
+    = star             (n: nat)
+    | var    (n: name) (n: nat)
+    | remote (n: name) (n: nat)
+    | app                       (f a: pts)
+    | lambda (x: name)          (d c: pts)
+    | arrow                     (d c: pts)
+    | pi     (x: name)          (d c: pts)
 \end{lstlisting}
 
 \newpage
@@ -408,39 +421,13 @@ sub (:var,           (N,I)) N V L when I>L $\rightarrow$ (:var,(N,I-1))
 sub T                       _ _ _ $\rightarrow$ T.
 \end{lstlisting}
 
-\subsection{Normalization}
 
-\begin{lstlisting}[mathescape=true]
-norm :none                   $\rightarrow$ :none
-norm :any                    $\rightarrow$ :any
-norm (:app,(F,A))            $\rightarrow$ case norm F of
-                                ((:lambda,(N,0)),(I,O)) $\rightarrow$ norm (subst O N A)
-                                                     NF $\rightarrow$ (:app,(NF,norm A)) end
-norm (:remote,N)             $\rightarrow$ cache (norm N [])
-norm (:arrow,         (I,O)) $\rightarrow$ ((:forall,("_",0)),(norm I,norm O))
-norm ((:forall,(N,0)),(I,O)) $\rightarrow$ ((:forall,(N,0)),    (norm I,norm O))
-norm ((:lambda,(N,0)),(I,O)) $\rightarrow$ ((:lambda,(N,0)),    (norm I,norm O))
-norm T                       $\rightarrow$ T
-\end{lstlisting}
+\subsection{Type Checker}
 
-\subsection{Definitional Equality}
-
-\begin{lstlisting}[mathescape=true]
-eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
-eq (:app,(F1,A1))         (:app,(F2,A2)) $\rightarrow$ let true = eq F1 F2 in eq A1 A2
-eq (:star,N)              (:star,N)      $\rightarrow$ true
-eq (:var,(N,I))           (:var,(N,I))   $\rightarrow$ true
-eq (:remote,N)            (:remote,N)    $\rightarrow$ true
-eq ((:farall,(N1,0)),(I1,O1))
-   ((:forall,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
-eq ((:lambda,(N1,0)),(I1,O1))
-   ((:lambda,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
-eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
-\end{lstlisting}
-
-   \subsection{Type Checker}
+For sure in pure system we should be careful with {\bf :remote} AST node. Remote
+AST nodes like {\bf \#List/Cons or \#List/map} are a remote link to files. So using
+trick one should desire circular dependency over {\bf :remote}. This is denied in
+the system. Same notes apply to normalization and definitional equality.
 
 \begin{lstlisting}[mathescape=true]
 type (:star,N)               _ $\rightarrow$ (:star,N+1)
@@ -457,8 +444,45 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
                                   true = eq I Q in norm (subst O N A)
 \end{lstlisting}
 
+\subsection{Normalization}
 
-\subsection{Target Erlang VM and LLVM platforms}
+Normalization perform substitutions on applications to functions searching
+over all function spaces, performing recursive normalization over the lambda and pi nodes.
+
+\begin{lstlisting}[mathescape=true]
+norm :none                   $\rightarrow$ :none
+norm :any                    $\rightarrow$ :any
+norm (:app,(F,A))            $\rightarrow$ case norm F of
+                                ((:lambda,(N,0)),(I,O)) $\rightarrow$ norm (subst O N A)
+                                                     NF $\rightarrow$ (:app,(NF,norm A)) end
+norm (:remote,N)             $\rightarrow$ cache (norm N [])
+norm (:arrow,         (I,O)) $\rightarrow$ ((:forall,("_",0)),(norm I,norm O))
+norm ((:forall,(N,0)),(I,O)) $\rightarrow$ ((:forall,(N,0)),    (norm I,norm O))
+norm ((:lambda,(N,0)),(I,O)) $\rightarrow$ ((:lambda,(N,0)),    (norm I,norm O))
+norm T                       $\rightarrow$ T
+\end{lstlisting}
+
+\subsection{Definitional Equality}
+
+Definitional Equality simple ensures the erlang term equality.
+
+\begin{lstlisting}[mathescape=true]
+eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
+eq (:app,(F1,A1))         (:app,(F2,A2)) $\rightarrow$ let true = eq F1 F2 in eq A1 A2
+eq (:star,N)              (:star,N)      $\rightarrow$ true
+eq (:var,(N,I))           (:var,(N,I))   $\rightarrow$ true
+eq (:remote,N)            (:remote,N)    $\rightarrow$ true
+eq ((:farall,(N1,0)),(I1,O1))
+   ((:forall,(N2,0)),(I2,O2)) $\rightarrow$
+   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+eq ((:lambda,(N1,0)),(I1,O1))
+   ((:lambda,(N2,0)),(I2,O2)) $\rightarrow$
+   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
+\end{lstlisting}
+
+\newpage
+\section{Effect Type System}
 
 \paragraph{}
 This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
@@ -467,32 +491,132 @@ allows you to define trusted operations in System F and extract this routines to
 and plug as trusted resourses. As example we also provide infinite coinductive process creation
 and inductive shell that linked to Erlang/OTP IO functions directly.
 
+\paragraph{IO protocol}
+We can construct in pure type system the state machine based on (co)-free
+monads driven by IO protocols. Assume String is equal List of Nat (as it is in Erlang natively),
+and three external constructors: getLine, putLine and pure. We need to
+put correspondent implementations on host platform as parameters to perform the actual IO.
+
+\begin{lstlisting}[mathescape=true]
+String: Type = List Nat
+data IO: Type :=
+     (getLine: (String -> IO) -> IO)
+     (putLine: String -> IO)
+     (pure: () -> IO)
+\end{lstlisting}
+
 \subsection{Recursive Example}
 
 \begin{lstlisting}[mathescape=true]
-(#IO/replicateM #Nat/Five) ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine)
+((#IO/replicateM #Nat/Five)
+ ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine))
+\end{lstlisting}
+
+Erlang Inductive Bindings.
+
+\begin{lstlisting}[mathescape=true]
+pure() ->
+    fun(IO) -> IO end.
+
+getLine() ->
+    fun(IO) -> fun(_) ->
+        L = ch:list(io:get_line("> ")),
+        ch:ap(IO,[L]) end end.
+
+putLine() ->
+    fun (S) -> fun(IO) ->
+        io:format(": "),
+        io:put_chars(ch:unlist(S)),
+        ch:ap(IO,[S]) end end.
+
+rec() ->
+    ap('Morte':recursive(),
+        [getLine(),putLine(),pure(),list([])]).
+\end{lstlisting}
+
+\newpage
+
+Here is example of Erlang/OTP shell running recursive example.
+
+\begin{lstlisting}[mathescape=true]
+> om:rec().
+> 1
+: 1
+> 2
+: 2
+> 3
+: 3
+> 4
+: 4
+> 5
+: 5
+#Fun<List.28.113171260>
 \end{lstlisting}
 
 \subsection{Corecursive Example}
 
 \begin{lstlisting}[mathescape=true]
-( \\ (r: *1)
--> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
-    ( \\ (m: (#Maybe/@ #IOI/data))
-      -> (((((#Maybe/maybe #IOI/data) m) ((#IOI/F r) (#Maybe/@ #IOI/data)))
-          ( \\ (str: #IOI/data)
-            -> ((((#IOI/putLine r) (#Maybe/@ #IOI/data)) str) (#Maybe/Nothing #IOI/data))))
-         (((#IOI/getLine r) (#Maybe/@ #IOI/data)) (#Maybe/Just #IOI/data))))))
+( \ (r: *1)
+ -> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
+    ( \ (m: (#Maybe/@ #IOI/data))
+     -> (((((#Maybe/maybe #IOI/data) m) ((#IOI/F r) (#Maybe/@ #IOI/data)))
+           ( \ (str: #IOI/data)
+            -> ((((#IOI/putLine r) (#Maybe/@ #IOI/data)) str)
+                (#Maybe/Nothing #IOI/data))))
+         (((#IOI/getLine r) (#Maybe/@ #IOI/data))
+          (#Maybe/Just #IOI/data))))))
 \end{lstlisting}
 
+Erlang Coinductive Bindings.
+
+\begin{lstlisting}[mathescape=true]
+copure() ->
+    fun (_) -> fun(IO) -> IO end end.
+
+cogetLine() ->
+    fun(IO) -> fun(_) ->
+        L = ch:list(io:get_line("> ")),
+        ch:ap(IO,[L]) end end.
+
+coputLine() ->
+    fun (S) -> fun(IO) ->
+        X = ch:unlist(S),
+        io:format(": "), io:put_chars(X),
+        case X of "0\n" -> list([]);
+                      _ -> corec() end end end.
+
+corec() ->
+    ap('Morte':corecursive(),
+        [copure(),cogetLine(),coputLine(),copure(),list([])]).
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+> om:corec().
+> 1
+: 1
+> 0
+: 0
+#Fun<List.3.113171260>
+\end{lstlisting}
 
 \newpage
 \section{Language with Inductive Types}
 
-Exe is a general purpose functional language with functors,
-lambdas on types, recursive algebraic types, higher order functions,
+Dealing in Pure Type System setting limits the expressiveness of the language.
+So called Calculus of Inductive constructions are used as a top language on top of
+PTS to construct proofs and write programs. He we will show you a sketch of such
+inductive language which indendent to be a language extension to PTS system.
+
+\paragraph{}
+Exe is a general purpose functional language with $\Pi$ and $\Sigma$ types,
+recursive algebraic types, higher order functions,
 corecursion, free monad for effects encoding. It compiles
 to a small MLTT core of dependent type system with inductive types and equality.
+
+\paragraph{}
+It also has an $Id$ type wich is useful for proving things, $Let$ sytax sugar,
+case analisys over inductive types and also a $pi$-Calculus primitives:
+$spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
 
 \subsection{BNF}
 
@@ -526,25 +650,13 @@ to a small MLTT core of dependent type system with inductive types and equality.
              | spawn O O
              | send O O
 \end{lstlisting}
-\vspace{2cm}
-   \subsection{Compiler Passes}
-
-   The underlying OM typechecker and compiler is a target language for EXE general purpose language.
-   \begin{center}
-   \begin{tabular}{ll}
-   EXPAND  & IND -- Macroexpansion\\
-   NORMAL  & PTS -- Term normalization and typechecking\\
-   ERASE   & PTS -- Delete information about types\\
-   COMPACT & PTS -- Term Compactification\\
-   EXTRACT & PTS -- Extract Erlang Code\\
-   \end{tabular}
-   \end{center}
 
 \newpage
-   \subsection{AST}
+\subsection{AST}
 
-    The model in Cubical and Coq of the Exe language is available at
-    infinity\footnote{https://github.com/groupoid/infinity/tree/master/base} repository of groupoid organization.
+The model in Cubical and Coq of the Exe language is available at
+infinity\footnote{https://github.com/groupoid/infinity/tree/master/base}
+repository of groupoid organization.
 
 \begin{lstlisting}[mathescape=true]
  data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
@@ -569,42 +681,70 @@ to a small MLTT core of dependent type system with inductive types and equality.
     | ctor   (n: name)               (args:     list ind)
 \end{lstlisting}
 
+The Erlang version of parser encoded with OTP library {\bf yecc} which implements
+LALR-1 grammar generator. This version resembles the model and slightly based on cubical
+type checker by Mortberg et all.
+
+\begin{lstlisting}
+mod   -> 'module' id 'where' imp dec       : {module,'$2','$3','$4','$5'}.
+imp   -> skip imp                          : '$2'.
+imp   -> '$empty'                          : [].
+imp   -> 'import' id imp                   : [{import,'$2'}|'$3'].
+tele  -> '$empty'                          : [].
+tele  -> '(' exp ':' exp ')' tele          : {tele,uncons('$2'),'$4','$6'}.
+exp   -> app                               : '$1'.
+exp   -> exp arrow exp                     : {arrow,'$1','$3'}.
+exp   -> '(' exp ')'                       : '$2'.
+exp   -> lam '(' exp ':' exp ')' arrow exp : {lam,uncons('$3'),'$5','$8'}.
+exp   -> '(' exp ':' exp ')' arrow exp     : {pi,uncons('$2'),'$4','$7'}.
+exp   -> '(' id ':' exp ')' '*' exp        : {sigma,'$2','$4','$7'}.
+exp   -> id                                : '$1'.
+app   -> exp exp                           : {app,'$1','$2'}.
+dec   -> '$empty'                          : [].
+dec   -> def skip dec                      : ['$1'|'$3'].
+def   -> 'data' id tele '=' sum            : {data,'$2','$3','$5'}.
+def   -> id tele ':' exp '=' exp           : {def,'$1','$2','$4','$6'}.
+sum   -> '$empty'                          : [].
+sum   -> id tele                           : {ctor,'$1','$2'}.
+sum   -> id tele '|' sum                   : [{ctor,'$1','$2'}|'$4'].
+\end{lstlisting}
+
 \newpage
-  \subsection{Inductive Types}
+\subsection{Inductive Types}
 
-  \paragraph{}
-  There are two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$
-  or $F_A\ X = A + X\times X$), in other words the recursion with a base (terminated with a bounded value),
-  lists and trees are examples of such recursive structures (so we call induction recursive sums);
-  and the second is greatest fixed point or recursion withour a base (as $F_A\ X = A\times X $) ---
-  such kind of recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
+\paragraph{}
+There are two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$
+or $F_A\ X = A + X\times X$), in other words the recursion with a base (terminated with a bounded value),
+lists and trees are examples of such recursive structures (so we call induction recursive sums);
+and the second is greatest fixed point or recursion withour a base (as $F_A\ X = A\times X $) ---
+such kind of recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
 
-  \subsection{Polynomial Functors}
-  Least fixed point trees are called well-founded trees and encode polynomial functors.
+\subsection{Polynomial Functors}
+Least fixed point trees are called well-founded trees and encode polynomial functors.\\
 
-  \paragraph{} Natural Numbers: $\mu\ X \rightarrow 1 + X$
-  \paragraph{} List A: $\mu\ X \rightarrow 1 + A \times X$
-  \paragraph{} Lambda calculus: $\mu\ X \rightarrow 1 + X \times X + X$
-  \paragraph{} Stream: $\nu\ X \rightarrow A \times X$
-  \paragraph{} Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$
-  \paragraph{} Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$
+\noindent Natural Numbers: $\mu\ X \rightarrow 1 + X$\\
+List A: $\mu\ X \rightarrow 1 + A \times X$\\
+Lambda calculus: $\mu\ X \rightarrow 1 + X \times X + X$\\
+Stream: $\nu\ X \rightarrow A \times X$\\
+Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$\\
+Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$\\
 
-  \paragraph{}
-  As we know there are several ways to appear for variable in recursive algebraic type.
-  Least fixpoint are known as an recursive expressions that have a base of recursion
-  Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
-  as an non-recursive definitions of folds that include in indentity signature all the
-  constructor components of (co)inductive type.
+\paragraph{}
+As we know there are several ways to appear for variable in recursive algebraic type.
+Least fixpoint are known as an recursive expressions that have a base of recursion
+Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
+as an non-recursive definitions of folds that include in indentity signature all the
+constructor components of (co)inductive type.
 
-  \subsection{Lists}
-  The data type of lists over a given set A can be represented as the initial algebra
-  $(\mu L_A, in)$ of the functor $L_A(X) = 1 + (A \times X)$. Denote $\mu L_A = List(A)$.
-  The constructor functions $nil: 1 \rightarrow List(A)$ and
-  $cons: A \times List(A) \rightarrow List(A)$ are defined by
-  $nil = in \circ inl$ and $cons = in \circ inr$, so $in = [nil,cons]$.
-  Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
-  the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
-  is the unique solution of the equation system:
+\subsection{Lists}
+The data type of lists over a given set A can be represented as the initial algebra
+$(\mu L_A, in)$ of the functor $L_A(X) = 1 + (A \times X)$. Denote $\mu L_A = List(A)$.
+The constructor functions $nil: 1 \rightarrow List(A)$ and
+$cons: A \times List(A) \rightarrow List(A)$ are defined by
+$nil = in \circ inl$ and $cons = in \circ inr$, so $in = [nil,cons]$.
+Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
+the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
+is the unique solution of the equation system:
 \vspace{0.3cm}
 $$
 \begin{cases}
@@ -614,17 +754,17 @@ $$
 $$
 
 \paragraph{}
-  where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
-  $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
-  as catamorphism. Using this encdoding the base library of List will have following form:
+where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
+$\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
+as catamorphism. Using this encdoding the base library of List will have following form:
 
 \vspace{0.5cm}
 $$
 \begin{cases}
- foldr = \llparenthesis [ f \circ nil , h] \rrparenthesis, f \circ cons = h \circ (id \times f)\\
- len = \llparenthesis [ zero, \lambda\ a\ n \rightarrow succ\ n ] \rrparenthesis \\
- (++) = \lambda\ xs\ ys \rightarrow \llparenthesis [ \lambda (x) \rightarrow ys, cons ] \rrparenthesis (xs) \\
- map = \lambda\ f \rightarrow \llparenthesis [ nil, cons \circ (f \times id)] \rrparenthesis
+foldr = \llparenthesis [ f \circ nil , h] \rrparenthesis, f \circ cons = h \circ (id \times f)\\
+len = \llparenthesis [ zero, \lambda\ a\ n \rightarrow succ\ n ] \rrparenthesis \\
+(++) = \lambda\ xs\ ys \rightarrow \llparenthesis [ \lambda (x) \rightarrow ys, cons ] \rrparenthesis (xs) \\
+map = \lambda\ f \rightarrow \llparenthesis [ nil, cons \circ (f \times id)] \rrparenthesis
 \end{cases}
 $$
 
@@ -660,7 +800,10 @@ $$
 \vspace{1cm}
 \subsection{Normal Forms}
 
-\subsubsection*{Lists/Map}
+Here is example of List/map natural transformation where List
+is a functor and List carrier is 1-category.
+
+\subsubsection*{Lists/map}
 {\fontfamily{pcr}\selectfont
 \vspace{0.5cm}
 $\lambda$ (a: *) $\rightarrow$ $\lambda$ (b: *) $\rightarrow$ $\lambda$ (f: a $\rightarrow$ b) $\rightarrow$ $\lambda$ (xs: $\forall$ (List: *)
@@ -676,6 +819,8 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 
 \newpage
 \subsection{Prelude Base Library}
+
+The base library is modeled in cubical type checker.
 
 \begin{lstlisting}[mathescape=true]
 
@@ -710,6 +855,29 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 
 \end{lstlisting}
 
+\subsection{Compiler Passes}
+
+The underlying OM typechecker and compiler is a target language for EXE general purpose language.
+The overal size of OM language with extractor to Erlang is 263 lines of code.
+
+\begin{center}
+\begin{tabular}{lll}
+   TOKEN   & 54 LOC & Handcoded Tokenizer\\
+   PARSER  & 81 LOC & Parser\\
+   NORMAL  & 60 LOC & Term normalization and typechecking\\
+   ERASE   & 36 LOC & Delete information about types\\
+   EXTRACT & 32 LOC & Extract Erlang Code\\
+\end{tabular}
+\end{center}
+
+We benchmarked the unrolling of inductive list type in Church
+encoding extracted with OM with native erlang {\bf lists:foldl}.
+
+\begin{lstlisting}[mathescape=true]
+Pack/Unpack 1 000 000 Inductive Nat:   776407 us
+Pack/Unpack 1 000 000 ErlangOTP List:  148084 us
+Pack/Unpack 1 000 000 Inductive List: 1036461 us
+\end{lstlisting}
 
 \newpage
 \begin{thebibliography}{9}

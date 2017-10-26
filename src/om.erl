@@ -8,6 +8,8 @@
 
 % env
 
+rec()        -> ch:rec().
+corec()      -> ch:corec().
 restart()    -> ets_clear(), ets_boot().
 privdir()    -> application:get_env(om,priv,"priv").
 mode(S)      -> application:set_env(om,mode,S).

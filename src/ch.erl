@@ -104,15 +104,18 @@ cons   () -> io:format("CONS~n"),
                                      %fun (Cons) -> fun (Nil) ->  (Cons(Head))(((list(Tail))(Cons))(Nil)) end end.
              unlist (L)           -> ap(L,list_()).
 
-getLine() ->           fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
-putLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), ch:ap(IO,[S]) end end.
-pure()    ->           fun(IO) -> IO end.
+getLine() ->            fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
+putLine() -> fun (S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), ch:ap(IO,[S]) end end.
+pure()    ->            fun(IO) -> IO end.
+rec()     -> ap('Morte':recursive(),[getLine(),putLine(),pure(),list([])]).
 
-cogetLine() ->         fun(IO)-> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
-coputLine() -> fun(S) -> fun(IO) -> io:format(": "), io:put_chars(ch:unlist(S)), coma() end end.
-copure() -> fun (_) -> fun (X) -> X end end.
-ma() -> ap('Morte':recursive(),[getLine(),putLine(),pure(),ch:nil()]).
-coma() -> ap('Morte':corecursive(),[copure(),cogetLine(),coputLine(),pure(),copure()]).
+copure()    -> fun (_) -> fun(IO) -> IO end end.
+cogetLine() -> fun(IO) -> fun(_) -> L = ch:list(io:get_line("> ")), ch:ap(IO,[L]) end end.
+coputLine() -> fun (S) -> fun(IO) ->  X = ch:unlist(S),
+               io:format(": "), io:put_chars(X),
+               case X of "0\n" -> list([]);
+                             _ -> corec() end end end.
+corec()     -> ap('Morte':corecursive(),[copure(),cogetLine(),coputLine(),copure(),list([])]).
 
 % marshaling sample
 
@@ -127,6 +130,7 @@ coma() -> ap('Morte':corecursive(),[copure(),cogetLine(),coputLine(),pure(),copu
 main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Cons/Nil: ~p~n",                [unlist(ap(cons(),[2,ap(cons(),[1,nil()])]))]),
              spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive Nat: ~p~n",   [timer:tc(fun () -> unnat(nat(1000000)) end)]) end),
+             spawn(fun () -> io:format("Pack/Unpack 1 000 000 ErlangOTP List: ~p~n",   [{element(1,timer:tc(fun () -> lists:foldl(fun(A,X) -> A end,0,lists:seq(1,1000000)) end)),'_'}]) end ),
              spawn(fun () -> io:format("Pack/Unpack 1 000 000 Inductive List: ~p~n",   [{element(1,timer:tc(fun () -> unlist(list(lists:seq(1,1000000))) end)),'_'}]) end ),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
