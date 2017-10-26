@@ -138,7 +138,7 @@ normalization properties and extraction to Erlang/OTP bytecode.
 \end{center}
 
 \newpage
-\section{Intermediate Language Om}
+\section{Pure Type System as Intermediate Language}
 
    \paragraph{}
    The Om language is a dependently typed lambda calculus, an extension of Barendregt'
@@ -456,14 +456,12 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
 
 \newpage
 
-   \section{Exe Macrosystem}
+   \section{Language with Inductive Types}
 
-   Exe is a general purpose functional language with functors, lambdas on types, recursive algebraic types,
-   higher order functions, corecursion, free monad for effects encoding. It compilers
-   to a small core of dependent type system without recursion called Om.
-   This language intended to be useful enough to encode KVS (database), N2O (web framework) and
-   BPE (processes) applications.
-
+   Exe is a general purpose functional language with functors,
+   lambdas on types, recursive algebraic types, higher order functions,
+   corecursion, free monad for effects encoding. It compiles
+   to a small MLTT core of dependent type system with inductive types and equality.
 
    \subsection{BNF}
 
@@ -485,6 +483,8 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
              | $\lambda$ ( I : O ) $\rightarrow$ O
              | fst O
              | snd O
+             | id O O O
+             | transport O O O O O
              | ( I : O ) * O
              | ( I : O ) $\rightarrow$ O
              | data   I T : O := T
@@ -501,11 +501,11 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
    The underlying OM typechecker and compiler is a target language for EXE general purpose language.
    \begin{center}
    \begin{tabular}{ll}
-   EXPAND  & EXE -- Macroexpansion\\
-   NORMAL  & OM -- Term normalization and typechecking\\
-   ERASE   & OM -- Delete information about types\\
-   COMPACT & OM -- Term Compactification\\
-   EXTRACT & OM -- Extract Erlang Code\\
+   EXPAND  & IND -- Macroexpansion\\
+   NORMAL  & PTS -- Term normalization and typechecking\\
+   ERASE   & PTS -- Delete information about types\\
+   COMPACT & PTS -- Term Compactification\\
+   EXTRACT & PTS -- Extract Erlang Code\\
    \end{tabular}
    \end{center}
 
