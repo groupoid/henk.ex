@@ -1,0 +1,7 @@
+-- Vector/Nil
+   \ (A: *)
+-> \ (Vector: #Nat/@ -> * -> *)
+-> \ (Cons: \/ (m: #Nat/@ ) -> \/ (b: *) -> b -> Vector m b -> Vector (#Nat/Succ m) b)
+-> \ (Nil: \/ (b: *) -> Vector #Nat/Zero b)
+-> Nil
+
