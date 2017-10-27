@@ -1,5 +1,7 @@
+-- List/@
   λ (A : *)
 → ∀ (List: *)
 → ∀ (Cons: ∀ (Head: A) → ∀ (Tail: List) → List)
 → ∀ (Nil: List)
 → List
+

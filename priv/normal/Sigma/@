@@ -1,5 +1,7 @@
+-- Sigma/@
   \ (A: *)
 → \ (P: A → *)
 → ∀ (Exists: *)
 → ∀ (Intro: ∀ (x: A) → ∀ (y: P x) → Exists)
 → Exists
+

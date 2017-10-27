@@ -196,12 +196,11 @@ $$
 Equivalent tree encoding for parsed terms is following:
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
-    Inductive OM := Star: nat $\rightarrow$ OM
-                  | Var: name $\rightarrow$ OM
-                  | App: OM $\rightarrow$ OM $\rightarrow$ OM
-                  | Lambda: name $\rightarrow$ OM $\rightarrow$ OM $\rightarrow$ OM
-                  | Arrow: OM $\rightarrow$ OM $\rightarrow$ OM
-                  | Pi: name $\rightarrow$ OM $\rightarrow$ OM $\rightarrow$ OM.
+data pts = star (n: nat)
+         | var (n: name)
+         | app (f a: pts)
+         | lambda (x: name) (d c: pts)
+         | pi (x: name) (d c: pts)
 \end{lstlisting}
 
 \newpage
@@ -340,14 +339,13 @@ from trusted storage, anyway this will be checked by typechecker. We deny recurs
 over remote node. We also add index to var for simplified de Bruin indexes.
 
 \begin{lstlisting}[mathescape=true]
-data pts
-    = star             (n: nat)
-    | var    (n: name) (n: nat)
-    | remote (n: name) (n: nat)
-    | app                       (f a: pts)
-    | lambda (x: name)          (d c: pts)
-    | arrow                     (d c: pts)
-    | pi     (x: name)          (d c: pts)
+data om = star             (n: nat)
+        | var    (n: name) (n: nat)
+        | remote (n: name) (n: nat)
+        | app                       (f a: pts)
+        | lambda (x: name)          (d c: pts)
+        | arrow                     (d c: pts)
+        | pi     (x: name)          (d c: pts)
 \end{lstlisting}
 
 \newpage
@@ -475,7 +473,7 @@ eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
 \end{lstlisting}
 
 \newpage
-\section{Effect Type System}
+\section{Language Usage}
 
 \paragraph{}
 This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
@@ -492,7 +490,7 @@ put correspondent implementations on host platform as parameters to perform the 
 
 \begin{lstlisting}[mathescape=true]
 String: Type = List Nat
-data IO: Type :=
+data IO: Type =
      (getLine: (String -> IO) -> IO)
      (putLine: String -> IO)
      (pure: () -> IO)
@@ -590,6 +588,83 @@ corec() ->
 > 0
 : 0
 #Fun<List.3.113171260>
+\end{lstlisting}
+
+\subsection{Sigma Type}
+
+Here we will show you some examples of Om Language usage.
+The PTS system is extremely powerful even without Sigma type. But
+we can encode {\bf Sigma} type similar how we encode {\bf Prod}
+tuple pair in Boehm encoding. Let's formulate Sigma type as inductive type:
+
+\begin{lstlisting}[mathescape=true]
+data Sigma (A: Type) (P: A -> Type): Type =
+     (intro: (x:A) (y:P x) -> Sigma A P)
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+-- Sigma/@
+   \ (A: *)
+-> \ (P: A -> *)
+-> \/ (Exists: *)
+-> \/ (Intro: \/ (x: A) -> P x -> Exists)
+-> Exists
+
+-- Sigma/Intro
+   \ (A: *)
+-> \ (P: A -> *)
+-> \ (x: A)
+-> \ (y: P x)
+-> \ (Exists: *)
+-> \ (Intro: \/ (z: A) -> P z -> Exists)
+-> Intro x y
+
+-- Sigma/fst
+   \ (A: *)
+-> \ (B: A -> *)
+-> \ (S: #Sigma/@ A B)
+-> S A ( \ (x: A) -> \ (y: B) -> x)
+
+-- Sigma/snd
+   \ (A: *)
+-> \ (B: A -> *)
+-> \ (S: #Sigma/@ A B)
+-> S A ( \ (x: A) -> \ (y: B) -> y)
+\end{lstlisting}
+
+For using {\bf Sigma} type for Logic purposes one should change the
+home Universe of the type to {\bf Prop}. Here it is:
+
+\begin{lstlisting}[mathescape=true]
+data Sigma (A: Prop) (P: A -> Prop): Prop =
+     (intro: (x:A) (y:P x) -> Sigma A P)
+\end{lstlisting}
+
+\newpage
+\subsection{Equality Type}
+
+Another example of expressivness is Equality type a la Martin-Löf.
+
+\begin{lstlisting}[mathescape=true]
+data Equ (A: Type): A -> A -> Type :=
+     (refl (a: A): Equ A a a)
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+-- Equ/@
+   \ (A: *)
+-> \ (x: A)
+-> \ (y: A)
+-> \/ (Equ: A -> A -> *)
+-> \/ (Refl: \/ (z: A) -> Equ z z)
+-> Equ x y
+
+-- Equ/Refl
+   \ (A: *)
+-> \ (x: A)
+-> \ (Equ: A -> A -> *)
+-> \ (Refl: \/ (z: A) -> Equ z z)
+-> Refl x
 \end{lstlisting}
 
 \newpage
@@ -766,6 +841,7 @@ $$
                   (nil: list A)
                   (cons: A $\rightarrow$ list A $\rightarrow$ list A)
 \end{lstlisting}
+
 $$
 \begin{cases}
 list = \lambda\ ctor \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow ctor\\
@@ -773,6 +849,45 @@ cons = \lambda\ x\ \rightarrow \lambda\ xs \rightarrow \lambda\ list \rightarrow
 nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarrow nil\\
 \end{cases}
 $$
+
+\begin{lstlisting}[mathescape=true]
+-- List/@
+   \ (A : *)
+-> \/ (List: *)
+-> \/ (Cons: \/ (Head: A) -> \/ (Tail: List) -> List)
+-> \/ (Nil: List)
+-> List
+
+-- List/Cons
+   \ (A: *)
+-> \ (Head: A)
+-> \ (Tail:
+      \/ (List: *)
+   -> \/ (Cons:
+         \/ (Head: A)
+      -> \/ (Tail: List)
+      -> List)
+   -> \/ (Nil: List)
+   -> List)
+-> \ (List: *)
+-> \ (Cons:
+      \/ (Head: A)
+   -> \/ (Tail: List)
+   -> List)
+-> \ (Nil: List)
+-> Cons Head (Tail List Cons Nil)
+
+-- List/Nil
+   \ (A: *)
+-> \ (List: *)
+-> \ (Cons:
+      \/ (Head: A)
+   -> \/ (Tail: List)
+   -> List)
+-> \ (Nil: List)
+-> Nil
+\end{lstlisting}
+
 \begin{lstlisting}[mathescape=true]
            record lists: (A B: *) :=
                   (len: list A $\rightarrow$ integer)

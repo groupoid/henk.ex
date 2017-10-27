@@ -1,4 +1,6 @@
+-- Sigma/snd
    \(A: *)
 -> \(B: A -> *)
 -> \(S: #Sigma/@ A B)
 -> S A ( \(x: A) -> \(y: B) -> y)
+

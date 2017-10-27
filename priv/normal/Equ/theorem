@@ -1,1 +1,1 @@
-(\ (x : #Equ/@ #Nat/@ #Nat/Zero #Nat/Zero) -> x) (#Equ/refl #Nat/@ #Nat/Zero)
+(\ (x : #Equ/@ #Nat/@ #Nat/One #Nat/One) -> x) (#Equ/Refl #Nat/@ #Nat/One)
