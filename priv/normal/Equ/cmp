@@ -1,0 +1,1 @@
+(\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True) (#Equ/Refl #Nat/@ (#Nat/Succ #Nat/Zero))

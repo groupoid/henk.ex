@@ -667,6 +667,21 @@ data Equ (A: Type): A -> A -> Type :=
 -> Refl x
 \end{lstlisting}
 
+You cannot construct lambda that will check different values of A type,
+however you may want to use built-in definitionaly equality and
+normalization feature of typecheker to actually compare two values:
+
+\begin{lstlisting}[mathescape=true]
+> om:print(
+  om:type(
+  om:a("(\\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True)"++
+       " (#Equ/Refl #Nat/@ (#Nat/Succ #Nat/Zero))"))).
+  ∀ (True: *0)
+→ ∀ (Intro: True)
+→ True
+ok
+\end{lstlisting}
+
 \newpage
 \section{Language with Inductive Types}
 
