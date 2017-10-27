@@ -87,24 +87,26 @@ And certified programs are extrated as proofs from that models. This is a land o
 {\bf From PTS to HTS}. We want to have flexible detachable
 layers on top of PTS core. Then Sigma for proving.
 Then well-founded trees or polynomial functors as known as data and record.
-Then higher path types, interval arithmetic, glue and comp for HIT.
-Each layers is driven by differenth math, the common in only the method -- category theory.
+Then higher path types, interval arithmetic, glue and comp for HIT. The semantic
+in each layer remains the same -- category theory.
 
 \paragraph{}
 {\bf Extensible Language Design}. Encoding of inductive types is based on categorical
-semantic of compilation to PTS. All other syntax constructions are inductive
-definitions, plugged into the stream parser. AST of the PTS language is also
-defined in terms of inductive constructions and thus allowed in the macros.
-The language of polynomial functors (data and record) and core language of
-the process calculus (spawn, receive and send) are just macrosystem over Om language,
-its syntax extensions.
+semantic of compilation to PTS. AST of the PTS language is defined
+defined in terms of inductive constructions. The language of polynomial
+functors (data and record) and core language of the process calculus
+(spawn, receive and send) are the syntax extensions of the Om language.
 
 \paragraph{}
-{\bf Changable Encodings}. In pure CoC we have only arrows, so all inductive type encodings would
-be Church-encoding variations. Most extended nowadays is Church-Boehm-Berrarducci encoding,
-which dedicated to inductive types. Another well known are Scott (lazyness),
-Parigot (lazyness and constant-time iterators) and CPS (continuations) encodings.
+{\bf Changable Encodings}. PTS lambda encodings differs in terms of computational properties.
+Most known and oldest is Church-Boehm-Berrarducci encoding which has really bad properties,
+such as O(n) for pred and extended complexity for recursors.
+Another well known are encodings are: Scott (lazyness),
+Parigot (lazyness and constant-time iterators), CPS (continuations).
 However most of them require variations of Fixpoint types.
+Real life efficient encoding without fixpoint with good
+computational properties seems doesn't exist. We want our language
+be flexible and selective to fixpoint type. Also we want to have switchable encodings.
 
 \paragraph{}
 {\bf Proved Categorical Semantic}. There was modeled a math model (using
@@ -119,29 +121,7 @@ Such encoding works with dependent types and its consistency is proved in Lean m
 of the proving system, the {\bf OM} intermediate language with strong
 normalization properties and extraction to {\bf Erlang/OTP} bytecode.
 Also we describe briefly the prototype of {\bf EXE} language enriched
-with inductive constructions.
-
-\begin{center}
-\begin{tikzpicture}
-\tikzstyle{every initial by arrow}=[]
-    \node (a) at (0,0) {\bf Erlang/OTP};
-    \node (b) at (0,5) {\bf Extractor};
-    \node (c) at (5,0) {\bf EXE};
-    \node (d) at (5,5) {\bf Library};
-    \node (e) at (2.5,2.5) {\bf OM};
-    \draw [->] (b) to node [left] {Runs} (a);
-    \draw [->] (c) to node [below] {Compiles} (a);
-    \draw [->] (c) to node [above] {Impl} (a);
-    \draw [->] (e) to node [above,sloped] {Erase} (a);
-    \draw [->] (d) to node [above,sloped] {Normalize} (e);
-    \draw [->] (d) to node [below,sloped] {Desugar} (e);
-    \draw [->] (d) to node [above] {Extracts} (b);
-    \draw [->] (c) to node [right] {Impl} (d);
-    \draw [->] (e) to node [above,sloped] {Extracts} (b);
-    \draw [->] (c) to node [below,sloped] {Desugar} (e);
-    \draw [->] (c) to node [above,sloped] {Impl} (e);
-\end{tikzpicture}
-\end{center}
+with inductive constructions and fixpoint in core.
 
 \newpage
 \section{Pure Type System as Intermediate Language}
@@ -475,123 +455,13 @@ eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
 \newpage
 \section{Language Usage}
 
-\paragraph{}
-This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
-Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines. This language
-allows you to define trusted operations in System F and extract this routines to Erlang/OTP platform
-and plug as trusted resourses. As example we also provide infinite coinductive process creation
-and inductive shell that linked to Erlang/OTP IO functions directly.
-
-\paragraph{IO protocol}
-We can construct in pure type system the state machine based on (co)-free
-monads driven by IO protocols. Assume String is equal List of Nat (as it is in Erlang natively),
-and three external constructors: getLine, putLine and pure. We need to
-put correspondent implementations on host platform as parameters to perform the actual IO.
-
-\begin{lstlisting}[mathescape=true]
-String: Type = List Nat
-data IO: Type =
-     (getLine: (String -> IO) -> IO)
-     (putLine: String -> IO)
-     (pure: () -> IO)
-\end{lstlisting}
-
-\subsection{Recursive Example}
-
-\begin{lstlisting}[mathescape=true]
-((#IO/replicateM #Nat/Five)
- ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine))
-\end{lstlisting}
-
-Erlang Inductive Bindings.
-
-\begin{lstlisting}[mathescape=true]
-pure() ->
-    fun(IO) -> IO end.
-
-getLine() ->
-    fun(IO) -> fun(_) ->
-        L = ch:list(io:get_line("> ")),
-        ch:ap(IO,[L]) end end.
-
-putLine() ->
-    fun (S) -> fun(IO) ->
-        io:format(": "),
-        io:put_chars(ch:unlist(S)),
-        ch:ap(IO,[S]) end end.
-
-rec() ->
-    ap('Morte':recursive(),
-        [getLine(),putLine(),pure(),list([])]).
-\end{lstlisting}
-
-\newpage
-
-Here is example of Erlang/OTP shell running recursive example.
-
-\begin{lstlisting}[mathescape=true]
-> om:rec().
-> 1
-: 1
-> 2
-: 2
-> 3
-: 3
-> 4
-: 4
-> 5
-: 5
-#Fun<List.28.113171260>
-\end{lstlisting}
-
-\subsection{Corecursive Example}
-
-\begin{lstlisting}[mathescape=true]
-( \ (r: *1)
- -> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
-    ( \ (m: (#Maybe/@ #IOI/data))
-     -> (((((#Maybe/maybe #IOI/data) m) ((#IOI/F r) (#Maybe/@ #IOI/data)))
-           ( \ (str: #IOI/data)
-            -> ((((#IOI/putLine r) (#Maybe/@ #IOI/data)) str)
-                (#Maybe/Nothing #IOI/data))))
-         (((#IOI/getLine r) (#Maybe/@ #IOI/data))
-          (#Maybe/Just #IOI/data))))))
-\end{lstlisting}
-
-Erlang Coinductive Bindings.
-
-\begin{lstlisting}[mathescape=true]
-copure() ->
-    fun (_) -> fun(IO) -> IO end end.
-
-cogetLine() ->
-    fun(IO) -> fun(_) ->
-        L = ch:list(io:get_line("> ")),
-        ch:ap(IO,[L]) end end.
-
-coputLine() ->
-    fun (S) -> fun(IO) ->
-        X = ch:unlist(S),
-        io:format(": "), io:put_chars(X),
-        case X of "0\n" -> list([]);
-                      _ -> corec() end end end.
-
-corec() ->
-    ap('Morte':corecursive(),
-        [copure(),cogetLine(),coputLine(),copure(),list([])]).
-\end{lstlisting}
-
-\begin{lstlisting}[mathescape=true]
-> om:corec().
-> 1
-: 1
-> 0
-: 0
-#Fun<List.3.113171260>
-\end{lstlisting}
+In this section we will lift PTS system to MLTT system by defining
+$Sigma$ and $Equ$ types to pure $Pi$ type. We will use Boehm inductive
+dependent encoding.
 
 \subsection{Sigma Type}
 
+\paragraph{}
 Here we will show you some examples of Om Language usage.
 The PTS system is extremely powerful even without Sigma type. But
 we can encode {\bf Sigma} type similar how we encode {\bf Prod}
@@ -623,20 +493,14 @@ data Sigma (A: Type) (P: A -> Type): Type =
    \ (A: *)
 -> \ (B: A -> *)
 -> \ (S: #Sigma/@ A B)
--> S A ( \(x: A) -> \(y: B x) -> x)
+-> S A ( \(x: A) -> \(_: B x) -> x)
 
 -- Sigma/snd
    \ (A: *)
--> \ (B : A -> *)
--> \ (S : #Sigma/@ A B)
--> (#Sigma/snd_ A (#Sigma/fst A B S) B S)
-
--- Sigma/snd_
-   \ (A: *)
--> \ (n: A)
 -> \ (B: A -> *)
 -> \ (S: #Sigma/@ A B)
--> S (B n) (\(_: A) -> \(y: B n) -> y)
+-> S (B (#Sigma/fst A B S))
+     (\(_: A) -> \(y: B (#Sigma/fst A B S)) -> y)
 
 -- Sigma/test
 #Sigma/Intro #Nat/@ #List/@ #Nat/Zero (#List/Nil #Nat/@)
@@ -708,12 +572,199 @@ ok
 \end{lstlisting}
 
 \newpage
+\subsection{Effect Type System}
+
+\paragraph{}
+This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
+Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines. This language
+allows you to define trusted operations in System F and extract this routines to Erlang/OTP platform
+and plug as trusted resourses. As example we also provide infinite coinductive process creation
+and inductive shell that linked to Erlang/OTP IO functions directly.
+
+\paragraph{IO protocol}
+We can construct in pure type system the state machine based on (co)-free
+monads driven by IO protocols. Assume String is equal List of Nat (as it is in Erlang natively),
+and three external constructors: getLine, putLine and pure. We need to
+put correspondent implementations on host platform as parameters to perform the actual IO.
+
+\begin{lstlisting}[mathescape=true]
+String: Type = List Nat
+data IO: Type =
+     (getLine: (String -> IO) -> IO)
+     (putLine: String -> IO)
+     (pure: () -> IO)
+\end{lstlisting}
+
+\subsection{Corecursive Example}
+
+Infinity I/O Type Spec.
+
+\begin{lstlisting}[mathescape=true]
+-- IOI/@
+   \ (r : *)
+-> \/ (x : *)
+-> (\/ (s : *) -> s -> (s -> #IOI/F r s) -> x)
+-> x
+
+-- IOI/F
+   \ (a : *)
+-> \ (State : *)
+-> \/ (IOF : *)
+-> \/ (PutLine_ : #IOI/data -> State -> IOF)
+-> \/ (GetLine_ : (#IOI/data -> State) -> IOF)
+-> \/ (Pure_ : a -> IOF)
+-> IOF
+
+-- IOI/MkIO
+   \ (r : *)
+-> \ (s : *)
+-> \ (seed : s)
+-> \ (step : s -> #IOI/F r s)
+-> \ (x : *)
+-> \ (k : forall (s : *) -> s -> (s -> #IOI/F r s) -> x)
+-> k s seed step
+
+-- IOI/data
+#List/@ #Nat/@
+\end{lstlisting}
+
+\newpage
+Infinite I/O Sample Program.
+
+\begin{lstlisting}[mathescape=true]
+( \ (r: *1)
+ -> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
+    ( \ (m: (#Maybe/@ #IOI/data))
+     -> (((((#Maybe/maybe #IOI/data) m) ((#IOI/F r) (#Maybe/@ #IOI/data)))
+           ( \ (str: #IOI/data)
+            -> ((((#IOI/putLine r) (#Maybe/@ #IOI/data)) str)
+                (#Maybe/Nothing #IOI/data))))
+         (((#IOI/getLine r) (#Maybe/@ #IOI/data))
+          (#Maybe/Just #IOI/data))))))
+\end{lstlisting}
+
+Erlang Coinductive Bindings.
+
+\begin{lstlisting}[mathescape=true]
+copure() ->
+    fun (_) -> fun(IO) -> IO end end.
+
+cogetLine() ->
+    fun(IO) -> fun(_) ->
+        L = ch:list(io:get_line("> ")),
+        ch:ap(IO,[L]) end end.
+
+coputLine() ->
+    fun (S) -> fun(IO) ->
+        X = ch:unlist(S),
+        io:format(": "), io:put_chars(X),
+        case X of "0\n" -> list([]);
+                      _ -> corec() end end end.
+
+corec() ->
+    ap('Morte':corecursive(),
+        [copure(),cogetLine(),coputLine(),copure(),list([])]).
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+> om_extract:extract("priv/normal/IOI").
+ok
+> Active: module loaded: {reloaded,'IOI'}
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+> om:corec().
+> 1
+: 1
+> 0
+: 0
+#Fun<List.3.113171260>
+\end{lstlisting}
+
+\newpage
+
+\subsection{Recursive Example}
+
+I/O Type Spec.
+
+\begin{lstlisting}[mathescape=true]
+-- IO/@
+   \ (a : *)
+-> \/ (IO : *)
+-> \/ (GetLine_ : (#IO/data -> IO) -> IO)
+-> \/ (PutLine_ : #IO/data -> IO -> IO)
+-> \/ (Pure_ : a -> IO)
+-> IO
+
+-- IO/replicateM
+   \ (n: #Nat/@)
+-> \ (io: #IO/@ #Unit/@)
+-> #Nat/fold n (#IO/@ #Unit/@)
+               (#IO/[>>] io)
+               (#IO/pure #Unit/@ #Unit/Make)
+\end{lstlisting}
+
+Guarded Recursion I/O Sample Program.
+
+\begin{lstlisting}[mathescape=true]
+((#IO/replicateM #Nat/Five)
+ ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine))
+\end{lstlisting}
+
+Erlang Inductive Bindings.
+
+\begin{lstlisting}[mathescape=true]
+pure() ->
+    fun(IO) -> IO end.
+
+getLine() ->
+    fun(IO) -> fun(_) ->
+        L = ch:list(io:get_line("> ")),
+        ch:ap(IO,[L]) end end.
+
+putLine() ->
+    fun (S) -> fun(IO) ->
+        io:format(": "),
+        io:put_chars(ch:unlist(S)),
+        ch:ap(IO,[S]) end end.
+
+rec() ->
+    ap('Morte':recursive(),
+        [getLine(),putLine(),pure(),list([])]).
+\end{lstlisting}
+
+
+Here is example of Erlang/OTP shell running recursive example.
+
+\begin{lstlisting}[mathescape=true]
+> om:rec().
+> 1
+: 1
+> 2
+: 2
+> 3
+: 3
+> 4
+: 4
+> 5
+: 5
+#Fun<List.28.113171260>
+\end{lstlisting}
+
+
+
+
+\newpage
 \section{Language with Inductive Types}
 
-Dealing in Pure Type System setting limits the expressiveness of the language.
+Despite we can encode inductive types in PTS, the best usage of inductive types
+comes with recursors and fixpoint type that allow recursive typecheck, limiting
+from the other side the normalization proerties.
+
+\paragraph{}
 So called Calculus of Inductive constructions are used as a top language on top of
-PTS to construct proofs and write programs. He we will show you a sketch of such
-inductive language which indendent to be a language extension to PTS system.
+PTS to reason about inductive types. Here we will show you a sketch of such
+inductive language model which indendent to be a language extension to PTS system.
 
 \paragraph{}
 Exe is a general purpose functional language with $\Pi$ and $\Sigma$ types,
@@ -722,11 +773,12 @@ corecursion, free monad for effects encoding. It compiles
 to a small MLTT core of dependent type system with inductive types and equality.
 
 \paragraph{}
-It also has an $Id$ type wich is useful for proving things, $Let$ sytax sugar,
-case analisys over inductive types and also a $pi$-Calculus primitives:
+It also has an $Id$ type (with its recursor) wich is useful for proving things,
+$Let$ sytax sugar, case analisys over inductive types and also a $pi$-Calculus primitives:
 $spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
 
 \subsection{BNF}
+
 
 \begin{lstlisting}[mathescape=true]
     <> ::= #option
@@ -759,7 +811,39 @@ $spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
              | send O O
 \end{lstlisting}
 
+That is how we see the language informally.
+
 \newpage
+
+However in real life we use grammar parser generators.
+The Erlang version of parser encoded with OTP library {\bf yecc} which implements
+LALR-1 grammar generator. This version resembles the model and slightly based on cubical
+type checker by Mortberg et all.
+
+\begin{lstlisting}
+mod   -> 'module' id 'where' imp dec       : {module,'$2','$3','$4','$5'}.
+imp   -> skip imp                          : '$2'.
+imp   -> '$empty'                          : [].
+imp   -> 'import' id imp                   : [{import,'$2'}|'$3'].
+tele  -> '$empty'                          : [].
+tele  -> '(' exp ':' exp ')' tele          : {tele,uncons('$2'),'$4','$6'}.
+exp   -> app                               : '$1'.
+exp   -> exp arrow exp                     : {arrow,'$1','$3'}.
+exp   -> '(' exp ')'                       : '$2'.
+exp   -> lam '(' exp ':' exp ')' arrow exp : {lam,uncons('$3'),'$5','$8'}.
+exp   -> '(' exp ':' exp ')' arrow exp     : {pi,uncons('$2'),'$4','$7'}.
+exp   -> '(' id ':' exp ')' '*' exp        : {sigma,'$2','$4','$7'}.
+exp   -> id                                : '$1'.
+app   -> exp exp                           : {app,'$1','$2'}.
+dec   -> '$empty'                          : [].
+dec   -> def skip dec                      : ['$1'|'$3'].
+def   -> 'data' id tele '=' sum            : {data,'$2','$3','$5'}.
+def   -> id tele ':' exp '=' exp           : {def,'$1','$2','$4','$6'}.
+sum   -> '$empty'                          : [].
+sum   -> id tele                           : {ctor,'$1','$2'}.
+sum   -> id tele '|' sum                   : [{ctor,'$1','$2'}|'$4'].
+\end{lstlisting}
+
 \subsection{AST}
 
 The model in Cubical and Coq of the Exe language is available at
@@ -789,33 +873,7 @@ repository of groupoid organization.
     | ctor   (n: name)               (args:     list ind)
 \end{lstlisting}
 
-The Erlang version of parser encoded with OTP library {\bf yecc} which implements
-LALR-1 grammar generator. This version resembles the model and slightly based on cubical
-type checker by Mortberg et all.
 
-\begin{lstlisting}
-mod   -> 'module' id 'where' imp dec       : {module,'$2','$3','$4','$5'}.
-imp   -> skip imp                          : '$2'.
-imp   -> '$empty'                          : [].
-imp   -> 'import' id imp                   : [{import,'$2'}|'$3'].
-tele  -> '$empty'                          : [].
-tele  -> '(' exp ':' exp ')' tele          : {tele,uncons('$2'),'$4','$6'}.
-exp   -> app                               : '$1'.
-exp   -> exp arrow exp                     : {arrow,'$1','$3'}.
-exp   -> '(' exp ')'                       : '$2'.
-exp   -> lam '(' exp ':' exp ')' arrow exp : {lam,uncons('$3'),'$5','$8'}.
-exp   -> '(' exp ':' exp ')' arrow exp     : {pi,uncons('$2'),'$4','$7'}.
-exp   -> '(' id ':' exp ')' '*' exp        : {sigma,'$2','$4','$7'}.
-exp   -> id                                : '$1'.
-app   -> exp exp                           : {app,'$1','$2'}.
-dec   -> '$empty'                          : [].
-dec   -> def skip dec                      : ['$1'|'$3'].
-def   -> 'data' id tele '=' sum            : {data,'$2','$3','$5'}.
-def   -> id tele ':' exp '=' exp           : {def,'$1','$2','$4','$6'}.
-sum   -> '$empty'                          : [].
-sum   -> id tele                           : {ctor,'$1','$2'}.
-sum   -> id tele '|' sum                   : [{ctor,'$1','$2'}|'$4'].
-\end{lstlisting}
 
 \newpage
 \subsection{Inductive Types}
