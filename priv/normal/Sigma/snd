@@ -1,4 +1,5 @@
+-- Sigma/snd
    \ (A: *)
 -> \ (B : A -> *)
 -> \ (S : #Sigma/@ A B)
--> (#Sigma/snd2 A (#Sigma/fst A B S) B S)
+-> (#Sigma/snd_ A (#Sigma/fst A B S) B S)

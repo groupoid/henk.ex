@@ -1,4 +1,4 @@
--- Sigma/snd
+-- Sigma/snd_
    \(A: *)
 -> \(n: A)
 -> \(B: A -> *)
