@@ -607,7 +607,7 @@ data Sigma (A: Type) (P: A -> Type): Type =
    \ (A: *)
 -> \ (P: A -> *)
 -> \/ (Exists: *)
--> \/ (Intro: \/ (x: A) -> P x -> Exists)
+-> \/ (Intro: \/ (x: A) -> \/ (y: P x) -> Exists)
 -> Exists
 
 -- Sigma/Intro
@@ -623,13 +623,29 @@ data Sigma (A: Type) (P: A -> Type): Type =
    \ (A: *)
 -> \ (B: A -> *)
 -> \ (S: #Sigma/@ A B)
--> S A ( \ (x: A) -> \ (y: B) -> x)
+-> S A ( \(x: A) -> \(y: B x) -> x)
 
 -- Sigma/snd
    \ (A: *)
+-> \ (B : A -> *)
+-> \ (S : #Sigma/@ A B)
+-> (#Sigma/snd_ A (#Sigma/fst A B S) B S)
+
+-- Sigma/snd_
+   \ (A: *)
+-> \ (n: A)
 -> \ (B: A -> *)
 -> \ (S: #Sigma/@ A B)
--> S A ( \ (x: A) -> \ (y: B) -> y)
+-> S (B n) (\(_: A) -> \(y: B n) -> y)
+
+-- Sigma/test
+#Sigma/Intro #Nat/@ #List/@ #Nat/Zero (#List/Nil #Nat/@)
+\end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+> om:fst(om:erase(om:norm(om:a("#Sigma/snd #Nat/@ #List/@ #Sigma/test")))).
+{{$\lambda$,{'Cons',0}},
+ {any,{{$\lambda$,{'Nil',0}},{any,{var,{'Nil',0}}}}}}
 \end{lstlisting}
 
 For using {\bf Sigma} type for Logic purposes one should change the
