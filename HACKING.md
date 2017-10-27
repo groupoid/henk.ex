@@ -53,7 +53,7 @@ Pack/Unpack 1 000 000 Inductive Nat: {743755,1000000}
                   {remote,"IO/getLine"}}},
             {remote,"IO/putLine"}}}}}
 
-> ch:ma().
+> om:rec().
 > 12
 : 12
 > 2341414
@@ -65,6 +65,13 @@ Pack/Unpack 1 000 000 Inductive Nat: {743755,1000000}
 > 132
 : 132
 #Fun<List.28.113171260>
+
+> om:corec().
+> 1
+: 1
+> 0
+: 0
+#Fun<List.3.113171260>
 
 ```
 
