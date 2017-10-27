@@ -676,10 +676,19 @@ normalization feature of typecheker to actually compare two values:
   om:type(
   om:a("(\\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True)"++
        " (#Equ/Refl #Nat/@ (#Nat/Succ #Nat/Zero))"))).
-  ∀ (True: *0)
-→ ∀ (Intro: True)
-→ True
+   \/ (True: *0)
+-> \/ (Intro: True)
+-> True
 ok
+
+> om:print(
+  om:type(
+  om:a("(\\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True)"++
+       " (#Equ/Refl #Nat/@ #Nat/Zero)"))).
+** exception error: no match of right hand side value
+   {error,{"==",
+          {app,{{var,{'Succ',0}},{var,{'Zero',0}}}},
+          {var,{'Zero',0}}}}
 \end{lstlisting}
 
 \newpage
