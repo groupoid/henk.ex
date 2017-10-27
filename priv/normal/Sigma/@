@@ -1,9 +1,5 @@
-  λ (a: *)
-→ λ (b: a -> *)
-→ ∀ (Sigma: *)
-→ ∀ (Make:
-    ∀ (x: a)
-  → ∀ (y: b x)
-  → Sigma)
-→ Sigma
-
+  \ (A: *)
+→ \ (P: A → *)
+→ ∀ (Exists: *)
+→ ∀ (Intro: ∀ (x: A) → ∀ (y: P x) → Exists)
+→ Exists

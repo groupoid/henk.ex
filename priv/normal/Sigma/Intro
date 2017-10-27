@@ -1,0 +1,7 @@
+  λ (A: *)
+→ λ (P: A → *)
+→ λ (x: A)
+→ λ (y: P x)
+→ λ (Exists: *)
+→ λ (Intro: ∀ (z: A) → P z → Exists)
+→ Intro x y
