@@ -291,15 +291,6 @@ This langauge is called one axiom language (or pure) as eliminator
 and introduction adjoint functors inferred from type formation rule.
 The only computation rule of Pi type is called beta-reduction.
 
-\begin{lstlisting}[mathescape=true]
-    $\forall$ (x: A) $\rightarrow$ B x : Type
-    $\lambda$ (x: A) $\rightarrow$ b : B x
-    f a : B [a/x]
-    ( $\lambda$ (x: A) $\rightarrow$ b) a = b[a/x] : B[a/x]
-
-\end{lstlisting}
-
-
 \begin{equation}
 \tag{$\Pi$-formation}
 \dfrac
@@ -802,8 +793,7 @@ $$
 \vspace{1cm}
 \subsection{Normal Forms}
 
-Here is example of List/map natural transformation where List
-is a functor and List carrier is 1-category.
+Here is example of List/map generic function.
 
 \subsubsection*{Lists/map}
 {\fontfamily{pcr}\selectfont
