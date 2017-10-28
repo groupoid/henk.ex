@@ -1,6 +1,8 @@
 -- Sigma/@
    \ (A: *)
 -> \ (P: A -> *)
+-> \ (n: A)
 -> \/ (Exists: *)
--> \/ (Intro: \/ (z: A) -> \/ (y: P z) -> Exists)
+-> \/ (Intro: A -> P n -> Exists)
 -> Exists
+

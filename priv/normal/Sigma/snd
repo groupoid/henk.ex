@@ -1,9 +1,7 @@
 -- Sigma/snd
---   \ (A: *)
--- -> \ (B : A -> *)
--- -> \ (S : #Sigma/@ A B)
--- -> #Sigma/snd_ A (#Sigma/fst A B S) B S
+   \ (A: *)
+-> \ (B: A -> *)
+-> \ (n: A)
+-> \ (S: #Sigma/@ A B n)
+-> S (B n) ( \(_: A) -> \(y: B n) -> y )
 
--- try to figure out why this is not possible
-
-*

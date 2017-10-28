@@ -1,6 +1,7 @@
 -- Sigma/fst
    \ (A: *)
 -> \ (B: A -> *)
--> \ (S: #Sigma/@ A B)
--> S A ( \(x: A) -> \(y: B x) -> x)
+-> \ (n: A)
+-> \ (S: #Sigma/@ A B n)
+-> S A ( \(x: A) -> \(y: B n) -> x)
 

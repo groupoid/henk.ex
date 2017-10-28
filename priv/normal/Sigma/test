@@ -1,2 +1,4 @@
---#Sigma/Intro #Nat/@ #List/@ #Nat/Zero (#List/Nil #Nat/@)
-*
+#Sigma/Intro #Nat/@
+             (\(n: #Nat/@) -> #List/@ #Nat/@)
+             #Nat/Five
+             (#List/replicate #Nat/@ #Nat/Five #Nat/Zero)
