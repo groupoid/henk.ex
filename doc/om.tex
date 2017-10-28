@@ -435,21 +435,16 @@ data Sigma (A: Type) (P: A -> Type): Type =
 -> \ (S: #Sigma/@ A B)
 -> S A ( \(x: A) -> \(_: B x) -> x)
 
--- Sigma/snd
-   \ (A: *)
--> \ (B: A -> *)
--> \ (S: #Sigma/@ A B)
--> S (B (#Sigma/fst A B S))
-     (\(_: A) -> \(y: B (#Sigma/fst A B S)) -> y)
-
 -- Sigma/test
 #Sigma/Intro #Nat/@ #List/@ #Nat/Zero (#List/Nil #Nat/@)
 \end{lstlisting}
 
+Expressing Sigma dependent eliminator is not so easy in PTS.
+
 \begin{lstlisting}[mathescape=true]
-> om:fst(om:erase(om:norm(om:a("#Sigma/snd #Nat/@ #List/@ #Sigma/test")))).
-{{$\lambda$,{'Cons',0}},
- {any,{{$\lambda$,{'Nil',0}},{any,{var,{'Nil',0}}}}}}
+> om:fst(om:erase(om:norm(om:a("#Sigma/fst #Nat/@ #List/@ #Sigma/test")))).
+{{$\lambda$,{'Succ',0}},
+ {any,{{$\lambda$,{'Zero',0}},{any,{var,{'Zero',0}}}}}}
 \end{lstlisting}
 
 For using {\bf Sigma} type for Logic purposes one should change the

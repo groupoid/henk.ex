@@ -4,6 +4,6 @@
 -> \ (x: A)
 -> \ (y: P x)
 -> \ (Exists: *)
--> \ (Intro: \/ (z: A) -> P z -> Exists)
+-> \ (Intro: \/ (n: A) -> P x -> Exists)
 -> Intro x y
 

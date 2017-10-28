@@ -2,6 +2,5 @@
    \ (A: *)
 -> \ (P: A -> *)
 -> \/ (Exists: *)
--> \/ (Intro: \/ (x: A) -> \/ (y: P x) -> Exists)
+-> \/ (Intro: \/ (z: A) -> \/ (y: P z) -> Exists)
 -> Exists
-
