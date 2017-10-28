@@ -8,14 +8,14 @@ dep(Arg,Out,predicative)   -> max(Arg,Out).
 hierarchy(Arg,Out)         -> dep(Arg,Out,application:get_env(om,hierarchy,impredicative)).
 
 star({star,N})          -> N;
-star(_)                 -> {error, "*" }.
+star(S)                 -> erlang:error({error, "*", S}).
 
 func({{"∀",N},{I,O}})   -> true;
-func(T)                 -> {error, {"∀", T } }.
+func(T)                 -> erlang:error({error, "∀", T }).
 
 var(N,B)                -> var(N,B,proplists:is_defined(N,B)).
 var(N,B,true)           -> true;
-var(N,B,false)          -> {error, { "free var", N, proplists:get_keys(B) }}.
+var(N,B,false)          -> erlang:error({error, "free var", N, proplists:get_keys(B) }).
 
 shift({var,{N,I}},N,P) when I>=P -> {var,{N,I+1}};
 shift({{"∀",{N,0}},{I,O}},N,P)   -> {{"∀",{N,0}},{shift(I,N,P),shift(O,N,P+1)}};
@@ -53,7 +53,7 @@ eq({app,{F1,A1}},{app,{F2,A2}})                   -> eq(F1,F2), eq(A1,A2);
 eq({star,N},{star,N})                             -> true;
 eq({var,{N,I}},{var,{N,I}})                       -> true;
 eq({remote,N},{remote,N})                         -> true;
-eq(A,B)                                           -> {error,{"==", A, B}}.
+eq(A,B)                                           -> erlang:error({error, "==", A, B}).
 
 type({star,N},_)              -> {star,N+1};
 type({var,{N,I}},D)           -> true = var(N,D), om:keyget(N,D,I);

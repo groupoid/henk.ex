@@ -57,14 +57,14 @@ There is no fixpoint axiom needed for the definition of infinity term dependance
 
 \paragraph{}
 All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
-dependent term is equal maximum complexity of term and its dependency $Rules$. The type
+dependent term is equal maximum complexity of term and its dependency $Rules$. The universe
 system is completely described by the following PTS notation (due to Barendregt):
 
 $$
 \begin{cases}
-    Sorts = Type.\{i\},\ i : Nat\\
-    Axioms = Type.\{i\} : Type.\{inc\ i\}\\
-    Rules = Type.\{i\} \leadsto Type.\{j\} : Type.\{max\ i\ j\}\\
+Sorts = Type.\{i\},\ i : Nat\\
+Axioms = Type.\{i\} : Type.\{inc\ i\}\\
+Rules = Type.\{i\} \leadsto Type.\{j\} : Type.\{max\ i\ j\}\\
 \end{cases}
 $$
 
