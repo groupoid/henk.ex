@@ -20,7 +20,6 @@
 
 \vspace{3cm}
 \vspace{3cm}   {\Large \bf Intermediate Language with Dependent Types and Strong Normalization for Erlang/OTP applications.\\}\par
-%\vspace{0.3cm} {\Large Technical Article\par}
 \vspace{0.3cm} {\Large Maxim Sokhatsky\par}
 \vspace{4cm}   {\Large 2016---2017}
 
@@ -31,110 +30,35 @@
 \tableofcontents
 
 \newpage
-\section{Introduction}
+\section{Abstract}
 
-\vspace{1cm}
+In this paper presented the pure type system based intermediate language Om and
+its typechecker with bytecode extraction to Erlang. The typesystem contains infinite
+number of universes, so it is known to be consistent in dependent type theory.
+The typechecker also supports switchable predicative and impredicative hierarchies
+of universes. Supporting Erlang platform natively dictated the look and feel of this work.
+This system is expected to be usable as trusted core for certified
+applications which could be runned inside Erlang virtual machines LING and BEAM.
+The syntax is made compatible with Morte haskell library and supports its base
+library, however extens the indexed universes.
+We also show how to program in this environment and link with Erlang
+inductive and coinductive free structures. The very basic prelude library is shipped
+as a part of work. The brief notes given on the top-level
+language which compiles to pure type system core. In the results section we will
+show that lambda evaluation performance on BEAM virtual machine is acceptable to run the
+production software. The main audience of this work are Erlang users.
 
-\subsection{History}
-
-\paragraph{}
-{\bf LISP}. Untyped lambda calculus was discovered as an inner language of the space
-at origin (Curry, Church, 1932). This language was manifested as LISP (McCarthy, 1958)
-that was built upon: cons, nil, eq, atom, car, cdr, lambda, apply and id.
-It was parts of inductive types lately known as inductive type constructors.
-Still untyped lambda calculus is used as an extraction target for many
-provers (Idris, F*), and also manifests in different domain languages (JavaScript, Erlang).
-
-\paragraph{}
-{\bf ML/LCF}. Further teardown of inner space language was ML language, founded merely on algebraic
-datatypes and algebra on higher terms rather than categorical semantic. Lately it
-was fixed with categorical methods in CPL (Hagino, 1987) and Charity (Cockett, 1992).
-Milner, assisted by Morris and Newey designed Meta Language for the purpose of builing LCF
-in early 70-s. LCF was a predecessor family of automated math provers: HOL88,
-HOL90, HOL98 and HOL/Isabelle which is now built using Poly/ML.
-
-\paragraph{}
-{\bf Fully Automated Provers}. In that period during 80-90s other automated math systems were appeared:
-AUTOMATH (de Bruijn, 1967), Mizar (Trybulec, 1989), PVS (Owre, Rushby, Shankar, 1995),
-ACL2 (Boyer, Kaufmann, Moore, 1996) and Otter (McCune, 1996).
-
-\paragraph{}
-{\bf MLTT}. Contemporary provers (built upon consistent Martin-Löf Type Theory, 1972)
-like Agda, Coq, Lean, F*, Idris are based on Barendregt
-and Coquand' Calculus of Constructions with different flavours of inifinity universe hierarchies
-and Calculus of Inductive Constructions for modeling polynomial functors of well-founded trees.
-Some of them are automated and some are trying to be and general purpose
-programming languages with proving facilities, like Idris, Coq (coq.io), Agda (M-Alonso).
-
-\paragraph{}
-{\bf Cubical Type Theory}
-The further extensions of MLTT theory is a Homotopy Types needed
-for reasoning about abstract shapes and multidimentional path types.
-The Cubical approach was chosen in favour of Globular and Simplical
-due to computability of Voevodsky's univalence axiom.
-
-\subsection{Background}
-From the partical point of view there are exists two approaches.
-One involve the usage of two languages: meta language for your models
-and separate language for prover, like in {\bf HOL}, {\bf Andromeda} or {\bf NuPRL}, {\bf TLA+}, {\bf Twelf}.
-The second approach propose embedding models into a unified language.
-And certified programs are extrated as proofs from that models. This is a land of MLTT provers.
-
-\newpage
-\section{Motivation and Vision}
-
-\paragraph{}
-{\bf From PTS to HTS}. We want to have flexible detachable
-layers on top of PTS core. Then Sigma for proving.
-Then well-founded trees or polynomial functors as known as data and record.
-Then higher path types, interval arithmetic, glue and comp for HIT. The semantic
-in each layer remains the same -- category theory.
-
-\paragraph{}
-{\bf Extensible Language Design}. Encoding of inductive types is based on categorical
-semantic of compilation to PTS. AST of the PTS language is defined
-defined in terms of inductive constructions. The language of polynomial
-functors (data and record) and core language of the process calculus
-(spawn, receive and send) are the syntax extensions of the Om language.
-
-\paragraph{}
-{\bf Changable Encodings}. PTS lambda encodings differs in terms of computational properties.
-Most known and oldest is Church-Boehm-Berrarducci encoding which has really bad properties,
-such as O(n) for pred and extended complexity for recursors.
-Another well known are encodings are: Scott (lazyness),
-Parigot (lazyness and constant-time iterators), CPS (continuations).
-However most of them require variations of Fixpoint types.
-Real life efficient encoding without fixpoint with good
-computational properties seems doesn't exist. We want our language
-be flexible and selective to fixpoint type. Also we want to have switchable encodings.
-
-\paragraph{}
-{\bf Proved Categorical Semantic}. There was modeled a math model (using
-higher-order categorical logic) of encoding, which calculates (co)limits in a
-cathegory of (co)algebras built with given set of (de)constructors.
-We call such encoding in honour of Lambek lemma that leeds us to the
-equality of (co)initial object and (co)limit in the categories of (co)algebras.
-Such encoding works with dependent types and its consistency is proved in Lean model.
-
-\paragraph{}
-{\bf General Architecture}. This article covers only the central part of
-of the proving system, the {\bf OM} intermediate language with strong
-normalization properties and extraction to {\bf Erlang/OTP} bytecode.
-Also we describe briefly the prototype of {\bf EXE} language enriched
-with inductive constructions and fixpoint in core.
-
-\newpage
 \section{Pure Type System as Intermediate Language}
 
-   \paragraph{}
-   The Om language is a dependently typed lambda calculus, an extension of Barendregt'
-   and Coquand Calculus of Constructions with predicative hierarchy of indexed universes.
-   There is no fixpoint axiom needed for the definition of infinity term dependance.
+\paragraph{}
+The Om language is a dependently typed lambda calculus, an extension of Barendregt'
+and Coquand Calculus of Constructions with predicative hierarchy of indexed universes.
+There is no fixpoint axiom needed for the definition of infinity term dependance.
 
-   \paragraph{}
-   All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
-   dependent term is equal maximum complexity of term and its dependency $Rules$. The type
-   system is completely described by the following PTS notation (due to Barendregt):
+\paragraph{}
+All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
+dependent term is equal maximum complexity of term and its dependency $Rules$. The type
+system is completely described by the following PTS notation (due to Barendregt):
 
 $$
 \begin{cases}
@@ -144,23 +68,23 @@ $$
 \end{cases}
 $$
 
-   \paragraph{}
-   An intermediate Om language is based on Henk\cite{henk} languages described first
-   by Erik Meijer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
-   of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lambda terms.
-   It is based only on one type constructor $\Pi$, its special case $\lambda$ and theirs eliminators:
-   $apply$ and $curry$, infinity number of universes,
-   and one computation rule called $\beta$-reduction.
-   The design of Om language resemble Henk and Morte both
-   design and implementation. This language indended to be small, concise, easy provable
-   and able to produce verifiable peace of code that can be distributed over the networks,
-   compiled at target with safe trusted linkage.
+\paragraph{}
+The Om language is based on Henk\cite{henk} languages described first
+by Erik Meijer and Simon Peyton Jones in 1997. Leter on in 2015 Morte impementation
+of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lambda terms.
+It is based only on one type constructor $\Pi$, its intro $\lambda$ and $apply$ eliminator,
+infinity number of universes, and $\beta$-reduction. The design of Om language resemble
+Henk and Morte both design and implementation. This language indended to be small,
+concise, easy provable and able to produce verifiable peace of code that can be
+distributed over the networks, compiled at target with safe trusted linkage.
 
-   \subsection{BNF}
-\vspace{0.5cm}
-   Om syntax is compatible with $\lambda C$ Coquand's Calculus of Constructions presented
-   in Morte and Henk languages. However it has extension in a part of specifying
-   universe index as a {\bf Nat} number.
+\newpage
+
+\subsection{BNF}
+
+Om syntax is compatible with $\lambda C$ Coquand's Calculus of Constructions presented
+in Morte and Henk languages. However it has extension in a part of specifying
+universe index as a {\bf Nat} number.
 
 \vspace{0.5cm}
 \begin{lstlisting}[mathescape=true]
@@ -183,25 +107,26 @@ data pts = star (n: nat)
          | pi (x: name) (d c: pts)
 \end{lstlisting}
 
-\newpage
 \subsection{Universes}
 
-The OM language is a higher-order dependently typed lambda calculus,
-an extension of Coquand's Calculus of Constructions
-with the predicative/impredicative hierarchy of indexed universes.
-This extension is motivated avoiding paradoxes in dependent theory.
-Also there is no fixpoint axiom needed for the definition
-of infinity term dependance.
+As Om has infinite number of universes it should include metateoretical Nat
+unductive type in its core. Om also doesnt have 
 
-\vspace{0.5cm}
-\begin{lstlisting}[mathescape=true]
-    U_0 : U_1 : U_2 : U_3 : ...
+$$
+U_0 : U_1 : U_2 : U_3 : ...
+$$
 
-    U_0 --- propositions
-    U_1 --- values and sets
-    U_2 --- types
-    U_3 --- sorts
-\end{lstlisting}
+$U_0$ --- propositions\\
+$U_1$ --- sets\\
+$U_2$ --- types\\
+$U_3$ --- kinds\\
+
+\begin{equation}
+\tag{I}
+\dfrac
+{}
+{Nat}
+\end{equation}
 
 \begin{equation}
 \tag{S}
@@ -215,16 +140,6 @@ of infinity term dependance.
 All terms obey the A ranking inside the sequence of S universes,
 and the complexity R of the dependent term is equal to a maximum of
 the term's complexity and its dependency.
-The universes system is completely described by the following
-PTS notation (due to Barendregt):
-
-\vspace{0.5cm}
-\begin{lstlisting}[mathescape=true]
-    $S$    (n : nat) = U n
-    $A_1$ (n m : nat) = U n : U m where m > n      - cumulative
-    $R_1$ (m n : nat) = U m $\rightarrow$ U n : U (max m n)  - predicative
-\end{lstlisting}
-
 Note that predicative universes are incompatible with Church lambda term encoding.
 You can switch predicative vs impredicative uninverses by typecheker parameter.
 
@@ -244,12 +159,6 @@ available extension to predicative hierarchy that not leads to inconsistency.
 However there is another option to have infinite
 impredicative hierarchy.
 
-\vspace{0.5cm}
-\begin{lstlisting}[mathescape=true]
-    $A_2$   (n : nat) = U n : U (n + 1)   - non-cumulative
-    $R_2$ (m n : nat) = U m $\rightarrow$ U n : U n - impredicative
-\end{lstlisting}
-
 \begin{equation}
 \tag{$A_2$}
 \dfrac
@@ -262,6 +171,34 @@ impredicative hierarchy.
 \dfrac
 {i : Nat,\ \ \ \ j : Nat}
 {Type_i \rightarrow Type_{j} : Type_{j}}
+\end{equation}
+
+\subsection{Contexts}
+
+The contexts models the dictionary with variables for typechecker.
+It can be typed as simple $List\ (Prod\ String\ Term)$. The elimination
+rule is not given here as in implemetation the whole dictionary
+is destroyed after typechecking.
+
+\begin{equation}
+\tag{S}
+\dfrac
+{}
+{\Gamma : Context}
+\end{equation}
+
+\begin{equation}
+\tag{S}
+\dfrac
+{\Gamma : Context}
+{Empty : \Gamma}
+\end{equation}
+
+\begin{equation}
+\tag{S}
+\dfrac
+{A : Type,\ \ \ \ x : A,\ \ \ \ \Gamma : Context}
+{(x : A)\ \vdash\ \Gamma : Context}
 \end{equation}
 
 \subsection{Single Axiom Language}
@@ -329,7 +266,6 @@ data om = star             (n: nat)
 \end{lstlisting}
 
 \newpage
-
 \subsection{Hierarchy}
 H returns the target Universe of B term dependendance on A. Thereare two dependance rules known
 as predicative and impredicative which returns max universe or universe of last term respectively.
@@ -401,18 +337,20 @@ trick one should desire circular dependency over {\bf :remote}. This is denied i
 the system. Same notes apply to normalization and definitional equality.
 
 \begin{lstlisting}[mathescape=true]
-type (:star,N)               _ $\rightarrow$ (:star,N+1)
+type (:star,N)               D $\rightarrow$ (:star,N+1)
 type (:var,(N,I))            D $\rightarrow$ let true = var N D in keyget N D I
 type (:remote,N)             D $\rightarrow$ cache type N D
 type (:arrow,(I,O))          D $\rightarrow$ (:star,h(star(type I D)),star(type O D))
 type ((:forall,(N,0)),(I,O)) D $\rightarrow$ (:star,h(star(type I D)),star(type O [(N,norm I)|D]))
-type ((:lambda,(N,0)),(I,O)) D $\rightarrow$ let star (type I D),
-                                  NI = norm I in ((:forall,(N,0)),(NI,type(O,[(N,NI)|D])))
-type (:app,(F,A))            D $\rightarrow$ let T = type(F,D),
-                                  true = func T,
-                                  ((:forall,(N,0)),(I,O)) = T,
-                                  Q = type A D,
-                                  true = eq I Q in norm (subst O N A)
+type ((:lambda,(N,0)),(I,O)) D $\rightarrow$ let star (type I D)
+                                      NI = norm I
+                                   in ((:forall,(N,0)),(NI,type(O,[(N,NI)|D])))
+type (:app,(F,A))            D $\rightarrow$ let T = type(F,D)
+                                      true = func T
+                                      ((:forall,(N,0)),(I,O)) = T
+                                      Q = type A D
+                                      true = eq I Q
+                                   in norm (subst O N A)
 \end{lstlisting}
 
 \subsection{Normalization}
@@ -445,10 +383,12 @@ eq (:var,(N,I))           (:var,(N,I))   $\rightarrow$ true
 eq (:remote,N)            (:remote,N)    $\rightarrow$ true
 eq ((:farall,(N1,0)),(I1,O1))
    ((:forall,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+   let true = eq I1 I2
+    in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
 eq ((:lambda,(N1,0)),(I1,O1))
    ((:lambda,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2 in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
+   let true = eq I1 I2
+    in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
 eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
 \end{lstlisting}
 
@@ -632,6 +572,7 @@ Infinity I/O Type Spec.
 Infinite I/O Sample Program.
 
 \begin{lstlisting}[mathescape=true]
+-- Morte/corecursive
 ( \ (r: *1)
  -> ( (((#IOI/MkIO r) (#Maybe/@ #IOI/data)) (#Maybe/Nothing #IOI/data))
     ( \ (m: (#Maybe/@ #IOI/data))
@@ -647,7 +588,7 @@ Erlang Coinductive Bindings.
 
 \begin{lstlisting}[mathescape=true]
 copure() ->
-    fun (_) -> fun(IO) -> IO end end.
+    fun (_) -> fun (IO) -> IO end end.
 
 cogetLine() ->
     fun(IO) -> fun(_) ->
@@ -657,7 +598,7 @@ cogetLine() ->
 coputLine() ->
     fun (S) -> fun(IO) ->
         X = ch:unlist(S),
-        io:format(": "), io:put_chars(X),
+        io:put_chars(": "++X),
         case X of "0\n" -> list([]);
                       _ -> corec() end end end.
 
@@ -707,6 +648,7 @@ I/O Type Spec.
 Guarded Recursion I/O Sample Program.
 
 \begin{lstlisting}[mathescape=true]
+-- Morte/recursive
 ((#IO/replicateM #Nat/Five)
  ((((#IO/[>>=] #IO/data) #Unit/@) #IO/getLine) #IO/putLine))
 \end{lstlisting}
@@ -724,8 +666,7 @@ getLine() ->
 
 putLine() ->
     fun (S) -> fun(IO) ->
-        io:format(": "),
-        io:put_chars(ch:unlist(S)),
+        io:put_chars(": "++ch:unlist(S)),
         ch:ap(IO,[S]) end end.
 
 rec() ->
