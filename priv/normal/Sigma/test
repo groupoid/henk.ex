@@ -1,4 +1,6 @@
+-- Sigma/test
 #Sigma/Intro #Nat/@
              (\(n: #Nat/@) -> #List/@ #Nat/@)
              #Nat/Five
              (#List/replicate #Nat/@ #Nat/Five #Nat/Zero)
+

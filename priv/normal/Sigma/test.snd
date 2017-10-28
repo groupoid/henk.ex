@@ -1,5 +1,6 @@
+-- Sigma/test.snd
 #Sigma/snd #Nat/@
            (\(n: #Nat/@) -> #List/@ #Nat/@)
-           (#Sigma/test.fst)
-           (#Sigma/test)
+           #Sigma/test.fst
+           #Sigma/test
 
