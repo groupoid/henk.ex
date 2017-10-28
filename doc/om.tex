@@ -408,8 +408,8 @@ we can encode {\bf Sigma} type similar how we encode {\bf Prod}
 tuple pair in Boehm encoding. Let's formulate Sigma type as inductive type:
 
 \begin{lstlisting}[mathescape=true]
-data Sigma (A: Type) (P: A -> Type): Type =
-     (intro: (x:A) (y:P x) -> Sigma A P)
+data Sigma (A: Type) (P: A -> Type) (x: A): Type =
+     (intro: P x -> Sigma A P)
 \end{lstlisting}
 
 \begin{lstlisting}[mathescape=true]
