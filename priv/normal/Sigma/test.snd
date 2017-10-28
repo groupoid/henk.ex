@@ -1,6 +1,6 @@
 -- Sigma/test.snd
 #Sigma/snd #Nat/@
            (\(n: #Nat/@) -> #List/@ #Nat/@)
-           #Sigma/test.fst
+           #Nat/Zero
            #Sigma/test
 
