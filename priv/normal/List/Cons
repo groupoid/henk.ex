@@ -3,17 +3,11 @@
 → λ (Head: A)
 → λ (Tail:
     ∀ (List: *)
-  → ∀ (Cons:
-      ∀ (Head: A)
-    → ∀ (Tail: List)
-    → List)
+  → ∀ (Cons: A -> List -> List)
   → ∀ (Nil: List)
   → List)
 → λ (List: *)
-→ λ (Cons:
-    ∀ (Head: A)
-  → ∀ (Tail: List)
-  → List)
+→ λ (Cons: A -> List -> List)
 → λ (Nil: List)
 → Cons Head (Tail List Cons Nil)
 

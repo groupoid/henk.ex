@@ -1,10 +1,7 @@
 -- List/Nil
   λ (A: *)
 → λ (List: *)
-→ λ (Cons:
-    ∀ (Head: A)
-  → ∀ (Tail: List)
-  → List)
+→ λ (Cons: A -> List -> List)
 → λ (Nil: List)
 → Nil
 

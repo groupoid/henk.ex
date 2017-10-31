@@ -1,6 +1,0 @@
-  λ (a : *)
-→ ∀ (IO : *)
-→ ∀ (GetLine_ : (IO → IO) → IO)
-→ ∀ (PutLine_ : #IO/data → IO → IO)
-→ ∀ (Pure_ : a → IO)
-→ IO

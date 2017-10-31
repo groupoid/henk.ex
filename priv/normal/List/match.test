@@ -1,0 +1,4 @@
+-- List/match.test
+#List/match #Nat/@ (#List/Nil #Nat/@)
+            #Nat/@ #Nat/Two #Nat/Five
+

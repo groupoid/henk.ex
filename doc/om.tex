@@ -110,7 +110,7 @@ data pts = star (n: nat)
 \subsection{Universes}
 
 As Om has infinite number of universes it should include metateoretical Nat
-unductive type in its core. Om also doesnt have 
+unductive type in its core. Om supports predicative and impredicative hierarchies.
 
 $$
 U_0 : U_1 : U_2 : U_3 : ...
@@ -134,6 +134,14 @@ $U_3$ --- kinds\\
 {o : Nat}
 {Type_o}
 \end{equation}
+
+You may check if term is universe with star function.
+If argument is not universe it returns $\{error,\_\}$.
+
+\begin{lstlisting}[mathescape=true]
+star (:star,N) $\rightarrow$ N
+star _ $\rightarrow$ (:error, "*")
+\end{lstlisting}
 
 \subsection{Predicative Universes}
 
@@ -173,6 +181,17 @@ impredicative hierarchy.
 {Type_i \rightarrow Type_{j} : Type_{j}}
 \end{equation}
 
+\subsection{Hierarchy Switching}
+H returns the target Universe of B term dependendance on A. Thereare two dependance rules known
+as predicative and impredicative which returns max universe or universe of last term respectively.
+
+\begin{lstlisting}[mathescape=true]
+dep A B impredicative $\rightarrow$ B
+dep A B predicative   $\rightarrow$ max A B
+
+h Arg Out $\rightarrow$ dep Arg Out om:hierarchy(impredicative)
+\end{lstlisting}
+
 \subsection{Contexts}
 
 The contexts models the dictionary with variables for typechecker.
@@ -197,7 +216,7 @@ is destroyed after typechecking.
 \begin{equation}
 \tag{S}
 \dfrac
-{A : Type,\ \ \ \ x : A,\ \ \ \ \Gamma : Context}
+{A : Type_i,\ \ \ \ x : A,\ \ \ \ \Gamma : Context}
 {(x : A)\ \vdash\ \Gamma : Context}
 \end{equation}
 
@@ -265,25 +284,6 @@ data om = star             (n: nat)
         | pi     (x: name)          (d c: pts)
 \end{lstlisting}
 
-\newpage
-\subsection{Hierarchy}
-H returns the target Universe of B term dependendance on A. Thereare two dependance rules known
-as predicative and impredicative which returns max universe or universe of last term respectively.
-
-\begin{lstlisting}[mathescape=true]
-dep A B impredicative $\rightarrow$ B
-dep A B predicative   $\rightarrow$ max A B
-
-h Arg Out $\rightarrow$ dep Arg Out om:hierarchy(impredicative)
-\end{lstlisting}
-
-\subsection{Universes}
-Star returns the number of Universe. If argument is not Universe it returns $\{error,\_\}$.
-
-\begin{lstlisting}[mathescape=true]
-star (:star,N) $\rightarrow$ N
-star _         $\rightarrow$ (:error, "*")
-\end{lstlisting}
 
 \subsection{Functions}
 Func returns true if the argument is functional space. Otherwise returns $\{error,\_\}$.
@@ -303,7 +303,7 @@ var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)
 \end{lstlisting}
 
 \subsection{Shift}
-Shift renames var N in N
+Shift renames var N in N. Remaming means adding an 1 to an index of that name.
 
 \begin{lstlisting}[mathescape=true]
 sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
@@ -314,6 +314,13 @@ sh (T,N,P)                      $\rightarrow$ T
 \end{lstlisting}
 
 \subsection{Substitution}
+
+\begin{equation}
+\tag{subst}
+\dfrac
+{\pi_1 : A\ \ \ \ u:A \vdash \pi_2 : B}
+{[\pi_1/u]\ \pi_2 : B}
+\end{equation}
 
 \begin{lstlisting}[mathescape=true]
 sub Term Name Value               $\rightarrow$ sub Term Name Value 0
@@ -328,7 +335,7 @@ sub (:var,           (N,I)) N V L when I>L $\rightarrow$ (:var,(N,I-1))
 sub T                       _ _ _ $\rightarrow$ T.
 \end{lstlisting}
 
-
+\newpage
 \subsection{Type Checker}
 
 For sure in pure system we should be careful with {\bf :remote} AST node. Remote
