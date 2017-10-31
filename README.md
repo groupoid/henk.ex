@@ -6,7 +6,7 @@ Om — Lambda Assembler
 
    An intermediate Om language is based on Henk languages described first
    by Erik Meijer and Simon Peyton Jones in 1997. Later on in 2015 a new impementation of the ideas
-   in Haskell appeared. It used Boem-Berrarducci encoding of recursive data types into non-recursive terms.
+   in Haskell appeared, called Morte. It used Boehm-Berarducci encoding of recursive data types into non-recursive terms.
    Morte has constants, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
    one axiom and four deduction rules. The Om language resembles Henk and Morte both in design
    and in implementation. This language indended to be small, concise, easily provable, clean and be able
@@ -41,27 +41,27 @@ In repository OM you may found following parts of core:
 * [Eraser](https://github.com/groupoid/om/blob/master/src/om_erase.erl)
 * [Code Extractor](https://github.com/groupoid/om/blob/master/src/om_extract.erl)
 
-OM ships with different `modes` (spaces of types with own encodings), or `preludes`
+OM ships with different "modes" (spaces of types with own encodings), or "preludes", which
 you may find in `priv` directory. They are selectable with `om:mode("normal")`.
 
 #### [normal](https://github.com/groupoid/om/tree/master/priv/normal)
 
-This is minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
-For modeling inductive constructions we use here plain Church (or Boehm-Berrarducci if you wish),
-we have here basic I/O monads: IO (free monad, for limited I/O) and IOI (free comonad,
+This is a minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
+It contains common inductive constructions encoded using plain Church (or Boehm-Berarducci if you wish) encoding,
+and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IOI (free comonad,
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
 #### [setoids](https://github.com/groupoid/om/tree/master/priv/setoids)
 
-This is an implementation of Setoid structure, that provides us Equality. However
-we switched lately to more compact `poset` encoding.
+This is an implementation of Setoid structure, that provides us with Equality. However
+we switched to more compact `poset` encoding since then.
 
 #### [posets](https://github.com/groupoid/om/tree/master/priv/posets)
 
-This is implementation of non-reflexive partial order sets which
-has more compact representation than setoids for our needs.
-It has only `Bool`, `Empty` and `Unit` encoded just to show the general idea.
+This is an implementation of non-reflexive partially ordered sets which
+has a more compact representation than setoids for our needs.
+It has only `Bool`, `Empty` and `Unit` encoded just to demonstrate the general idea.
 Dependent eliminator of `Bool` you can found
 here [Data/Bool](https://github.com/groupoid/om/tree/master/priv/posets/Data/Bool/)
 
