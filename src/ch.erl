@@ -135,3 +135,20 @@ main  ()  -> io:format("Zero: ~p~n",               [unnat(zero())]),
              io:format("Test Big List: ~p~n",      [unlist(list([2,3,5,8,11,19]))]),
              io:format("Two: ~p~n",                [unnat(ap(succ(),[ap(succ(),[zero()])]))]).
 
+
+perm() ->
+    T = 98,
+    M = "4.91",
+    lists:flatten(
+    [begin X = 5*A + 4*B + 3*C + 2*D + 1*E,
+       case X =< 482 andalso X >= 481 of
+            true -> case float_to_list(X/T,[{decimals,2}]) of
+                         M -> {X/T,A,B,C,D,E};
+                         _ -> [] end;
+            _ -> [] end
+    end || A <- lists:seq(0,T),
+           B <- lists:seq(0,T div 2),
+           C <- lists:seq(0,T div 2),
+           D <- lists:seq(0,T div 2),
+           E <- lists:seq(0,T div 2), A+B+C+D+E=<T ]).
+
