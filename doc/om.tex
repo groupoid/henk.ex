@@ -54,7 +54,7 @@ production software. The main audience of this work are Erlang users.
 \paragraph{}
 The Om language is a dependently typed lambda calculus, an extension of Barendregt'
 and Coquand Calculus of Constructions with predicative hierarchy of indexed universes.
-No fixpoint axiom is needed for the definition of infinity term dependence.
+There is no fixpoint axiom, so there is no infinite term dependence.
 
 \paragraph{}
 All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
@@ -150,7 +150,7 @@ All terms obey the A ranking inside the sequence of S universes,
 and the complexity R of the dependent term is equal to a maximum of
 the term's complexity and its dependency.
 Note that predicative universes are incompatible with Church lambda term encoding.
-You choose predicative or impredicative uninverses by a typechecker parameter.
+You choose predicative or impredicative universes by a typechecker parameter.
 
 \[
 \tag{$A_1$}
@@ -164,7 +164,7 @@ You choose predicative or impredicative uninverses by a typechecker parameter.
 
 \subsection{Impredicative Universes}
 Propositional contractible bottom space is the only
-available extension to predicative hierarchy that not leads to inconsistency.
+available extension to predicative hierarchy which doesn't lead to inconsistency.
 However there is another option to have infinite
 impredicative hierarchy.
 
@@ -183,8 +183,8 @@ impredicative hierarchy.
 \end{equation}
 
 \subsection{Hierarchy Switching}
-H returns the target Universe of B term dependendance on A. There are two dependence rules known
-as predicative and impredicative which return max universe or universe of last term respectively.
+H returns the target Universe of B term dependence on A. There are two dependence rules known
+as the predicative one and the impredicative one which return max universe or universe of last term respectively.
 
 \begin{lstlisting}[mathescape=true]
 dep A B impredicative $\rightarrow$ B
@@ -195,9 +195,9 @@ h Arg Out $\rightarrow$ dep Arg Out om:hierarchy(impredicative)
 
 \subsection{Contexts}
 
-The contexts models the dictionary with variables for typechecker.
+The contexts model a dictionary with variables for typechecker.
 It can be typed as simple $List\ (Prod\ String\ Term)$. The elimination
-rule is not given here as in implemetation the whole dictionary
+rule is not given here as in our implementation the whole dictionary
 is destroyed after typechecking.
 
 \begin{equation}
@@ -287,7 +287,7 @@ data om = star             (n: nat)
 
 
 \subsection{Functions}
-Func returns true if the argument is functional space. Otherwise it returns $\{error,\_\}$.
+Func returns true if the argument is a functional space. Otherwise it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 func ((:forall,),(I,O)) $\rightarrow$ true
@@ -304,7 +304,7 @@ var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)
 \end{lstlisting}
 
 \subsection{Shift}
-Shift renames var N in N. Renaming means adding an 1 to an index of that name.
+Shift renames var N in B. Renaming means adding an 1 to an index of that name.
 
 \begin{lstlisting}[mathescape=true]
 sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
@@ -381,7 +381,7 @@ norm T                       $\rightarrow$ T
 
 \subsection{Definitional Equality}
 
-Definitional Equality simple ensures the erlang term equality.
+Definitional Equality simply checks the equality of Erlang terms.
 
 \begin{lstlisting}[mathescape=true]
 eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
@@ -494,7 +494,7 @@ data Equ (A: Type): A -> A -> Type :=
 -> Refl x
 \end{lstlisting}
 
-You cannot construct lambda that will check different values of A type,
+You cannot construct a lambda that will check different values of A type for equality,
 however you may want to use built-in definitional equality and
 normalization feature of typechecker to actually compare two values:
 
