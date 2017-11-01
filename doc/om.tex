@@ -32,20 +32,21 @@
 \newpage
 \section{Abstract}
 
-In this paper presented the pure type system based intermediate language Om and
-its typechecker with bytecode extraction to Erlang. The typesystem contains infinite
+This paper presents design of Om language and implementation of its type checker 
+and bytecode extraction to Erlang. Om is an intermediate language
+based on a pure type system with infinite
 number of universes, so it is known to be consistent in dependent type theory.
-The typechecker also supports switchable predicative and impredicative hierarchies
-of universes. Supporting Erlang platform natively dictated the look and feel of this work.
+The typechecker can be switched between predicative and impredicative hierarchies
+of universes. The need to natively support Erlang platform dictated the look and feel of this work.
 This system is expected to be usable as trusted core for certified
-applications which could be runned inside Erlang virtual machines LING and BEAM.
-The syntax is made compatible with Morte haskell library and supports its base
-library, however extens the indexed universes.
-We also show how to program in this environment and link with Erlang
-inductive and coinductive free structures. The very basic prelude library is shipped
-as a part of work. The brief notes given on the top-level
-language which compiles to pure type system core. In the results section we will
-show that lambda evaluation performance on BEAM virtual machine is acceptable to run the
+applications which could be run inside Erlang virtual machines LING and BEAM.
+The syntax is compatible with Morte language and supports its base
+library, however it extends the indexed universes.
+We show how to program in this environment and link with Erlang
+inductive and coinductive free structures. A very basic prelude library is shipped
+as a part of the work. We briefly describe the top-level
+language which compiles to pure type system core. In the Results section we will
+show that lambda evaluation performance on BEAM virtual machine is acceptable to run
 production software. The main audience of this work are Erlang users.
 
 \section{Pure Type System as Intermediate Language}
@@ -53,11 +54,11 @@ production software. The main audience of this work are Erlang users.
 \paragraph{}
 The Om language is a dependently typed lambda calculus, an extension of Barendregt'
 and Coquand Calculus of Constructions with predicative hierarchy of indexed universes.
-There is no fixpoint axiom needed for the definition of infinity term dependance.
+No fixpoint axiom is needed for the definition of infinity term dependence.
 
 \paragraph{}
 All terms respect ranking $Axioms$ inside sequence of universes $Sorts$ and complexity of the
-dependent term is equal maximum complexity of term and its dependency $Rules$. The universe
+dependent term is equal to maximum complexity of term and its dependency $Rules$. The universe
 system is completely described by the following PTS notation (due to Barendregt):
 
 $$
@@ -109,8 +110,8 @@ data pts = star (n: nat)
 
 \subsection{Universes}
 
-As Om has infinite number of universes it should include metateoretical Nat
-unductive type in its core. Om supports predicative and impredicative hierarchies.
+As Om has infinite number of universes it should include metatheoretical Nat
+inductive type in its core. Om supports predicative and impredicative hierarchies.
 
 $$
 U_0 : U_1 : U_2 : U_3 : ...
@@ -135,8 +136,8 @@ $U_3$ --- kinds\\
 {Type_o}
 \end{equation}
 
-You may check if term is universe with star function.
-If argument is not universe it returns $\{error,\_\}$.
+You may check if a term is an universe with the star function.
+If argument is not an universe it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 star (:star,N) $\rightarrow$ N
@@ -149,7 +150,7 @@ All terms obey the A ranking inside the sequence of S universes,
 and the complexity R of the dependent term is equal to a maximum of
 the term's complexity and its dependency.
 Note that predicative universes are incompatible with Church lambda term encoding.
-You can switch predicative vs impredicative uninverses by typecheker parameter.
+You choose predicative or impredicative uninverses by a typechecker parameter.
 
 \[
 \tag{$A_1$}
@@ -182,8 +183,8 @@ impredicative hierarchy.
 \end{equation}
 
 \subsection{Hierarchy Switching}
-H returns the target Universe of B term dependendance on A. Thereare two dependance rules known
-as predicative and impredicative which returns max universe or universe of last term respectively.
+H returns the target Universe of B term dependendance on A. There are two dependence rules known
+as predicative and impredicative which return max universe or universe of last term respectively.
 
 \begin{lstlisting}[mathescape=true]
 dep A B impredicative $\rightarrow$ B
@@ -270,9 +271,9 @@ record Pi (A: Type) :=
 
 \end{lstlisting}
 
-We extend the $PTS\infty$ with remote AST node wich means remote file loading
+We extend the $PTS\infty$ with remote AST node which means remote file loading
 from trusted storage, anyway this will be checked by typechecker. We deny recursion
-over remote node. We also add index to var for simplified de Bruin indexes.
+over remote node. We also add index to var for simplified de Bruijn indexes.
 
 \begin{lstlisting}[mathescape=true]
 data om = star             (n: nat)
@@ -286,7 +287,7 @@ data om = star             (n: nat)
 
 
 \subsection{Functions}
-Func returns true if the argument is functional space. Otherwise returns $\{error,\_\}$.
+Func returns true if the argument is functional space. Otherwise it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 func ((:forall,),(I,O)) $\rightarrow$ true
@@ -294,7 +295,7 @@ func T                  $\rightarrow$ (:error,(:forall,T))
 \end{lstlisting}
 
 \subsection{Variables}
-Var returns true if the var $N$ is defined in dictionary $B$. Otherwise returns $\{error,\_\}$.
+Var returns true if the var $N$ is defined in dictionary $B$. Otherwise it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 var N B                $\rightarrow$ var N B (proplists:is_defined N B)
@@ -303,7 +304,7 @@ var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)
 \end{lstlisting}
 
 \subsection{Shift}
-Shift renames var N in N. Remaming means adding an 1 to an index of that name.
+Shift renames var N in N. Renaming means adding an 1 to an index of that name.
 
 \begin{lstlisting}[mathescape=true]
 sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
@@ -338,10 +339,10 @@ sub T                       _ _ _ $\rightarrow$ T.
 \newpage
 \subsection{Type Checker}
 
-For sure in pure system we should be careful with {\bf :remote} AST node. Remote
-AST nodes like {\bf \#List/Cons or \#List/map} are a remote link to files. So using
+For sure in a pure system we should be careful with {\bf :remote} AST node. Remote
+AST nodes like {\bf \#List/Cons or \#List/map} are remote links to files. So using
 trick one should desire circular dependency over {\bf :remote}. This is denied in
-the system. Same notes apply to normalization and definitional equality.
+the system. The same notes apply to normalization and definitional equality.
 
 \begin{lstlisting}[mathescape=true]
 type (:star,N)               D $\rightarrow$ (:star,N+1)
@@ -412,7 +413,7 @@ dependent encoding.
 Here we will show you some examples of Om Language usage.
 The PTS system is extremely powerful even without Sigma type. But
 we can encode {\bf Sigma} type similar how we encode {\bf Prod}
-tuple pair in Boehm encoding. Let's formulate Sigma type as inductive type:
+tuple pair in Boehm encoding. Let's formulate Sigma type as an inductive type:
 
 \begin{lstlisting}[mathescape=true]
 data Sigma (A: Type) (P: A -> Type) (x: A): Type =
@@ -469,7 +470,7 @@ data Sigma (A: Prop) (P: A -> Prop): Prop =
 \newpage
 \subsection{Equality Type}
 
-Another example of expressivness is Equality type a la Martin-Löf.
+Another example of expressiveness is Equality type a la Martin-Löf.
 
 \begin{lstlisting}[mathescape=true]
 data Equ (A: Type): A -> A -> Type :=
@@ -494,8 +495,8 @@ data Equ (A: Type): A -> A -> Type :=
 \end{lstlisting}
 
 You cannot construct lambda that will check different values of A type,
-however you may want to use built-in definitionaly equality and
-normalization feature of typecheker to actually compare two values:
+however you may want to use built-in definitional equality and
+normalization feature of typechecker to actually compare two values:
 
 \begin{lstlisting}[mathescape=true]
 > om:print(
@@ -521,15 +522,15 @@ ok
 \subsection{Effect Type System}
 
 \paragraph{}
-This work expects to compile to limited target platforms. For now Erlang, Haskell and LLVM are awaiting.
+This work is expected to compile to a limited number of target platforms. For now Erlang, Haskell and LLVM are awaiting.
 Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines. This language
 allows you to define trusted operations in System F and extract this routines to Erlang/OTP platform
 and plug as trusted resourses. As example we also provide infinite coinductive process creation
 and inductive shell that linked to Erlang/OTP IO functions directly.
 
 \paragraph{IO protocol}
-We can construct in pure type system the state machine based on (co)-free
-monads driven by IO protocols. Assume String is equal List of Nat (as it is in Erlang natively),
+We can construct in pure type system the state machine based on (co)free
+monads driven by IO protocols. Assume that String is a List of Nat (as it is in Erlang natively),
 and three external constructors: getLine, putLine and pure. We need to
 put correspondent implementations on host platform as parameters to perform the actual IO.
 
@@ -706,22 +707,22 @@ Here is example of Erlang/OTP shell running recursive example.
 
 Despite we can encode inductive types in PTS, the best usage of inductive types
 comes with recursors and fixpoint type that allow recursive typecheck, limiting
-from the other side the normalization proerties.
+from the other side the normalization properties.
 
 \paragraph{}
-So called Calculus of Inductive constructions are used as a top language on top of
+So called Calculus of Inductive Constructions is used as a top language on top of
 PTS to reason about inductive types. Here we will show you a sketch of such
 inductive language model which indendent to be a language extension to PTS system.
 
 \paragraph{}
 Exe is a general purpose functional language with $\Pi$ and $\Sigma$ types,
 recursive algebraic types, higher order functions,
-corecursion, free monad for effects encoding. It compiles
+corecursion, and a free monad to encode effects. It compiles
 to a small MLTT core of dependent type system with inductive types and equality.
 
 \paragraph{}
 It also has an $Id$ type (with its recursor) wich is useful for proving things,
-$Let$ sytax sugar, case analisys over inductive types and also a $pi$-Calculus primitives:
+$Let$ sytax sugar, case analysis over inductive types and also a $pi$-Calculus primitives:
 $spawn$, $send$ and $receive$ which are native mappings to Erlang/OTP.
 
 \subsection{BNF}
@@ -826,14 +827,14 @@ repository of groupoid organization.
 \subsection{Inductive Types}
 
 \paragraph{}
-There are two types of recursion: one is least fixed point (as $F_A\ X = 1 + A\times X$
+There are two types of recursion: one is the least fixed point (as $F_A\ X = 1 + A\times X$
 or $F_A\ X = A + X\times X$), in other words the recursion with a base (terminated with a bounded value),
 lists and trees are examples of such recursive structures (so we call induction recursive sums);
-and the second is greatest fixed point or recursion withour a base (as $F_A\ X = A\times X $) ---
+and the second is the greatest fixed point or recursion without a base (as $F_A\ X = A\times X $) ---
 such kind of recursion on infinite lists (codata, streams, coinductive types) we can call recursive products.\\
 
 \subsection{Polynomial Functors}
-Least fixed point trees are called well-founded trees and encode polynomial functors.\\
+Least fixed point trees are called well-founded trees. They encode polynomial functors.\\
 
 \noindent Natural Numbers: $\mu\ X \rightarrow 1 + X$\\
 List A: $\mu\ X \rightarrow 1 + A \times X$\\
@@ -843,10 +844,10 @@ Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$\\
 Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$\\
 
 \paragraph{}
-As we know there are several ways to appear for variable in recursive algebraic type.
+As we know there are several ways to appear for a variable in a recursive algebraic type.
 Least fixpoint are known as an recursive expressions that have a base of recursion
-Both recursive and corecursive datatypes could be encoded using Boem-Berarducci encoding
-as an non-recursive definitions of folds that include in indentity signature all the
+Both recursive and corecursive datatypes could be encoded using Boehm-Berarducci encoding
+as  non-recursive definitions of folds that include in identity signature all the
 constructor components of (co)inductive type.
 
 \subsection{Lists}
@@ -857,7 +858,7 @@ $cons: A \times List(A) \rightarrow List(A)$ are defined by
 $nil = in \circ inl$ and $cons = in \circ inr$, so $in = [nil,cons]$.
 Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
 the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
-is the unique solution of the equation system:
+is the unique solution of the simultaneous equations:
 \vspace{0.3cm}
 $$
 \begin{cases}
@@ -869,7 +870,7 @@ $$
 \paragraph{}
 where $f = foldr(c,h)$. Having this the initial algebra is presented with functor
 $\mu (1 + A \times X)$ and morphisms sum $[1 \rightarrow List(A), A \times List(A) \rightarrow List(A)]$
-as catamorphism. Using this encdoding the base library of List will have following form:
+as catamorphism. Using this encoding the base library of List will have following form:
 
 \vspace{0.5cm}
 $$
@@ -972,7 +973,7 @@ List) $\rightarrow$ $\lambda$ (Nil: List) $\rightarrow$ Nil)
 \newpage
 \subsection{Prelude Base Library}
 
-The base library is modeled in cubical type checker.
+The base library is modelled in cubical type checker.
 
 \begin{lstlisting}[mathescape=true]
 
@@ -1010,7 +1011,7 @@ The base library is modeled in cubical type checker.
 \subsection{Compiler Passes}
 
 The underlying OM typechecker and compiler is a target language for EXE general purpose language.
-The overal size of OM language with extractor to Erlang is 263 lines of code.
+The overall size of OM language with extractor to Erlang is 263 lines of code.
 
 \begin{center}
 \begin{tabular}{lll}
