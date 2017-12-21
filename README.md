@@ -52,19 +52,6 @@ and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IO
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
-#### [setoids](https://github.com/groupoid/om/tree/master/priv/setoids)
-
-This is an implementation of Setoid structure, that provides us with Equality. However
-we switched to more compact `poset` encoding since then.
-
-#### [posets](https://github.com/groupoid/om/tree/master/priv/posets)
-
-This is an implementation of non-reflexive partially ordered sets which
-has a more compact representation than setoids for our needs.
-It has only `Bool`, `Empty` and `Unit` encoded just to demonstrate the general idea.
-Dependent eliminator of `Bool` you can found
-here [Data/Bool](https://github.com/groupoid/om/tree/master/priv/posets/Data/Bool/)
-
 ###
 
 Note: all these folders (modules) are encoded in plain CoC in OM repository to demonstrate
@@ -74,7 +61,6 @@ automatically. You may think of OM as the low-level typed assembler of type theo
 Credits
 -------
 
-* Paul Lyutko
 * Maxim Sokhatsky
 * Andy Melnikov
 
