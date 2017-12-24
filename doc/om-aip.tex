@@ -1,12 +1,14 @@
 \documentclass{aip-cp}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{mathtools}
+\usepackage[only,llbracket,rrbracket,llparenthesis,rrparenthesis]{stmaryrd}
+%\usepackage{mathtools}
 \usepackage{listings}
 \usepackage[numbers]{natbib}
 \usepackage{graphicx}
 \begin{document}
-\title{Consistent Pure Language with Effect Type System for Certified Applications and Higher Languages}
+\title{The Systems Engineering of Consistent Pure Language with Effect Type System
+       for Certified Applications and Higher Languages}
 
 \author[aff1,aff2]{Maxim Sokhatsky\corref{cor1}}
 \eaddress[url]{https://groupoid.space}
@@ -18,7 +20,6 @@
 \corresp[cor3]{mppdom@i.ua}
 
 \maketitle
-\tableofcontents
 \vspace{1cm}
 \begin{abstract}
 This paper presents design of Om language and implementation of its type checker
@@ -47,9 +48,9 @@ involves mathematical languages and notations. The age of verified math was
 started by de Bruin AUTOMATH prover and today we have Coq, HOL/Isabell, F* languages
 based on so known Calculus of Inductive Constructions (CiC)\footnote{Christine Paulin-Mohring. Introduction to the Calculus of Inductive Constructions.}\cite{Mohring15}.
 The core of CiC is Calculus of Constructions\footnote{T. Coquand, Ǵerard Huet. The calculus of constructions} (CoC)\cite{Coq88}.
-The further developing led to Lambda Cube\footnote{H. Barendregt. Lambda Cacluli with Types}\cite{Henk93} and Pure Type Systems (Henk\footnote{Simon Peyton Jones, Erik Meijer. Henk: a typed intermediate language.},Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}).
+The further developing led to Lambda Cube\footnote{H. Barendregt. Lambda Cacluli with Types}\cite{Henk93} and Pure Type Systems (Henk\footnote{Simon Peyton Jones, Erik Meijer. Henk: a typed intermediate language.}\cite{Erik97},Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}).
 Pure Type Systems are custom languages based on CoC with single Pi-type and possible other extensions.
-The known extensions are ECC\footnote{Zhaohui Luo. An Extended Calculus of Constructions}, K-rules\footnote{Gilles Barthe. Extensions of pure type systems.}.
+The known extensions are ECC\footnote{Zhaohui Luo. An Extended Calculus of Constructions}, ECC with Inductive Types\cite{Ore92}, K-rules\footnote{Gilles Barthe. Extensions of pure type systems.}\cite{Barthe95}.
 The main motivation of Pure Type Systems is an easy reasoning,
 proving, strong normalization and trusted external verification.
 Imagine one can implement their own typechecker to run certified
@@ -74,9 +75,20 @@ However we have working also on C++ and Rust targets as well.
 \subsection{System Architecture}
 As a core type system, the {\bf PTS$^{\infty}$} is intendent to have multiple fron-end languages.
 Such languages are based on CiC with extensions, like [0,1] Homotpy Core, Stream Calculus (Futhark)
-or Pi caclulus (elements is different languages such as Erlang, Ling, Rust).
+or Pi caclulus (elements are different languages such as Erlang, Ling, Rust).
 Different languages desugar to {\bf PTS$^{\infty}$} as an intermediate language before
 extracting to target language\footnote{Note that extracting from [0,1] Homotopy Core is an open problem}.
+
+Not all terms from higher languages could be desugared to PTS. As we know we have
+limitations on presenting the recursion and we cannot build the J and FunExt withing PTS directly.
+But still PTS is very powerful, it's compatible with System F libraries.
+The properties of that libraries could be proven within Higher Languages
+with Induction and [0,1] Homotopy Core. Then Runtime part could be refined
+to PTS and extract targets.
+
+We see two levels of extensions to PTS core: 1) Inductive Types support;
+2) Homotopy Core with [0,1] and its eliminators. We will touch a bit this
+topic in the last section of this document.
 
 \begin{figure}[h]
   \centerline{\includegraphics[scale=0.28]{static2}}
@@ -84,6 +96,19 @@ extracting to target language\footnote{Note that extracting from [0,1] Homotopy 
 \end{figure}
 
 \subsection{Place among other Languages}
+
+Our work is targeted Erlang platform and will be veri OTP specific.
+The product is and Erlang/OTP application that can be built-in any
+Erlang solution and provide dependent language services to the Erlang environment:
+1) typechecking; 2) normalization; 3) extraction. The all parts of Om
+compiler are written in Erlang language and target language is Erlang.
+
+\begin{itemize}
+\item Level 0 --- vectorized interpreter
+\item {\bf Level 1 --- consistent pure type system for typechecking and normalization}
+\item Level 2 --- higher language for theorem proving and property checking
+\end{itemize}
+
 \begin{table}[h]
 \caption{List of languages, tried as verification targets}
 \label{tab:a}
@@ -100,7 +125,7 @@ GHC Core   & compiler/native      & Morte   & CoC\\
 Haskell    & compiler/native      & Coq     & CiC\\
 OCaml      & compiler/native      & Coq     & CiC\\
 {\bf BEAM} & {\bf interpreter} & {\bf Om}   & {\bf PTS$^\infty$} \\
-O          & interpreter          & Om  & PTS^\infty \\
+O          & interpreter          & Om  & PTS$^\infty$ \\
 K          & interpreter          & Q   & Applicative \\
 PyPy       & interpreter/native   & N/A & ULC \\
 LuaJIT     & interpreter/native   & N/A & ULC \\
@@ -109,7 +134,7 @@ JavaScript & interpreter/native & PureScript & System F\\
 \end{tabular}
 \end{table}
 
-\section{Pure Type System as Intermediate Language}
+\section{Consistent Pure Type System as Intermediate Language}
 
 \paragraph{}
 The Om language is a dependently typed lambda calculus, an extension of Barendregt'
@@ -270,14 +295,14 @@ is destroyed after typechecking.
 \end{equation}
 
 \begin{equation}
-\tag{Ctx-intro_1}
+\tag{Ctx-intro$_1$}
 \dfrac
 {\Gamma : Context}
 {Empty : \Gamma}
 \end{equation}
 
 \begin{equation}
-\tag{Ctx-intro_2}
+\tag{Ctx-intro$_2$}
 \dfrac
 {A : Type_i,\ \ \ \ x : A,\ \ \ \ \Gamma : Context}
 {(x : A)\ \vdash\ \Gamma : Context}
@@ -475,12 +500,12 @@ The PTS system is extremely powerful even without Sigma type. But
 we can encode {\bf Sigma} type similar how we encode {\bf Prod}
 tuple pair in Boehm encoding. Let's formulate Sigma type as an inductive type:
 
-\begin{lstlisting}[mathescape=true]
+\begin{lstlisting}
 data Sigma (A: Type) (P: A -> Type) (x: A): Type =
      (intro: P x -> Sigma A P)
 \end{lstlisting}
 
-\begin{lstlisting}[mathescape=true]
+\begin{lstlisting}
 -- Sigma/@
    \ (A: *)
 -> \ (P: A -> *)
@@ -531,12 +556,12 @@ data Sigma (A: Prop) (P: A -> Prop): Prop =
 
 Another example of expressiveness is Equality type a la Martin-Löf.
 
-\begin{lstlisting}[mathescape=true]
+\begin{lstlisting}
 data Equ (A: Type): A -> A -> Type :=
-     (refl (a: A): Equ A a a)
+   (refl (a: A): Equ A a a)
 \end{lstlisting}
 
-\begin{lstlisting}[mathescape=true]
+\begin{lstlisting}
 -- Equ/@
    \ (A: *)
 -> \ (x: A)
@@ -754,7 +779,7 @@ Here is example of Erlang/OTP shell running recursive example.
 #Fun<List.28.113171260>
 \end{lstlisting}
 
-\section{Top Language with Inductive Types}
+\section{Higher Language with Inductive Types}
 
 Despite we can encode inductive types in PTS, the best usage of inductive types
 comes with recursors and fixpoint type that allow recursive typecheck, limiting
@@ -905,6 +930,7 @@ Given any two functions $c: 1 \rightarrow C$ and $h: A \times C \rightarrow C$,
 the catamorphism $f = \llparenthesis [c,h] \rrparenthesis : List(A) \rightarrow C$
 is the unique solution of the simultaneous equations:
 \vspace{0.3cm}
+
 $$
 \begin{cases}
   f \circ nil  = c \\
@@ -1052,28 +1078,82 @@ The base library is modelled in cubical type checker.
 
 \end{lstlisting}
 
-\subsection{Compiler Passes}
-The underlying OM typechecker and compiler is a target language for EXE general purpose language.
-The overall size of OM language with extractor to Erlang is 263 lines of code.
+\subsection{Measurements}
+The underlying {\bf Om} typechecker and compiler is a target
+language for {\bf Exe} general purpose language. The overall
+size of {\bf Om} language with extractor to Erlang is 263 lines of code.
 
-\begin{center}
-\begin{tabular}{lll}
-   TOKEN   & 54 LOC & Handcoded Tokenizer\\
-   PARSER  & 81 LOC & Parser\\
-   NORMAL  & 60 LOC & Term normalization and typechecking\\
-   ERASE   & 36 LOC & Delete information about types\\
-   EXTRACT & 32 LOC & Extract Erlang Code\\
+\begin{table}[h]
+\caption{Compiler Passes}
+\label{tab:passes}
+\tabcolsep7pt\begin{tabular}{lccc}
+\hline
+\tch{1}{c}{b}{Stage} & \tch{1}{c}{b}{LOC} & \tch{1}{c}{b}{Description}\\
+\hline
+TOKEN   & 54 LOC & Handcoded Tokenizer\\
+PARSER  & 81 LOC & Inductive AST Parser\\
+NORMAL  & 60 LOC & Term normalization and typechecking\\
+ERASE   & 36 LOC & Delete information about types\\
+EXTRACT & 32 LOC & Extract Erlang Code\\
+\hline
 \end{tabular}
-\end{center}
+\end{table}
 
 We benchmarked the unrolling of inductive list type in Church
 encoding extracted with OM with native erlang {\bf lists:foldl}.
 
-\begin{lstlisting}[mathescape=true]
-Pack/Unpack 1 000 000 Inductive Nat:   776407 us
-Pack/Unpack 1 000 000 ErlangOTP List:  148084 us
-Pack/Unpack 1 000 000 Inductive List: 1036461 us
-\end{lstlisting}
+\begin{table}[h]
+\caption{Performance}
+\label{tab:perf}
+\tabcolsep7pt\begin{tabular}{lccc}
+\hline
+\tch{1}{c}{b}{Operation} & \tch{1}{c}{b}{Type} & \tch{1}{c}{b}{Time}\\
+\hline
+Pack/Unpack 1 000 000 & Inductive Nat   & 776407 us\\
+Pack/Unpack 1 000 000 & Inductive List  & 1036461 us\\
+Pack/Unpack 1 000 000 & Erlang/OTP List & 148084 us\\
+\hline
+Typechecking & Om ShadowTrans & 4.972s\\
+Typechecking & Morte ShadowTrans & 57.867s\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+We have proposed a modified version of calculus of constructions, the pure type system,
+with predicative and impredicative switchable infinitary hierarhies.
+This system is known to be consistent, supports strong normalization and resembles the
+type system based in foundations of modern provers, like Coq, Lean, Agda.
+
+{\bf Discoveries}. During this investigation were made following discoveries:
+1) baning recursion caused impossiblity of encoding a class of theorems
+based on induction principle. As was shown by Peng Fu, Aaron Stump\cite{Fu14}, the only needed
+ingridient for induction in CoC is Self-Type, weak form of fixpoint recursion in the core.
+2) however for running applications in runtime it is enough System F programs or Dependent Types without Fixpoint.
+So we can prove properties of these programs in higher languages
+with fixpoint (and thus induction) and then erase theorems from specification and convert
+runtime parts of specification into PTS$^\infty$ with later extraction to any functional language.
+2) there are a lot of theorems, that could be expressed without fixpoint, such as theorems from higher order logic.
+3) this system could be naturally translated into untyped lambda interpreters.
+
+{\bf Advantages over existing pure languages}.
+1) refined version of typechecker and clean implementation in 200 LOC.
+This will make more trust to the core by external institutions.
+2) supporting both predicative and impredicative hierarhies of PTS$^\infty$ configuration.
+3) comparing to other languages, Om is much faster on big terms
+thanks to fast Erlang lambda evaluations and a cache layer.
+
+{\bf Scientific and Production usage}.
+1) The language could be used as a trusted core for cetification sensitive parts of applications,
+such as in finance, math or other domains with requirement for totality.
+2) This work could be used as embeddable runtime library.
+3) In the academia PTS$^\infty$ could be used as teaching instrument for logic,
+type systems, lambda calculus, functional languges.
+
+{\bf Further research perspective}.
+1) Extend the host languages from Erlang to Rust and prove the Om within Coq or Cubical.
+2) Build a theory of compilation and erasing from higher languages to PTS$^\infty$.
+2) Build a certified interpreter (replace Erlang) in future higher level Cubical language.
 
 \section{Acknowledgments}
 I would like to thank to all people who inspired me for this work,
@@ -1082,5 +1162,7 @@ in TeX and Erlang files.
 
 \bibliographystyle{aipnum-cp}
 \bibliography{om-aip}
+
+\tableofcontents
 
 \end{document}

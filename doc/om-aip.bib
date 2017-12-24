@@ -14,7 +14,7 @@
   publisher = {Springer-Verlag},
   timestamp = {2009-09-18T21:22:09.000+0200},
   title = {Categories for the Working Mathematician},
-  year = 1971
+  year = {1971}
 }
 
 @INPROCEEDINGS{Erik97,
@@ -24,17 +24,25 @@
     year = {1997}
 }
 
-@MISC{Henk93,
-    author = {Henk Barendregt},
-    title = {Lambda Calculi with Types},
-    booktitle = {In Proc. First Int'l Workshop on Types in Compilation},
-    year = {1993}
+@inproceedings{Henk93,
+ author = {Barendregt, H. P.},
+ chapter = {Lambda Calculi with Types},
+ booktitle = {Handbook of Logic in Computer Science (Vol. 2)},
+ editor = {Abramsky, S. and Gabbay, Dov M. and Maibaum, S. E.},
+ year = {1992},
+ isbn = {0-19-853761-1},
+ pages = {117--309},
+ numpages = {193},
+ url = {http://dl.acm.org/citation.cfm?id=162552.162561},
+ acmid = {162561},
+ publisher = {Oxford University Press, Inc.},
+ address = {New York, NY, USA},
 }
 
-@MISC{Coq88,
+@inproceedings{Coq88,
     author = {Coquand, Thierry and Huet, Gerard},
     title = {The Calculus of Constructions},
-    booktitle = {Inf. Comput.},
+    booktitle = {Information and Computation},
     year = {1988},
     issn = {0890-5401},
     pages = {95--120},
@@ -78,4 +86,50 @@
   PDF = {https://hal.inria.fr/hal-01094195/file/CIC.pdf},
   HAL_ID = {hal-01094195},
   HAL_VERSION = {v1},
+}
+
+@inproceedings{Ore92,
+title = "The Extended Calculus of Constructions (ECC) with inductive types",
+booktitle = "Information and Computation",
+volume = "99",
+number = "2",
+pages = "231 - 264",
+year = "1992",
+issn = "0890-5401",
+doi = "https://doi.org/10.1016/0890-5401(92)90031-A",
+url = "http://www.sciencedirect.com/science/article/pii/089054019290031A",
+author = "Christian-Emil Ore"
+}
+
+@Inbook{Barthe95,
+author="Barthe, Gilles",
+editor="Dezani-Ciancaglini, Mariangiola
+and Plotkin, Gordon",
+title="Extensions of pure type systems",
+bookTitle="Typed Lambda Calculi and Applications: Second International Conference on Typed Lambda Calculi and Applications, TLCA '95 Edinburgh, United Kingdom, April 10--12, 1995 Proceedings",
+year="1995",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="16--31",
+abstract="We extend pure type systems with quotient types and subset types and establish an equivalence between four strong normalisation problems: subset types, quotient types, definitions and the so-called K-rules. As a corollary, we get strong normalisation of ECC with definitions, subset and quotient types.",
+isbn="978-3-540-49178-1",
+doi="10.1007/BFb0014042",
+url="https://doi.org/10.1007/BFb0014042"
+}
+
+@inproceedings{Fu14,
+  author    = {Peng Fu and
+               Aaron Stump},
+  title     = {Self Types for Dependently Typed Lambda Encodings},
+  booktitle = {Rewriting and Typed Lambda Calculi - Joint International Conference,
+               {RTA-TLCA} 2014, Held as Part of the Vienna Summer of Logic, {VSL}
+               2014, Vienna, Austria, July 14-17, 2014. Proceedings},
+  pages     = {224--239},
+  year      = {2014},
+  crossref  = {DBLP:conf/rta/2014},
+  url       = {https://doi.org/10.1007/978-3-319-08918-8_16},
+  doi       = {10.1007/978-3-319-08918-8_16},
+  timestamp = {Tue, 23 May 2017 01:10:28 +0200},
+  biburl    = {http://dblp.org/rec/bib/conf/rta/FuS14},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
 }
