@@ -95,7 +95,7 @@
 %\input{size1\@ptsize.clo}
 %%
 %%======== Inputs ===========
-\usepackage{txfonts,graphicx}
+\usepackage{graphicx}
 
 \renewcommand{\sfdefault}{phv}
 \renewcommand{\ttdefault}{cmtt}
