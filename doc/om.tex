@@ -11,8 +11,7 @@
 \begin{document}
 \title{The Systems Engineering of Consistent Pure Language \\
        with Effect Type System \\
-       for Certified Applications and Higher Languages
-}
+       for Certified Applications and Higher Languages}
 
 \author[aff1,aff2]{Maxim Sokhatsky\corref{cor1}}
 \eaddress[url]{https://groupoid.space}
@@ -67,7 +66,7 @@ proofs or certificates are lambda terms of particular types or specifications.
 As both specifications and implementations are done in a typed
 language with dependent types we can extract target implementation of a certified program just
 in any programming language. These languages could be so
-primitive as untyped lambda calculus which manifests (usually implements) as
+primitive as untyped lambda calculus that usually implemented as
 untyped interpreters (JavaScript, Erlang, PyPy, LuaJIT, K).
 The most advanced usage is code generation to higher-level
 languages such as C++ and Rust (which is already language with trusted
@@ -91,7 +90,7 @@ Not all terms from higher languages could be desugared to PTS. As was shown by
 Geuvers\cite{Geuvers01} we cannot build induction principle inside PTS,
 we need a fixpoint extension to PTS. And also we cannot build the J and funExt terms.
 But still PTS is very powerful, it's compatible with System F libraries.
-The properties of that libraries could be proven in Higher Languages
+The properties of that libraries could be proven in higher languages
 with Induction and/or [0,1] Homotopy Core. Then runtime part could be refined
 to PTS, extracted to target and run in an environment.
 
@@ -104,7 +103,7 @@ topic in the last section of this document.
   \caption{Process of Model Verifications}
 \end{figure}
 
-\subsection{Place among other Languages}
+\subsection{Place among other languages}
 The product is a regular Erlang/OTP application,
 that provides dependent language services to the Erlang environment:
 1) type checking; 2) normalization; 3) extraction. All parts of {\bf Om}
@@ -214,8 +213,8 @@ You may check if a term is a universe with the star function.
 If an argument is not a universe it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
-star (:star,N) $\rightarrow$ (:ok, N)
-star _ $\rightarrow$ (:error, "*")
+star (:star,N) $\rightarrow$ N
+             _ $\rightarrow$ (:error, "*")
 \end{lstlisting}
 
 \subsection{Predicative Universes}
@@ -261,10 +260,10 @@ There are two dependence rules known as the predicative one and the
 impredicative one which returns max universe or universe of the last term respectively.
 
 \begin{lstlisting}[mathescape=true]
-dep A B impredicative $\rightarrow$ B
-dep A B predicative   $\rightarrow$ max A B
+dep A B :impredicative $\rightarrow$ B
+    A B :predicative   $\rightarrow$ max A B
 
-h A B $\rightarrow$ dep A B om:hierarchy(impredicative)
+h A B $\rightarrow$ dep A B :impredicative
 \end{lstlisting}
 
 \subsection{Contexts}
@@ -352,10 +351,11 @@ record Pi (A: Type) :=
                 Path (intro B) (lambda B ($\lambda$ (a:A) $\rightarrow$ app B p a)) p)
 \end{lstlisting}
 
-The proofs intentionally left blank, as it proofs could be taken from various sources.
+The proofs intentionally left blank, as it proofs could be taken from various sources\cite{Henk93}.
 The equalities of computational semantics presented here as {\bf Path} types in the higher language.
 
-We extended the {\bf $PTS\infty$} with the remote AST node which means remote file loading
+The {\bf Om} language is the extention of the {\bf PTS$^\infty$} with the
+remote AST node which means remote file loading
 from trusted storage, anyway this will be checked by the type checker. We deny recursion
 over the remote node. We also add an index to var for simplified de Bruijn indexes,
 we allow overlapped names with tags, incremented on each new occurrence.
@@ -364,73 +364,41 @@ we allow overlapped names with tags, incremented on each new occurrence.
 data om = star             (n: nat)
         | var    (n: name) (n: nat)
         | remote (n: name) (n: nat)
+        | pi     (x: name) (n: nat) (d c: om)
+        | fn     (x: name) (n: nat) (d c: om)
         | app                       (f a: om)
-        | lambda (x: name)          (d c: om)
-        | arrow                     (d c: om)
-        | pi     (x: name)          (d c: om)
 \end{lstlisting}
 
-\subsection{Functions}
-Func returns true if the argument is a functional space. Otherwise it returns $\{error,\_\}$.
+Our typechecker differs from cannonical example of Coquand\cite{Coq96}. We based
+our typechecker on variable {\bf Substitution}, variable {\bf Shifting},
+term {\bf Normalization}, definitional {\bf Equality} anf {\bf Type Checker} itself.
+
+\subsection{Shifting}
+Shift renames var N in B. Renaming means adding 1 to the nat component of variable.
 
 \begin{lstlisting}[mathescape=true]
-func ((:forall,),(I,O)) $\rightarrow$ true
-func T                  $\rightarrow$ (:error,(:forall,T))
-\end{lstlisting}
-
-\subsection{Variables}
-Var returns true if the var $N$ is defined in dictionary $B$. Otherwise it returns $\{error,\_\}$.
-
-\begin{lstlisting}[mathescape=true]
-var N B                $\rightarrow$ var N B (proplists:is_defined N B)
-var N B true           $\rightarrow$ true
-var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)))
-\end{lstlisting}
-
-\subsection{Shift}
-Shift renames var N in B. Renaming means adding a 1 to an index of that name.
-
-\begin{lstlisting}[mathescape=true]
-sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
-sh ((:forall,(N,0)),(I,O)),N,P) $\rightarrow$ ((:forall,(N,0)),sh I N P,sh O N P+1)
-sh ((:lambda,(N,0)),(I,O)),N,P) $\rightarrow$ ((:lambda,(N,0)),sh I N P,sh O N P+1)
-sh (Q,(L,R),N,P)                $\rightarrow$ (Q,sh L N P,sh R N P)
-sh (T,N,P)                      $\rightarrow$ T
+  sh (:star,X)       N P $\rightarrow$ (:star,X)
+     (:var,N,I)      N P $\rightarrow$ (:var,N,I+1) when I >= P
+                         $\rightarrow$ (:var,N,I)
+     (:remote,X)     N P $\rightarrow$ (:remote,X)
+     (:pi,N,0,I,O)   N P $\rightarrow$ (:pi,N,0,sh I N P,sh O N P+1)
+     (:fn,N,0,I,O)   N P $\rightarrow$ (:fn,N,0,sh I N P,sh O N P+1)
+     (:app,L,R)      N P $\rightarrow$ (:app,L,R)
 \end{lstlisting}
 
 \subsection{Substitution}
+Substitution replaces variable occurance in terms.
 
 \begin{lstlisting}[mathescape=true]
-sub Term Name Value               $\rightarrow$ sub Term Name Value 0
-sub (:arrow,         (I,O)) N V L $\rightarrow$ (:arrow,         sub I N V L,sub O N V L);
-sub ((:forall,(N,0)),(I,O)) N V L $\rightarrow$ ((:forall,(N,0)),sub I N V L,sub O N(sh V N 0)L+1)
-sub ((:forall,(F,X)),(I,O)) N V L $\rightarrow$ ((:forall,(F,X)),sub I N V L,sub O N(sh V F 0)L)
-sub ((:lambda,(N,0)),(I,O)) N V L $\rightarrow$ ((:lambda,(N,0)),sub I N V L,sub O N(sh V N 0)L+1)
-sub ((:lambda,(F,X)),(I,O)) N V L $\rightarrow$ ((:lambda,(F,X)),sub I N V L,sub O N(sh V F 0)L)
-sub (:app,           (F,A)) N V L $\rightarrow$ (:app,sub F N V L,sub A N V L)
-sub (:var,           (N,L)) N V L $\rightarrow$ V
-sub (:var,           (N,I)) N V L when I>L $\rightarrow$ (:var,(N,I-1))
-sub T                       _ _ _ $\rightarrow$ T.
-\end{lstlisting}
-
-\subsection{Type Checker}
-For sure in a pure system, we should be careful with {\bf :remote} AST node. Remote
-AST nodes like {\bf \#List/Cons or \#List/map} are remote links to files. So using
-trick one should desire circular dependency over {\bf :remote}. This is denied in
-the system. The same notes apply to normalization and definitional equality.
-
-\begin{lstlisting}[mathescape=true]
-type (:star,N)               D $\rightarrow$ (:star,N+1)
-type (:var,(N,I))            D $\rightarrow$ let true = var N D in keyget N D I
-type (:remote,N)             D $\rightarrow$ cache type N D
-type (:arrow,(I,O))          D $\rightarrow$ (:star,h(star(type I D)),star(type O D))
-type ((:forall,(N,0)),(I,O)) D $\rightarrow$ (:star,h(star(type I D)),star(type O [(N,norm I)|D]))
-type ((:lambda,(N,0)),(I,O)) D $\rightarrow$ let star (type I D)
-                                      NI = norm I
-                                   in ((:forall,(N,0)),(NI,type(O,[(N,NI)|D])))
-type (:app,(F,A))            D $\rightarrow$ let T = type(F,D), true = func T,
-                                      ((:forall,(N,0)),(I,O)) = T, Q = type A D
-                                      true = eq I Q in norm (subst O N A)
+ sub (:star,X)     N V L $\rightarrow$ (:star,X)
+     (:var,N,L)    N V L $\rightarrow$ V
+     (:var,N,I)    N V L $\rightarrow$ (:var,N,I-1) when I > L
+     (:remote,X)   N V L $\rightarrow$ (:remote,X)
+     (:pi,N,0,I,O) N V L $\rightarrow$ (:pi,N,0,sub I N V L,sub O N (sh V N 0) L+1)
+     (:pi,F,X,I,O) N V L $\rightarrow$ (:pi,F,X,sub I N V L,sub O N (sh V F 0) L)
+     (:fn,N,0,I,O) N V L $\rightarrow$ (:fn,N,0,sub I N V L,sub O N (sh V N 0) L+1)
+     (:fn,F,X,I,O) N V L $\rightarrow$ (:fn,F,X,sub I N V L,sub O N (sh V F 0) L)
+     (:app,F,A)    N V L $\rightarrow$ (:app,   sub F N V L,sub A N V L)
 \end{lstlisting}
 
 \subsection{Normalization}
@@ -438,45 +406,84 @@ Normalization performs substitutions on applications to functions (beta-reductio
 by recursive entrance over the lambda and pi nodes.
 
 \begin{lstlisting}[mathescape=true]
-norm :none                   $\rightarrow$ :none
-norm :any                    $\rightarrow$ :any
-norm (:app,(F,A))            $\rightarrow$ case norm F of
-                                ((:lambda,(N,0)),(I,O)) $\rightarrow$ norm (subst O N A)
-                                                     NF $\rightarrow$ (:app,(NF,norm A)) end
-norm (:remote,N)             $\rightarrow$ cache (norm N [])
-norm (:arrow,         (I,O)) $\rightarrow$ ((:forall,("_",0)),(norm I,norm O))
-norm ((:forall,(N,0)),(I,O)) $\rightarrow$ ((:forall,(N,0)),    (norm I,norm O))
-norm ((:lambda,(N,0)),(I,O)) $\rightarrow$ ((:lambda,(N,0)),    (norm I,norm O))
-norm T                       $\rightarrow$ T
+norm (:star,X)     $\rightarrow$ (:star,X)
+     (:var,X)      $\rightarrow$ (:var,X)
+     (:remote,N)   $\rightarrow$ cache (norm N [])
+     (:pi,N,0,I,O) $\rightarrow$ (:pi,N,0,norm I,norm O)
+     (:fn,N,0,I,O) $\rightarrow$ (:fn,N,0,norm I,norm O)
+     (:app,F,A)    $\rightarrow$ case norm F of
+                         (:fn,N,0,I,O) $\rightarrow$ norm (subst O N A)
+                                    NF $\rightarrow$ (:app,NF,norm A) end
 \end{lstlisting}
 
-\subsection{Definitional Equality}
+\subsection{Type Checker}
+For sure in a pure system, we should be careful with {\bf :remote} AST node. Remote
+AST nodes like {\bf \#List/Cons or \#List/map} are remote links to files. So using
+trick one should desire circular dependency over {\bf :remote}.
+
+\begin{lstlisting}[mathescape=true]
+type (:star,N)         D $\rightarrow$ (:star,N+1)
+     (:var,N,I)        D $\rightarrow$ :true = proplists:is_defined N B, om:keyget N D I
+     (:remote,N)       D $\rightarrow$ om:cache (type N D)
+     (:pi,N,0,I,O)     D $\rightarrow$ (:star,h(star(type I D)),star(type O [(N,norm I)|D]))
+     (:fn,N,0,I,O)     D $\rightarrow$ let star (type I D), NI = norm I
+                             in (:pi,N,0,NI,type(O,[(N,NI)|D]))
+     (:app,F,A)        D $\rightarrow$ let T = type(F,D),
+                                (:pi,N,0,I,O) = T, :true = eq I (type A D)
+                             in norm (subst O N A)
+\end{lstlisting}
+
+\subsection{Equality}
 Definitional Equality simply checks the equality of Erlang terms.
 
 \begin{lstlisting}[mathescape=true]
-eq ((:forall,("_",0)), X) (:arrow,Y)     $\rightarrow$ eq X Y
-eq (:app,(F1,A1))         (:app,(F2,A2)) $\rightarrow$ let true = eq F1 F2 in eq A1 A2
-eq (:star,N)              (:star,N)      $\rightarrow$ true
-eq (:var,(N,I))           (:var,(N,I))   $\rightarrow$ true
-eq (:remote,N)            (:remote,N)    $\rightarrow$ true
-eq ((:farall,(N1,0)),(I1,O1))
-   ((:forall,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2
-    in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
-eq ((:lambda,(N1,0)),(I1,O1))
-   ((:lambda,(N2,0)),(I2,O2)) $\rightarrow$
-   let true = eq I1 I2
-    in eq O1 (subst (shift O2 N1 0) N2 (:var,(N1,0)) 0)
-eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
+  eq (:star,N)        (:star,N)        $\rightarrow$ true
+     (:var,N,I)       (:var,(N,I))     $\rightarrow$ true
+     (:remote,N)      (:remote,N)      $\rightarrow$ true
+     (:pi,N1,0,I1,O1) (:pi,N2,0,I2,O2) $\rightarrow$
+          let :true = eq I1 I2
+           in eq O1 (subst (shift O2 N1 0) N2 (:var,N1,0) 0)
+     (:fn,N1,0,I1,O1) (:fn,N2,0,I2,O2) $\rightarrow$
+          let :true = eq I1 I2
+           in eq O1 (subst (shift O2 N1 0) N2 (:var,N1,0) 0)
+     (:app,F1,A1)       (:app,F2,A2)   $\rightarrow$ let :true = eq F1 F2 in eq A1 A2
+     (A,B)                             $\rightarrow$ (:error,(:eq,A,B))
 \end{lstlisting}
 
 \section{Language Usage}
-In this section, we will lift PTS system to MLTT system by defining
+Here we will show some examples of {\bf Om} language usage.
+In this section, we will show two examples. One is lifting PTS system to MLTT system by defining
 {\bf Sigma} and {\bf Equ} types using only {\bf Pi} type. We will use Böhm inductive
-dependent encoding\cite{Bohm85}.
+dependent encoding\cite{Bohm85}. The second is to show how to write real world
+programs in {\bf Om} that performs input/output operations within Erlang environment.
+We show both recursive (finite, routine) and corecursive (infinite, coroutine, process) effects.
+
+\begin{lstlisting}
+$ ./om help me
+[{a,[expr],"to parse. Returns {_,_} or {error,_}."},
+ {type,[term],"typechecks and returns type."},
+ {erase,[term],"to untyped term. Returns {_,_}."},
+ {norm,[term],"normalize term. Returns term's normal form."},
+ {file,[name],"load file as binary."},
+ {str,[binary],"lexical tokenizer."},
+ {parse,[tokens],"parse given tokens into {_,_} term."},
+ {fst,[{x,y}],"returns first element of a pair."},
+ {snd,[{x,y}],"returns second element of a pair."},
+ {debug,[bool],"enable/disable debug output."},
+ {mode,[name],"select metaverse folder."},
+ {modes,[],"list all metaverses."}]
+
+$ ./om print fst erase norm a "#List/Cons"
+   \ Head
+-> \ Tail
+-> \ Cons
+-> \ Nil
+-> Cons Head (Tail Cons Nil)
+ok
+\end{lstlisting}
+
 
 \subsection{Sigma Type}
-Here we will show some examples of {\bf Om} Language usage.
 The PTS system is extremely powerful even without {\bf Sigma} type.
 But we can encode {\bf Sigma} type similar how we encode {\bf Prod}
 tuple pair in Böhm encoding. Let's formulate {\bf Sigma} type as an
@@ -489,10 +496,9 @@ data Sigma (A: Type) (P: A -> Type) (x: A): Type =
 
 The {\bf Sigma-type} with its eliminators appears as example in Aaron Stump\cite{Stump17}.
 Here we will show desugaring to {\bf PTS$^\infty$}.
-In the comments you can find the AUTOMATH-like version of terms\footnote{Pi type is denoted as [x: A] B x and lambda function is denoted as (x: A) M x}.
 
 \begin{lstlisting}
--- Sigma/@: (A:U) (P:A->U) (x:A) [exists:U] [intro:A->P x->e] e
+-- Sigma/@
    \ (A: *)
 -> \ (P: A -> *)
 -> \ (n: A)
@@ -500,7 +506,7 @@ In the comments you can find the AUTOMATH-like version of terms\footnote{Pi type
 -> \/ (Intro: A -> P n -> Exists)
 -> Exists
 
--- Sigma/Intro: (A:U) (P:A->U) (x:A) (y:P x) (e:U) (i:A->P x->e) e = i x y
+-- Sigma/Intro
    \ (A: *)
 -> \ (P: A -> *)
 -> \ (x: A)
@@ -509,14 +515,14 @@ In the comments you can find the AUTOMATH-like version of terms\footnote{Pi type
 -> \ (Intro: \/ (x:A) -> P x -> Exists)
 -> Intro x y
 
--- Sigma/fst: (A:U) (P:A->U) (x:A) (s:sig A P x) A = s A (z:A) (y:P x) z
+-- Sigma/fst
    \ (A: *)
 -> \ (B: A -> *)
 -> \ (n: A)
 -> \ (S: #Sigma/@ A B n)
 -> S A ( \(x: A) -> \(y: B n) -> x)
 
--- Sigma/snd: (A:U) (P:A->U) (x:A) (s:sig A P x) P x = s (P x) ((z:A) (y:P x) y)
+-- Sigma/snd
    \ (A: *)
 -> \ (B: A -> *)
 -> \ (n: A)
@@ -547,15 +553,17 @@ data Equ (A: Type): A -> A -> Type :=
 \end{lstlisting}
 
 \begin{lstlisting}
--- Equ/@: (A: U) (x: A) (y: A) [equ: A -> A -> U] [refl: [z:A] equ z z] equ x y
+-- Equ/@
    \ (A: *)
 -> \ (x: A)
 -> \ (y: A)
 -> \/ (Equ: A -> A -> *)
 -> \/ (Refl: \/ (z: A) -> Equ z z)
 -> Equ x y
+\end{lstlisting}
 
--- Equ/Refl: (A: U) (x: A) (equ: A -> A -> U) (refl: [z: A] equ z z) refl x
+\begin{lstlisting}
+-- Equ/Refl
    \ (A: *)
 -> \ (x: A)
 -> \ (Equ: A -> A -> *)
@@ -568,8 +576,7 @@ however, you may want to use built-in definitional equality and
 normalization feature of type checker to actually compare two values:
 
 \begin{lstlisting}[mathescape=true]
-> om:print(
-  om:type(
+> om:print(om:type(
   om:a("(\\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True)"++
        " (#Equ/Refl #Nat/@ (#Nat/Succ #Nat/Zero))"))).
    \/ (True: *0)
@@ -577,8 +584,7 @@ normalization feature of type checker to actually compare two values:
 -> True
 ok
 
-> om:print(
-  om:type(
+> om:print(om:type(
   om:a("(\\ (z: #Equ/@ #Nat/@ #Nat/One #Nat/One) -> #Prop/True)"++
        " (#Equ/Refl #Nat/@ #Nat/Zero)"))).
 ** exception error: no match of right hand side value
@@ -612,7 +618,7 @@ data IO: Type =
 
 Infinity I/O Type Spec.
 
-\begin{lstlisting}[mathescape=true]
+\begin{lstlisting}
 -- IOI/@: (r: U) [x: U] [[s: U] -> s -> [s -> #IOI/F r s] -> x] x
    \ (r : *)
 -> \/ (x : *)
@@ -683,6 +689,7 @@ corec() ->
 \end{lstlisting}
 
 \begin{lstlisting}[mathescape=true]
+
 > om_extract:extract("priv/normal/IOI").
 ok
 > Active: module loaded: {reloaded,'IOI'}
@@ -1047,10 +1054,10 @@ Typechecking & Morte ShadowTrans & 57.867s\\
 \end{table}
 
 \section{Conclusion}
-We have proposed a modified version of calculus of constructions, the pure type system,
+We have proposed a modified version of CoC, also known as pure type system,
 with predicative and impredicative switchable infinitary hierarchies.
 This system is known to be consistent, supports strong normalization and resembles the
-type system based on foundations of modern provers, like Coq, Lean, Agda.
+type system which is the same as foundations of modern provers, like Coq, Lean, Agda.
 
 {\bf Discoveries}. During this investigation were made following discoveries:
 1) baning recursion caused impossibility of encoding a class of theorems
