@@ -11,7 +11,7 @@
 \begin{document}
 \title{The Systems Engineering of Consistent Pure Language \\
        with Effect Type System \\
-    for Certified Applications and Higher Languages
+       for Certified Applications and Higher Languages
 }
 
 \author[aff1,aff2]{Maxim Sokhatsky\corref{cor1}}
@@ -26,20 +26,20 @@
 \maketitle
 \vspace{1cm}
 \begin{abstract}
-This paper presents design of {\bf Om} language and implementation of its type checker
+This paper presents the design of {\bf Om} language and implementation of its type checker
 and bytecode extraction to Erlang. Om is an intermediate language
-based on a pure type system with infinite
+based on a pure type system with the infinite
 number of universes, so it is known to be consistent in dependent type theory.
-The typechecker can be switched between predicative and impredicative hierarchies
+The type checker can be switched between predicative and impredicative hierarchies
 of universes. The need to natively support Erlang platform dictated the look and feel of this work.
 This system is expected to be usable as trusted core for certified
 applications which could be run inside Erlang virtual machines LING and BEAM.
 The syntax is compatible with Morte language and supports its base
-library, however it extends the indexed universes.
+library, however, it extends the indexed universes.
 We show how to program in this environment and link with Erlang
 inductive and coinductive free structures. A very basic prelude library is shipped
 as a part of the work. We briefly describe the top-level
-language which compiles to pure type system core. As the results we will
+language which compiles to pure type system core. As the results, we will
 show lambda evaluation performance on BEAM virtual machine.
 \end{abstract}
 
@@ -47,43 +47,43 @@ show lambda evaluation performance on BEAM virtual machine.
 As a part of verification and validation process, according to IEEE\footnote{IEEE Std 1012-2016  --- V\&V Software verification and validation} standard
 and ESA\footnote{ESA PSS-05-10 1-1 1995 -- Guide to software verification and validation} regulatory document,
 exists a lot of tools and approaches. Most advanced techniques
-involves mathematical languages and notations. The age of verified math was
+involve mathematical languages and notations. The age of verified math was
 started by de Bruin AUTOMATH prover and Martin-Löf\cite{Lof84} type theory and today we have Coq, Agda, Lean, Idris, F* languages
 based on Calculus of Inductive Constructions or CiC\cite{Mohring15}.
 The core of CiC is Calculus of Constructions or CoC\cite{Coq88}.
-The further development leds to Lambda Cube\cite{Henk93} and Pure Type Systems (Henk\cite{Erik97},Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}).
-Pure Type Systems are custom languages based on CoC with single Pi-type and possible other extensions.
+The further development leads to Lambda Cube\cite{Henk93} and Pure Type Systems as Henk\cite{Erik97} and Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}.
+Pure Type Systems are custom languages based on CoC with single Pi-type and possibly other extensions.
 The known extensions are ECC, ECC with Inductive Types\cite{Ore92}, K-rules\cite{Barthe95}.
 The main motivation of Pure Type Systems is an easy reasoning about core,
-strong normalization and trusted external verification due to compact typecheckers.
-Imagine one can implement their own typechecker to run certified
+strong normalization and trusted external verification due to compact type checkers.
+Imagine one can implement their own type checker to run certified
 programs retrieved over untrusted channels. The applications of
-such minimal cores are: 1) Blockchain smart-contract languages,
+such minimal cores are 1) Blockchain smart-contract languages,
 2) certified applications kernels, 3) payment processing, etc.
 
 \subsection{Generating Trusted Programs}
 According to Curry-Howard correspondence inside Martin-Löf Type Theory\cite{Lof84}
-proofs or cerfificates are lambda terms of particular types or specifications.
-As both specifications and implemntations are done in typed
-language with dependent types we can extract target implementation of certified program just
+proofs or certificates are lambda terms of particular types or specifications.
+As both specifications and implementations are done in a typed
+language with dependent types we can extract target implementation of a certified program just
 in any programming language. These languages could be so
 primitive as untyped lambda calculus which manifests (usually implements) as
 untyped interpreters (JavaScript, Erlang, PyPy, LuaJIT, K).
 The most advanced usage is code generation to higher-level
-languages such as C++ and Rust (whish is already language with trusted
-features on memory, variable accessing, linear types, etc.). In this work we presents a
+languages such as C++ and Rust (which is already language with trusted
+features on memory, variable accessing, linear types, etc.). In this work, we present a
 simple code extraction to Erlang programming language as target interpreter.
-However we have working also on C++ and Rust targets as well.
+However, we have worked also on C++ and Rust targets as well.
 
 \subsection{System Architecture}
 {\bf Om} as a programming language
-has a core type system, the {\bf PTS$^{\infty}$} --- the pure type system with infinite number of universes.
-This type system represents the core of the language. Higher languages forms a set of
-front-ends to this core. Here are example of possible languages:
-1) Language for inductive reasning, based on CiC with extensions;
+has a core type system, the {\bf PTS$^{\infty}$} --- the pure type system with the infinite number of universes.
+This type system represents the core of the language. Higher languages form a set of
+front-ends to this core. Here is example of possible languages:
+1) Language for inductive reasoning, based on CiC with extensions;
 2) Homotopy Core with interval [0,1] for proving J and funExt;
 3) Stream Calculus for deep stream fusion (Futhark);
-3) Pi-caclulus for linear types, coinductive reasoning and runtime modeling (Erlang, Ling, Rust).
+3) Pi-calculus for linear types, coinductive reasoning and runtime modeling (Erlang, Ling, Rust).
 These languages desugar to {\bf PTS$^{\infty}$} as an intermediate language before
 extracting to target language\footnote{Note that extracting from [0,1] Homotopy Core is an open problem}.
 
@@ -93,7 +93,7 @@ we need a fixpoint extension to PTS. And also we cannot build the J and funExt t
 But still PTS is very powerful, it's compatible with System F libraries.
 The properties of that libraries could be proven in Higher Languages
 with Induction and/or [0,1] Homotopy Core. Then runtime part could be refined
-to PTS, extracted to target and runned in environment.
+to PTS, extracted to target and run in an environment.
 
 We see two levels of extensions to PTS core: 1) Inductive Types support;
 2) Homotopy Core with [0,1] and its eliminators. We will touch a bit this
@@ -105,14 +105,14 @@ topic in the last section of this document.
 \end{figure}
 
 \subsection{Place among other Languages}
-The product is an regular Erlang/OTP application,
+The product is a regular Erlang/OTP application,
 that provides dependent language services to the Erlang environment:
-1) typechecking; 2) normalization; 3) extraction. All parts of {\bf Om}
-compiler are written in Erlang language and target/runtime language is Erlang.
+1) type checking; 2) normalization; 3) extraction. All parts of {\bf Om}
+compiler is written in Erlang language and target/runtime language is Erlang.
 
 \begin{itemize}
 \item Level 0 --- certified vectorized interpreter
-\item {\bf Level 1 --- consistent pure type system for typechecking and normalization}
+\item {\bf Level 1 --- consistent pure type system for type checking and normalization}
 \item Level 2 --- higher language for theorem proving and models property checking
 \end{itemize}
 
@@ -143,13 +143,13 @@ JavaScript & interpreter/native & PureScript & System F\\
 
 \section{Consistent Pure Type System as Intermediate Language}
 The {\bf Om} language is a dependently typed lambda calculus {\bf PTS$^\infty$},
-an extension of Coquand' Calculus of Constructions\cite{Coq88} with predicative hierarchy of indexed universes.
+an extension of Coquand' Calculus of Constructions\cite{Coq88} with the predicative hierarchy of indexed universes.
 There is no fixpoint axiom, so there is no infinite term dependence, the theory is fully consistent
 and has strong normalization property.
 
-All terms respect ranking {\bf Axioms} inside sequence of universes {\bf Sorts} and complexity of the
-dependent term is equal to maximum complexity of term and its dependency {\bf Rules}. The universe
-system is completely described by the following PTS notation (due to Barendregt\cite{Henk93}):
+All terms respect ranking {\bf Axioms} inside the sequence of universes {\bf Sorts} and complexity of the
+dependent term is equal to the maximum complexity of term and its dependency {\bf Rules}. The universe
+system is completely described by the following PTS notation due to Barendregt\cite{Henk93}:
 
 $$
 \begin{cases}
@@ -160,18 +160,18 @@ Rules = Type.\{i\} \leadsto Type.\{j\} : Type.\{max\ i\ j\}\\
 $$
 
 The {\bf Om} language is based on Henk languages described first
-by Erik Meijer and Simon Peyton Jones in 1997\cite{Erik97}. Leter on in 2015 Morte impementation
-of Henk design appeared in Haskell, using Boem-Berrarducci encoding of non-recursive lambda terms.
+by Erik Meijer and Simon Peyton Jones in 1997\cite{Erik97}. Later on in 2015 Morte implementation
+of Henk design appeared in Haskell, using the Böem-Berrarducci encoding of non-recursive lambda terms.
 It is based only on one type constructor {\bf $\Pi$}, its intro {\bf $\lambda$} and apply eliminator,
-infinity number of universes, and {\bf $\beta$}-reduction. The design of Om language resemble
-Henk and Morte both in design and in implementation. This language indended to be small,
-concise, easy provable and able to produce verifiable peace of code that can be
-distributed over the networks, compiled at target with safe trusted linkage.
+infinite number of universes, and {\bf $\beta$}-reduction. The design of Om language resemble
+Henk and Morte both in design and in implementation. This language intended to be small,
+concise, easy provable and able to produce the verifiable piece of code that can be
+distributed over the networks, compiled at the target platform with a safe linkage.
 
 \subsection{BNF and AST}
 
 {\bf Om} syntax is compatible with CoC presented in Morte and Henk languages.
-However it has extension in a part of specifying universe index as a {\bf Nat} number.
+However, it has extension in a part of specifying universe index as a {\bf Nat} number.
 Traditionally we present the language in Backus-Naur form.
 Equivalent AST tree encoding from the right side.
 
@@ -210,8 +210,8 @@ Where $U_0$ --- propositions, $U_1$ --- sets, $U_2$ --- types and $U_3$ --- kind
 {Type_o}
 \end{equation}
 
-You may check if a term is an universe with the star function.
-If argument is not an universe it returns $\{error,\_\}$.
+You may check if a term is a universe with the star function.
+If an argument is not a universe it returns $\{error,\_\}$.
 
 \begin{lstlisting}[mathescape=true]
 star (:star,N) $\rightarrow$ (:ok, N)
@@ -224,7 +224,7 @@ All terms obey the {\bf Axioms} ranking inside the sequence of {\bf Sorts} unive
 and the complexity {\bf Rules} of the dependent term is equal to a maximum of
 the term's complexity and its dependency.
 Note that predicative universes are incompatible with Church lambda term encoding.
-You choose either predicative or impredicative universes by a typechecker parameter.
+You choose either predicative or impredicative universes with a type checker parameter.
 
 \[
 \tag{$A_1$}
@@ -238,8 +238,8 @@ You choose either predicative or impredicative universes by a typechecker parame
 
 \subsection{Impredicative Universes}
 Propositional contractible bottom space is the only
-available extension to predicative hierarchy which doesn't lead to inconsistency.
-However there is another option to have infinite impredicative hierarchy.
+available extension to the predicative hierarchy which doesn't lead to inconsistency.
+However, there is another option to have the infinite impredicative hierarchy.
 
 \begin{equation}
 \tag{$A_2$}
@@ -258,7 +258,7 @@ However there is another option to have infinite impredicative hierarchy.
 \subsection{Hierarchy Switching}
 Function {\bf h} returns the target Universe of B term dependence on A.
 There are two dependence rules known as the predicative one and the
-impredicative one which return max universe or universe of last term respectively.
+impredicative one which returns max universe or universe of the last term respectively.
 
 \begin{lstlisting}[mathescape=true]
 dep A B impredicative $\rightarrow$ B
@@ -269,10 +269,10 @@ h A B $\rightarrow$ dep A B om:hierarchy(impredicative)
 
 \subsection{Contexts}
 
-The contexts model a dictionary with variables for typechecker.
-It can be typed as list of pairs or {\bf List\ Sigma}. The elimination
+The contexts model a dictionary with variables for type checker.
+It can be typed as the list of pairs or {\bf List\ Sigma}. The elimination
 rule is not given here as in our implementation the whole dictionary
-is destroyed after typechecking.
+is destroyed after type checking.
 
 \begin{equation}
 \tag{Ctx-formation}
@@ -296,11 +296,11 @@ is destroyed after typechecking.
 \end{equation}
 
 \subsection{Single Axiom Language}
-This langauge is called one axiom language (or pure) as eliminator
+This language is called one axiom language (or pure) as eliminator
 and introduction rules inferred from type formation rule.
 The only computation rule of Pi type is called beta-reduction.
 Computational rules of language are called operational semantics
-and establish equality on substitution and application to lambda.
+and establish equality of substitution and lambda application.
 Operational semantics in that way defines the rewrite rules of computations.
 
 \begin{equation}
@@ -339,7 +339,7 @@ Operational semantics in that way defines the rewrite rules of computations.
 \end{equation}
 
 The theorems (specification) of PTS could be embedded in itself and used as
-Logical Framework for the Pi type. Here is example in higher language.
+Logical Framework for the Pi type. Here is the example in the higher language.
 
 \begin{lstlisting}[mathescape=true]
 record Pi (A: Type) :=
@@ -353,12 +353,12 @@ record Pi (A: Type) :=
 \end{lstlisting}
 
 The proofs intentionally left blank, as it proofs could be taken from various sources.
-The equalities of computational semantics presented here as {\bf Path} types in higher language.
+The equalities of computational semantics presented here as {\bf Path} types in the higher language.
 
-We extend the {\bf $PTS\infty$} with remote AST node which means remote file loading
-from trusted storage, anyway this will be checked by typechecker. We deny recursion
-over remote node. We also add index to var for simplified de Bruijn indexes,
-we allow overlapped names with tags, incremented on each new occurance.
+We extended the {\bf $PTS\infty$} with the remote AST node which means remote file loading
+from trusted storage, anyway this will be checked by the type checker. We deny recursion
+over the remote node. We also add an index to var for simplified de Bruijn indexes,
+we allow overlapped names with tags, incremented on each new occurrence.
 
 \begin{lstlisting}[mathescape=true]
 data om = star             (n: nat)
@@ -388,7 +388,7 @@ var N B false          $\rightarrow$ (:error,("free var",N,proplists:get_keys(B)
 \end{lstlisting}
 
 \subsection{Shift}
-Shift renames var N in B. Renaming means adding an 1 to an index of that name.
+Shift renames var N in B. Renaming means adding a 1 to an index of that name.
 
 \begin{lstlisting}[mathescape=true]
 sh (:var,(N,I)),N,P) when I>=P  $\rightarrow$ (var,(N,I+1))
@@ -414,7 +414,7 @@ sub T                       _ _ _ $\rightarrow$ T.
 \end{lstlisting}
 
 \subsection{Type Checker}
-For sure in a pure system we should be careful with {\bf :remote} AST node. Remote
+For sure in a pure system, we should be careful with {\bf :remote} AST node. Remote
 AST nodes like {\bf \#List/Cons or \#List/map} are remote links to files. So using
 trick one should desire circular dependency over {\bf :remote}. This is denied in
 the system. The same notes apply to normalization and definitional equality.
@@ -434,9 +434,8 @@ type (:app,(F,A))            D $\rightarrow$ let T = type(F,D), true = func T,
 \end{lstlisting}
 
 \subsection{Normalization}
-Normalization performs substitutions on applications to functions (beta-reduction),
-searching over all function spaces, performing recursive normalization
-over the lambda and pi nodes.
+Normalization performs substitutions on applications to functions (beta-reduction)
+by recursive entrance over the lambda and pi nodes.
 
 \begin{lstlisting}[mathescape=true]
 norm :none                   $\rightarrow$ :none
@@ -472,12 +471,12 @@ eq (A,B)                      $\rightarrow$ (:error,(:eq,A,B))
 \end{lstlisting}
 
 \section{Language Usage}
-In this section we will lift PTS system to MLTT system by defining
+In this section, we will lift PTS system to MLTT system by defining
 {\bf Sigma} and {\bf Equ} types using only {\bf Pi} type. We will use Böhm inductive
 dependent encoding\cite{Bohm85}.
 
 \subsection{Sigma Type}
-Here we will show you some examples of {\bf Om} Language usage.
+Here we will show some examples of {\bf Om} Language usage.
 The PTS system is extremely powerful even without {\bf Sigma} type.
 But we can encode {\bf Sigma} type similar how we encode {\bf Prod}
 tuple pair in Böhm encoding. Let's formulate {\bf Sigma} type as an
@@ -488,7 +487,7 @@ data Sigma (A: Type) (P: A -> Type) (x: A): Type =
      (intro: P x -> Sigma A P)
 \end{lstlisting}
 
-The Sigma-type with its eliminators appears as example staring from Aaron Stump\cite{Stump17}.
+The {\bf Sigma-type} with its eliminators appears as example in Aaron Stump\cite{Stump17}.
 Here we will show desugaring to {\bf PTS$^\infty$}.
 In the comments you can find the AUTOMATH-like version of terms\footnote{Pi type is denoted as [x: A] B x and lambda function is denoted as (x: A) M x}.
 
@@ -539,7 +538,7 @@ data Sigma (A: Prop) (P: A -> Prop): Prop =
      (intro: (x:A) (y:P x) -> Sigma A P)
 \end{lstlisting}
 
-\subsection{Equality Type}
+\subsection{Equ Type}
 Another example of expressiveness is Equality type a la Martin-Löf.
 
 \begin{lstlisting}
@@ -564,9 +563,9 @@ data Equ (A: Type): A -> A -> Type :=
 -> Refl x
 \end{lstlisting}
 
-You cannot construct a lambda that will check different values of A type for equality,
-however you may want to use built-in definitional equality and
-normalization feature of typechecker to actually compare two values:
+You cannot construct a lambda that will check different values of A type is they are equal,
+however, you may want to use built-in definitional equality and
+normalization feature of type checker to actually compare two values:
 
 \begin{lstlisting}[mathescape=true]
 > om:print(
@@ -589,10 +588,10 @@ ok
 \end{lstlisting}
 
 \subsection{Effect Type System}
-This work is expected to compile to a limited number of target platforms. For now Erlang, Haskell and LLVM are awaiting.
-Erlang version is expected to be useful both on LING and BEAM Erlang virtual machines. This language
-allows you to define trusted operations in System F and extract this routines to Erlang/OTP platform
-and plug as trusted resourses. As example we also provide infinite coinductive process creation
+This work is expected to compile to a limited number of target platforms. For now, Erlang, Haskell, and LLVM are awaiting.
+Erlang version is expected to be used both on LING and BEAM Erlang virtual machines. This language
+allows you to define trusted operations in System F and extract this routine to Erlang/OTP platform
+and plug as trusted resources. As the example, we also provide infinite coinductive process creation
 and inductive shell that linked to Erlang/OTP IO functions directly.
 
 {\bf IO} protocol. We can construct in pure type system the state machine based on (co)free
@@ -768,22 +767,22 @@ Here is example of Erlang/OTP shell running recursive example.
 
 \section{Higher Language with Inductive Types}
 Despite we can encode inductive types in PTS, the best usage of inductive types
-comes with recursors and fixpoint type that allow recursive typecheck for special cases.
-As was shown by Herman Geuvers\cite{Geuvers01} the induction principle in not derivable in second-order
-dependent type theory. However there a lot of ways doing this. For example we can
-built in induction principal into the core for every defined inductive type. We even
+comes with recursors and fixpoint type that allow recursive type check for special cases.
+As was shown by Herman Geuvers\cite{Geuvers01} the induction principle is not derivable in second-order
+dependent type theory. However there a lot of ways doing this. For example, we can
+build in induction principal into the core for every defined inductive type. We even
 can allow recursive type check for only terms of induction principle, which have recursion base ---
 that approach was successfully established by Peng Fu and Aaron Stump\cite{Stump17}.
 In any case for derivable induction principle in PTS$^\infty$ we need to have fixpoint
 somehow in the core.
 
-So called Calculus of Inductive Constructions\cite{Mohring15} is used as a top language on top of
+So-called Calculus of Inductive Constructions\cite{Mohring15} is used as a top language on top of
 PTS to reason about inductive types. Here we will show you a sketch of such
-inductive language model which intendent to be a language extension to PTS system.
+inductive language model which intended to be a language extension to PTS system.
 CiC is allowing fixpoint for any terms, and base checking should be performed
-during typechecking such terms.
+during type checking such terms.
 
-Our future top language is a general purpose functional language with $\Pi$ and $\Sigma$ types,
+Our future top language is a general-purpose functional language with $\Pi$ and $\Sigma$ types,
 recursive algebraic types, higher order functions,
 corecursion, and a free monad to encode effects. It compiles
 to a small MLTT core of dependent type system with inductive types and equality.
@@ -813,8 +812,8 @@ Case analysis over inductive types.
 \end{lstlisting}
 
 \subsection{AST}
-The AST of higher language is formally could be defined using itself.
-Here you can find telescopes (context lists), split and its bracnhes,
+The AST of higher language is formally defined using itself.
+Here you can find telescopes (context lists), split and its branches,
 inductive data definitions.
 
 \begin{lstlisting}[mathescape=true]
@@ -848,12 +847,12 @@ repository\footnote{http://github.com/groupoid/infinity/tree/master/priv}.
 \subsection{Inductive Type Encoding}
 There are a number of inductive type encodings: 1) Commutative square encoding of
 F-algebras by Hinze, Wu\cite{Hinze13}; 2) Inductive-recursive encoding, algebraic type
-of algebraic tupes, inductive famility encoding by Dagand\cite{Dagand13};
+of algebraic types, inductive family encoding by Dagand\cite{Dagand13};
 3) Encoding with motives inductive-inductive definition, also with inductive families,
 for modeling quotient types by Altenkirch, Kaposi\cite{Kaposi16};
 4) Henry Ford encoding or encoding with Ran,Lan-extensions by Hamana, Fiore\cite{Hamana11};
 5) Church-compatible Böhm-Berarducci encoding Böhm, Berarducci\cite{Bohm85}. Om is shipped with
-base library in Church encoding and we already gave example of IO system encoded with
+base library in Church encoding and we already gave the example of IO system encoded with
 runtime linkage. We give here simple calculations behind this theory.
 
 \subsection{Polynomial Functors}
@@ -868,10 +867,10 @@ Potentialy Infinite List A: $\nu\ X \rightarrow 1 + A \times X$\\
 Finite Tree: $\mu\ X \rightarrow \mu\ Y \rightarrow 1 + X \times Y = \mu\ X = List\ X$\\
 
 As we know there are several ways to appear for a variable in a recursive algebraic type.
-Least fixpoint are known as an recursive expressions that have a base of recursion
-In Chuch-Böhm-Berarducci encoding type are store as as non-recursive definitions
+Least fixpoint is known as a recursive expression that has a base of recursion
+In Chuch-Böhm-Berarducci encoding type are store as non-recursive definitions
 of their right folds. A fold in this encoding is equal to id function as the type
-signature contains its type constructore as parameters to pure function.
+signature contains its type constructor as parameters to a pure function.
 
 \subsection{List Example}
 The data type of lists over a given set A can be represented as the initial algebra
@@ -902,8 +901,8 @@ nil = \lambda\ list \rightarrow \lambda\ cons \rightarrow \lambda\ nil \rightarr
 \end{cases}
 $$
 
-Here traditionally we show the {\bf List} definition in higher language and
-desugared version in {\bf Om}.
+Here traditionally we show the {\bf List} definition in higher language and its
+desugared version in {\bf Om} language.
 
 \begin{lstlisting}[mathescape=true]
   data List: (A: *) $\rightarrow$ * :=
@@ -976,8 +975,8 @@ $$
 \subsection{Base Library}
 The base library includes basic type-theoretical
 building blocks starting from {\bf Unit}, {\bf Bool}, {\bf Either}, {\bf Maybe}, {\bf Nat}, {\bf List} and {\bf IO}.
-Here some exmaples how it looks like. The full listing of Base Library folder
-is available at {\bf Om} github repository\footnote{http://github.com/groupoid/om}.
+Here some examples how it looks like. The full listing of Base Library folder
+is available at {\bf Om} GitHub repository\footnote{http://github.com/groupoid/om}.
 
 \begin{lstlisting}[mathescape=true]
 
@@ -1007,7 +1006,7 @@ is available at {\bf Om} github repository\footnote{http://github.com/groupoid/o
 \end{lstlisting}
 
 \subsection{Measurements}
-The underlying {\bf Om} typechecker and compiler is a target
+The underlying {\bf Om} type checker and compiler is a target
 language for higher level languages. The overall
 size of {\bf Om} language with extractor to Erlang is 265 lines of code.
 
@@ -1049,37 +1048,37 @@ Typechecking & Morte ShadowTrans & 57.867s\\
 
 \section{Conclusion}
 We have proposed a modified version of calculus of constructions, the pure type system,
-with predicative and impredicative switchable infinitary hierarhies.
+with predicative and impredicative switchable infinitary hierarchies.
 This system is known to be consistent, supports strong normalization and resembles the
-type system based in foundations of modern provers, like Coq, Lean, Agda.
+type system based on foundations of modern provers, like Coq, Lean, Agda.
 
 {\bf Discoveries}. During this investigation were made following discoveries:
-1) baning recursion caused impossiblity of encoding a class of theorems
+1) baning recursion caused impossibility of encoding a class of theorems
 based on induction principle. As was shown by Peng Fu, Aaron Stump\cite{Fu14}, the only needed
-ingridient for induction in CoC is Self-Type, weak form of fixpoint recursion in the core.
-2) however for running applications in runtime it is enough System F
+ingredient for induction in CoC is Self-Type, weak form of fixpoint recursion in the core.
+2) however for running applications at runtime it is enough System F
 programs or Dependent Types without Fixpoint.
 So we can prove properties of these programs in higher languages
-with fixpoint (and thus induction) and then erase theorems from specification and convert
-runtime parts of specification into {\bf PTS$^\infty$} with later extraction to any functional language.
+with fixpoint (and thus induction) and then erase theorems from a specification and convert
+runtime parts of the specification into {\bf PTS$^\infty$} with later extraction to any functional language.
 2) there are a lot of theorems, that could be expressed without fixpoint,
 such as theorems from higher order logic.
 3) this system could be naturally translated into untyped lambda interpreters.
 
 {\bf Advantages over existing pure languages}.
-1) refined version of typechecker and clean implementation in 265 LOC.
+1) refined version of type checker and the clean implementation in 265 LOC.
 This will make more trust to the core by external institutions.
-2) supporting both predicative and impredicative hierarhies of {\bf PTS$^\infty$} configuration.
+2) supporting both predicative and impredicative hierarchies of {\bf PTS$^\infty$} configuration.
 3) comparing to other languages, Om is much faster on big terms
 thanks to fast Erlang lambda evaluations and a cache layer.
 4) Om is a production language.
 
 {\bf Scientific and Production usage}.
-1) The language could be used as a trusted core for cetification sensitive parts of applications,
-such as in finance, math or other domains with requirement for totality.
+1) The language could be used as a trusted core for certification sensitive parts of applications,
+such as in finance, math or other domains with the requirement for totality.
 2) This work could be used as embeddable runtime library.
 3) In the academia {\bf PTS$^\infty$} could be used as teaching instrument for logic,
-type systems, lambda calculus, functional languges.
+type systems, lambda calculus, functional languages.
 
 {\bf Further research perspective}.
 1) Extend the host languages from Erlang to Rust and prove the Om within Coq or Cubical.
@@ -1088,8 +1087,8 @@ type systems, lambda calculus, functional languges.
 4) Make Induction Principle switchable with {\bf PTS$^\infty$} in future.
 
 \section{Acknowledgments}
-We thank to all contributors of Groupoid Infinity who helped us to avoid mistakes
-in TeX and Erlang files. We also thank to our spspouses for continuous support.
+We thank all contributors of Groupoid Infinity who helped us to avoid mistakes
+in TeX and Erlang files. We also thank our spouses for continuous support.
 
 \bibliographystyle{aipnum-cp}
 \bibliography{om}
