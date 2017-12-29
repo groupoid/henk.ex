@@ -23,7 +23,7 @@
 \maketitle
 \vspace{1cm}
 \begin{abstract}
-This paper presents the design of {\bf Om} language and implementation of its type checker and bytecode extraction to Erlang.
+This paper presents the design of the {\bf Om} language and an implementation of its type checker and bytecode extractor to Erlang.
 Om is an intermediate language based on a pure type system with the infinite number of universes, so it is known to be consistent in dependent type theory.
 The type checker can be switched between predicative and impredicative hierarchies of universes.
 The need to natively support Erlang platform dictated the look and feel of this work.
@@ -36,24 +36,26 @@ As the results, we will show lambda evaluation performance on BEAM virtual machi
 \end{abstract}
 
 \section{Introduction}
-As a part of verification and validation process, according to IEEE\footnote{IEEE Std 1012-2016  --- V\&V Software verification and validation} standard and ESA\footnote{ESA PSS-05-10 1-1 1995 -- Guide to software verification and validation} regulatory document, exists a lot of tools and approaches.
-Most advanced techniques involve mathematical languages and notations. 
-The age of verified math was started by de Bruin AUTOMATH prover and Martin-Lof\cite{Lof84} type theory and today we have Coq, Agda, Lean, Idris, F* languages based on Calculus of Inductive Constructions or CiC\cite{Mohring15}.
+IEEE\footnote{IEEE Std 1012-2016  --- V\&V Software verification and validation} standard
+and ESA\footnote{ESA PSS-05-10 1-1 1995 -- Guide to software verification and validation} regulatory documents define a number of tools and approaches for verification and validation processes. 
+The most advanced techniques involve mathematical languages and notations. 
+The age of verified math was started by de Bruin's AUTOMATH prover and Martin-Löf\cite{Lof84}'s type theory. 
+Today we have Coq, Agda, Lean, Idris, F* languages which are based on Calculus of Inductive Constructions or CiC\cite{Mohring15}.
 The core of CiC is Calculus of Constructions or CoC\cite{Coq88}.
-The further development leads to Lambda Cube\cite{Henk93} and Pure Type Systems as Henk\cite{Erik97} and Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}.
+Further development has lead to Lambda Cube\cite{Henk93} and Pure Type Systems by Henk\cite{Erik97} and Morte\footnote{Gabriel Gonzalez. Haskell Morte Library}.
 Pure Type Systems are custom languages based on CoC with single Pi-type and possibly other extensions.
-The known extensions are ECC, ECC with Inductive Types\cite{Ore92}, K-rules\cite{Barthe95}.
+Notable extensions are ECC, ECC with Inductive Types\cite{Ore92}, K-rules\cite{Barthe95}.
 The main motivation of Pure Type Systems is an easy reasoning about core, strong normalization and trusted external verification due to compact type checkers.
-Imagine one can implement their own type checker to run certified programs retrieved over untrusted channels.
+A custom type checker can be implemented to run certified programs retrieved over untrusted channels.
 The applications of such minimal cores are 1) Blockchain smart-contract languages, 2) certified applications kernels, 3) payment processing, etc.
 
 \subsection{Generating Trusted Programs}
-According to Curry-Howard correspondence inside Martin-Lof Type Theory\cite{Lof84} proofs or certificates are lambda terms of particular types or specifications.
+According to Curry-Howard, a correspondence inside Martin-Löf Type Theory\cite{Lof84} proofs or certificates are lambda terms of particular types or specifications.
 As both specifications and implementations are done in a typed language with dependent types we can extract target implementation of a certified program just in any programming language.
-These languages could be so primitive as untyped lambda calculus that usually implemented as untyped interpreters (JavaScript, Erlang, PyPy, LuaJIT, K).
-The most advanced usage is code generation to higher-level languages such as C++ and Rust (which is already language with trusted features on memory, variable accessing, linear types, etc.).
-In this work, we present a simple code extraction to Erlang programming language as target interpreter.
-However, we have worked also on C++ and Rust targets as well.
+These languages could be so primitive as untyped lambda calculus and are usually implemented as untyped interpreters (JavaScript, Erlang, PyPy, LuaJIT, K).
+The most advanced approach is code generation to higher-level languages such as C++ and Rust (which is already language with trusted features on memory, variable accessing, linear types, etc.).
+In this work, we present a simple code extraction to Erlang programming language as a target interpreter.
+However, we have also worked on C++ and Rust targets as well.
 
 \subsection{System Architecture}
 {\bf Om} as a programming language has a core type system, the {\bf PTS$^{\infty}$} --- the pure type system with the infinite number of universes.
