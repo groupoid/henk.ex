@@ -26,14 +26,18 @@
 \begin{abstract}
 This paper presents the design of the {\bf Om} language and an implementation of its type checker and bytecode extractor to Erlang.
 Om is an intermediate language based on a pure type system with the infinite number of universes, so it is known to be consistent in dependent type theory.
-The type checker can be switched between predicative and impredicative hierarchies of universes.
-The need to natively support Erlang platform dictated the look and feel of this work.
+This {\bf Om} language is a core part of the language family for verification purposes.
+The type checker is built upon MLTT principles and can be switched between predicative and impredicative hierarchies of universes.
 This system is expected to be usable as trusted core for certified applications which could be run inside Erlang virtual machines LING and BEAM.
 The syntax is compatible with Morte language and supports its base library, however, it extends the indexed universes.
 We show how to program in this environment and link with Erlang inductive and coinductive free structures.
-A very basic prelude library is shipped as a part of the work.
-We briefly describe the top-level language which compiles to pure type system core.
+A very basic prelude library is shipped as a part of the work with infinite I/O operations which
+immediately enables {\bf Om} for long living runtime verified applications.
+We briefly describe the top-level language which compiles to pure type system (PTS) core as the further work.
 As the results, we will show lambda evaluation performance on BEAM virtual machine.
+PTS approach take its roots starting from AUTOMATH, MLTT, CoC,
+but extracting to performant untyped lambda interpreters is a novel way of cerifying applications.
+As a full vision we propose a stack of langauges, where {\bf Om} takes a central part.
 \end{abstract}
 
 \section{Introduction}
@@ -337,7 +341,6 @@ data om = star             (n: nat)
 Our typechecker differs from cannonical example of Coquand\cite{Coq96}. 
 We based our typechecker on variable {\bf Substitution}, variable {\bf Shifting}, term {\bf Normalization}, definitional {\bf Equality} anf {\bf Type Checker} itself.
 
-\newpage
 \subsection{Shifting}
 Shift renames var N in B. Renaming means adding 1 to the nat component of variable.
 
@@ -1036,7 +1039,7 @@ We also thank our spouses for continuous support.
 
 \bibliographystyle{aipnum-cp}
 \bibliography{om}
-\newpage
-\tableofcontents
+%\newpage
+%\tableofcontents
 
 \end{document}
