@@ -1,0 +1,1 @@
+λ(f : * → *) → λ(a : *) → λ(m : f a) → λ(Cmd : *) → λ(Bind : ∀(b : *) → f b → (b → Cmd) → Cmd) → Bind a m

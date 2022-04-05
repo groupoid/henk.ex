@@ -1,0 +1,60 @@
+mixin tex(center=false, paragraph=true)
+    if paragraph
+        p(style=center ? {'text-align': 'center' } : null)!= tex(`${block}`)
+    else
+        span(style=center ? {'text-align': 'center', 'display': 'block',
+            'padding-top': '8px', 'padding-bottom': '8px', } : null)!= tex(`${block}`)
+
+mixin code
+    code!= highlight(`${block}`)
+
+mixin header(logo, title, subtitle)
+    header.header
+        .header__titles
+            h1.header__title!= title
+            h4.header__subtitle!= subtitle
+
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        meta(http-equiv='x-ua-compatible' content='ie=edge')
+        meta(property='fb:app_id'      content='118554188236439')
+        meta(name='viewport'        content='width=device-width, initial-scale=1')
+        meta(name='author'          content='Maxim Sokhatsky')
+        meta(name='twitter:site'    content='@infinitystack')
+        meta(name='twitter:creator' content='@infinitystack')
+        meta(property='og:type'        content='website')
+        meta(property='og:image'       content='https://avatars.githubusercontent.com/u/17128096?s=400&u=66a63d4cdd9625b2b4b37d724cc00fe6401e5bd8&v=4')
+        meta(name='msapplication-TileColor' content='#ffffff')
+        meta(name='msapplication-TileImage' content='https://homotopy.dev/images/ms-icon-144x144.png')
+        meta(name='theme-color' content='#ffffff')
+
+        link(rel='stylesheet' href='main.css')
+        link(rel='apple-touch-icon' sizes='57x57'   href='https://homotopy.dev/images/apple-icon-57x57.png')
+        link(rel='apple-touch-icon' sizes='60x60'   href='https://homotopy.dev/images/apple-icon-60x60.png')
+        link(rel='apple-touch-icon' sizes='72x72'   href='https://homotopy.dev/images/apple-icon-72x72.png')
+        link(rel='apple-touch-icon' sizes='76x76'   href='https://homotopy.dev/images/apple-icon-76x76.png')
+        link(rel='apple-touch-icon' sizes='114x114' href='https://homotopy.dev/images/apple-icon-114x114.png')
+        link(rel='apple-touch-icon' sizes='120x120' href='https://homotopy.dev/images/apple-icon-120x120.png')
+        link(rel='apple-touch-icon' sizes='144x144' href='https://homotopy.dev/images/apple-icon-144x144.png')
+        link(rel='apple-touch-icon' sizes='152x152' href='https://homotopy.dev/images/apple-icon-152x152.png')
+        link(rel='apple-touch-icon' sizes='180x180' href='https://homotopy.dev/images//apple-icon-180x180.png')
+        link(rel='icon' type='image/png' sizes='192x192'  href='https://homotopy.dev/images/android-icon-192x192.png')
+        link(rel='icon' type='image/png' sizes='32x32'    href='https://homotopy.dev/images/favicon-32x32.png')
+        link(rel='icon' type='image/png' sizes='96x96'    href='https://homotopy.dev/images/favicon-96x96.png')
+        link(rel='icon' type='image/png' sizes='16x16'    href='https://homotopy.dev/images/favicon-16x16.png')
+        link(rel='manifest' href='https://homotopy.dev/images/manifest.json')
+
+        style.
+            svg a{fill:blue;stroke:blue}
+            [data-mml-node="merror"]>g{fill:red;stroke:red}
+            [data-mml-node="merror"]>rect[data-background]{fill:yellow;stroke:none}
+            [data-frame],[data-line]{stroke-width:70px;fill:none}
+            .mjx-dashed{stroke-dasharray:140}
+            .mjx-dotted{stroke-linecap:round;stroke-dasharray:0,140}
+            use[data-c]{stroke-width:3px}
+
+    body.content
+        block vars
+        block content

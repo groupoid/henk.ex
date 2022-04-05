@@ -1,0 +1,1 @@
+λ(m : * → *) → λ(monad : #Monad/@  m) → λ(n : #Nat/@ ) → λ(a : *) → λ(cmd : m a) → #Monad/sequence  m a (#List/replicate  (m a) n cmd)

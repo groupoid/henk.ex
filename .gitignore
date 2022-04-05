@@ -1,0 +1,4 @@
+node_modules/*
+package-lock.json
+header.html
+footer.html

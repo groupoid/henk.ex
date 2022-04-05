@@ -1,0 +1,6 @@
+  λ (A : *)
+→ λ (X : #Bool/@)
+→ λ (Y : #Unit/@ → A)
+→ λ (Z : #Unit/@ → A)
+→ X (#Unit/@ → A) Y Z #Unit/Make
+

@@ -1,0 +1,4 @@
+λ(m : * → *) → λ(a : *) → λ(b : *) → λ(monad : #Monad/@  m) → λ(n : m a) → λ(f : a → m b) →
+monad b (λ(Cmd : *) → λ(Bind : ∀(b : *) → m b → (b → Cmd) → Cmd) → λ(Pure : b → Cmd) →
+Bind a n (λ(x : a) → Bind b (f x) Pure))
+

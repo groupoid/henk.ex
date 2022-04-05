@@ -1,0 +1,4 @@
+λ(m : * → *) → λ(a : *) → λ(cmds : #List/@  (m a)) → cmds (#Cmd/@  m (#List/@  a)) (λ(cmd1 : m a) → λ(cmd2 : #Cmd/@
+  m (#List/@  a)) → #Cmd/Monad  m (#List/@  a) (λ(Cmd : *) → λ(Bind : ∀(b : *) → #Cmd/@  m b → (b → Cmd) → Cmd) →
+  λ(Pure : #List/@  a → Cmd) → Bind a (#Cmd/lift  m a cmd1) (λ(x : a) → Bind (#List/@  a) cmd2 (λ(xs : #List/@  a)
+  → Bind (#List/@  a) (#Cmd/Pure  m (#List/@  a) (#List/Cons  a x xs)) Pure)))) (#Cmd/Pure  m (#List/@  a) (#List/Nil  a))

@@ -1,0 +1,7 @@
+Makefile linguist-detectable=false
+*.html linguist-detectable=false
+*.js linguist-detectable=false
+*.erl linguist-detectable=false
+*.hrl linguist-detectable=false
+*.app.src linguist-detectable=false
+rebar.config linguist-detectable=false

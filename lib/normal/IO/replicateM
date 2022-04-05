@@ -1,0 +1,7 @@
+-- IO/replicateM
+   \ (n: #Nat/@)
+-> \ (io: #IO/@ #Unit/@)
+-> #Nat/fold n (#IO/@ #Unit/@)
+               (#IO/[>>] io)
+               (#IO/pure #Unit/@ #Unit/Make)
+

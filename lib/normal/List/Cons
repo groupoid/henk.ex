@@ -1,0 +1,13 @@
+-- List/Cons
+  λ (A: *)
+→ λ (Head: A)
+→ λ (Tail:
+    ∀ (List: *)
+  → ∀ (Cons: A -> List -> List)
+  → ∀ (Nil: List)
+  → List)
+→ λ (List: *)
+→ λ (Cons: A -> List -> List)
+→ λ (Nil: List)
+→ Cons Head (Tail List Cons Nil)
+

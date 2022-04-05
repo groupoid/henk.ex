@@ -1,0 +1,1 @@
+λ(f : * → *) → λ(a : *) → λ(r : a) → λ(Cmd : *) → λ(Bind : ∀(b : *) → f b → (b → Cmd) → Cmd) → λ(Pure : ∀(r : a) → Cmd) → Pure r

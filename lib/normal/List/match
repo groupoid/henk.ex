@@ -1,0 +1,10 @@
+-- List/match
+   \ (A: *)
+-> \ (value: #List/@ A)
+-> \ (ret: *)
+-> \ (cons_branch: ret)
+-> \ (nil_branch: ret)
+-> #List/cond A value ret
+              (\(_:A)->\(_:ret)-> cons_branch)
+              nil_branch
+
