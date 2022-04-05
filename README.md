@@ -1,22 +1,22 @@
 Henk: Pure Type System
 ----------------------
 
-Henk languages described first by Erik Meijer and Simon Peyton Jones in 1997. Later on in 2015 a new implementation of the ideas
-in Haskell appeared, called Morte. It used Boehm-Berarducci encoding of recursive data types into non-recursive terms.
-Morte has constants, variables, and kinds, is based only on *pi*, *lambda* and *apply* constructions,
+**Henk** languages described first by Erik Meijer and Simon Peyton Jones in 1997.
+Later on in 2015 a new implementation of the ideas in Haskell appeared, called Morte.
+It used Boehm-Berarducci encoding of recursive data types into non-recursive terms.
+Morte has constants, variables, and kinds, is based only on **П**, **λ** and **apply** constructions,
 one axiom and four deduction rules. The Henk language resembles Henk design and Morte implementation.
-This language indended to be small, concise, easily provable, clean and be able
-to produce verifiable programs that can be distributed over the networks and compiled at target with
-safe linkage.
+This language indended to be small, concise, easily provable, clean and
+be able to produce verifiable programs that can be distributed over the networks and compiled at target with safe linkage.
 
 ```
 $ curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad
 $ chmod +x mad"
-$ ./mad dep com pla bun om
+$ ./mad dep com pla bun henk
 
 ```
 
-The PTS Systax is the following:
+The Henk Systax is the following:
 
 ```
    <> ::= #option
@@ -30,14 +30,13 @@ The PTS Systax is the following:
             | ∀ ( I : O ) → O
 ```
 
-OM is an implementation of PTS with Infinite Number of Universes,
-the pure lambda calculus with dependent types. It can be compiled (code extraction) to bytecode
-of Erlang virtual machines BEAM and LING.
+Henk is an implementation of PTS with Infinite Number of Universes, the pure lambda calculus with dependent types.
+It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM and LING.
 
 Trusted PTS with Infinite Universes
 -----------------------------------
 
-In repository OM you may found following parts of core:
+In repository `henk` you may found following parts of core:
 
 * [Parser](https://github.com/groupoid/om/blob/master/src/om_parse.erl)
 * [Typechecker](https://github.com/groupoid/om/blob/master/src/om_type.erl)
@@ -47,7 +46,7 @@ In repository OM you may found following parts of core:
 PTS ships with different "modes" (spaces of types with own encodings), or "preludes", which
 you may find in `priv` directory. They are selectable with `om:mode("normal")`.
 
-#### [normal](https://github.com/groupoid/om/tree/master/priv/normal)
+#### [normal](https://github.com/groupoid/henk/tree/main/lib/normal)
 
 This is a minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
 It contains common inductive constructions encoded using plain Church (or Boehm-Berarducci if you wish) encoding,
