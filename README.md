@@ -1,6 +1,8 @@
 Henk: Pure Type System
 ----------------------
 
+<img src="https://tonpa.guru/stream/2019/img/Henk%20Barendregt.jpg">
+
 **Henk** languages described first by Erik Meijer and Simon Peyton Jones in 1997.
 Later on in 2015 a new implementation of the ideas in Haskell appeared, called Morte.
 It used Boehm-Berarducci encoding of recursive data types into non-recursive terms.
