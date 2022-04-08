@@ -1,6 +1,6 @@
 {
   "name": "henk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Henk: Pure CoC Type System",
   "main": "",
   "scripts": {
@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git://github.com/groupoid/henk"
   },
-  "author": "Arseniy Bushyn",
-  "license": "ISC",
+  "author": "Namdak Tonpa",
+  "license": "DHARMA",
   "preinstall": "npm i -g node-sass && npm i -g pug-cli",
   "dependencies": {
     "mathjax-full": "^3.2.0",
