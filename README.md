@@ -37,15 +37,15 @@ It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM
 Trusted PTS with an Infinite Universes
 --------------------------------------
 
-In repository `henk` you may found following parts of core:
+In repository `henk` you may find the following parts of core:
 
 * [Parser](https://github.com/groupoid/om/blob/master/src/om_parse.erl)
 * [Typechecker](https://github.com/groupoid/om/blob/master/src/om_type.erl)
 * [Eraser](https://github.com/groupoid/om/blob/master/src/om_erase.erl)
 * [Code Extractor](https://github.com/groupoid/om/blob/master/src/om_extract.erl)
 
-PTS ships with different "modes" (spaces of types with own encodings), or "preludes", which
-you may find in `priv` directory. They are selectable with `om:mode("normal")`.
+Henk ships with different "modes" (spaces of types with own encodings), or "preludes", which
+you may find in `lib` directory. They are selectable with `om:mode("normal")`.
 
 #### [normal](https://github.com/groupoid/henk/tree/main/lib/normal)
 
