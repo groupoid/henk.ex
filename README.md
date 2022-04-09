@@ -64,6 +64,6 @@ typed assembler of type theory.
 Credits
 -------
 
-* Maxim Sokhatsky
+* <a itemprop="sameAs" content="https://orcid.org/0000-0001-7127-8796" href="https://orcid.org/0000-0001-7127-8796" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;white-space: nowrap;">Namdak Tönpa <img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"> 🇺🇦</a>
 
 OM A HUM
