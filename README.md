@@ -61,9 +61,15 @@ you the basic principles how things work. Later all these should be written in E
 languages and translated to OM automatically. You may think of OM as the low-level
 typed assembler of type theory.
 
+Articles
+--------
+
+* <a href="https://henk.groupoid.space/doc/pts.pdf">Система доведення теорем з однiєю аксiомою</a> [Sokhatskyi]
+* <a href="https://henk.groupoid.space/doc/pts_ua.pdf">Henk: Pure Type System for Erlang</a> [Sokhatskyi]
+
 Credits
 -------
 
-* <a itemprop="sameAs" content="https://orcid.org/0000-0001-7127-8796" href="https://orcid.org/0000-0001-7127-8796" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;white-space: nowrap;">Namdak Tönpa <img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"> 🇺🇦</a>
+* <a itemprop="sameAs" content="https://orcid.org/0000-0001-7127-8796" href="https://orcid.org/0000-0001-7127-8796" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;white-space: nowrap;">Maksym Sokhatskyi <img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"> 🇺🇦</a>
 
 OM A HUM
