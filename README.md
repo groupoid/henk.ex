@@ -56,7 +56,7 @@ and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IO
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
-Note: all these folders (modules) are encoded in plain CoC in OM repository to demonstrate
+Note: all these folders (modules) are encoded in plain CoC in Henk repository to demonstrate
 you the basic principles how things work. Later all these should be written in EXE
 languages and translated to OM automatically. You may think of OM as the low-level
 typed assembler of type theory.
