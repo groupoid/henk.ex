@@ -88,8 +88,8 @@ you the basic principles how things work. Later all these should be written in P
 languages and translated to Henk automatically (if possible). You may think of Henk as the low-level
 typed assembler of type theory.
 
-Articles
---------
+PTS
+---
 
 * <a href="https://home.ttic.edu/~dreyer/course/papers/barendregt.pdf">Lambda Calculi with Types</a> [Henk Barendregt]
 * <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/1997/01/henk.pdf">Henk: a typed intermediate language</a> [Erik Meijer, Simon Peyton Jones]
