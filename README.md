@@ -51,7 +51,7 @@ you may find in `priv` directory. They are selectable with `om:mode("normal")`.
 #### [normal](https://github.com/groupoid/henk/tree/main/lib/normal)
 
 This is a minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
-It contains common inductive constructions encoded using plain Church (or Boehm-Berarducci if you wish) encoding,
+It contains common inductive constructions encoded using plain Church (or Böhm-Berarducci if you wish) encoding,
 and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IOI (free comonad,
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
