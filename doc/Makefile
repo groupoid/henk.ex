@@ -1,5 +1,6 @@
 default:
 	pdflatex pts.tex
+	pdflatex pts_ua.tex
 	return 0
 
 clean:
