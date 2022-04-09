@@ -1,7 +1,7 @@
 Henk: Pure Type System
 ----------------------
 
-<img src="https://tonpa.guru/stream/2019/img/Henk%20Barendregt.jpg" width=600>
+<img src="https://henk.groupoid.space/img/Henk%20Barendregt.jpg" height=600>
 
 **Henk** languages described first by Erik Meijer and Simon Peyton Jones in 1997.
 Later on in 2015 a new implementation of the ideas in Haskell appeared, called Morte.
