@@ -15,7 +15,6 @@ be able to produce verifiable programs that can be distributed over the networks
 $ curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad
 $ chmod +x mad"
 $ ./mad dep com pla bun henk
-
 ```
 
 The Henk Syntax is the following:
