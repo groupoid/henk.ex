@@ -50,6 +50,35 @@ you may find in `priv` directory. They are selectable with `om:mode("normal")`.
 
 #### [normal](https://github.com/groupoid/henk/tree/main/lib/normal)
 
+```sh
+henk.groupoid.space/lib
+└── normal
+    ├── Bool
+    ├── Cmd
+    ├── Eq
+    ├── Equ
+    ├── Frege
+    ├── IO
+    ├── IOI
+    ├── Lazy
+    ├── Leibnitz
+    ├── List
+    ├── Maybe
+    ├── Mon
+    ├── Monad
+    ├── Monoid
+    ├── Morte
+    ├── Nat
+    ├── Path
+    ├── Prod
+    ├── Prop
+    ├── Sigma
+    ├── Simple
+    ├── String
+    ├── Unit
+    └── Vector
+```
+
 This is a minimal practical prelude similar to Morte's base library of Gabriella Gonzalez.
 It contains common inductive constructions encoded using plain Church (or Böhm-Berarducci if you wish) encoding,
 and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IOI (free comonad,
