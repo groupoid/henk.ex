@@ -64,8 +64,8 @@ typed assembler of type theory.
 Articles
 --------
 
-* <a href="https://henk.groupoid.space/doc/pts.pdf">Система доведення теорем з однiєю аксiомою</a> [Sokhatskyi]
-* <a href="https://henk.groupoid.space/doc/pts_ua.pdf">Henk: Pure Type System for Erlang</a> [Sokhatskyi]
+* <a href="https://henk.groupoid.space/doc/pts.pdf">Henk: Pure Type System for Erlang</a> [Sokhatskyi]
+* <a href="https://henk.groupoid.space/doc/pts_ua.pdf">Система доведення теорем з однiєю аксiомою</a> [Sokhatskyi]
 
 Credits
 -------
