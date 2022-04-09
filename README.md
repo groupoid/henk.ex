@@ -18,7 +18,7 @@ $ ./mad dep com pla bun henk
 
 ```
 
-The Henk Systax is the following:
+The Henk Syntax is the following:
 
 ```
    <> ::= #option
