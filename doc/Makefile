@@ -2,8 +2,10 @@ default:
 	pdflatex pts.tex
 	bibtex pts
 	pdflatex pts.tex
+	pdflatex pts.tex
 	pdflatex pts_ua.tex
 	bibtex pts_ua
+	pdflatex pts_ua.tex
 	pdflatex pts_ua.tex
 	return 0
 
