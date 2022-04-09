@@ -1,14 +1,14 @@
 Henk: Pure Type System
 ----------------------
 
-<img src="https://tonpa.guru/stream/2019/img/Henk%20Barendregt.jpg" width=600>
+<img src="https://henk.groupoid.space/img/Henk%20Barendregt.jpg">
 
 **Henk** languages described first by Erik Meijer and Simon Peyton Jones in 1997.
 Later on in 2015 a new implementation of the ideas in Haskell appeared, called Morte.
-It used Boehm-Berarducci encoding of recursive data types into non-recursive terms.
+It used the Böhm-Berarducci encoding of recursive data types into non-recursive terms.
 Morte has constants, variables, and kinds, is based only on **П**, **λ** and **apply** constructions,
 one axiom and four deduction rules. The Henk language resembles Henk design and Morte implementation.
-This language indended to be small, concise, easily provable, clean and
+This language is indended to be small, concise, easily provable, clean and
 be able to produce verifiable programs that can be distributed over the networks and compiled at target with safe linkage.
 
 ```
@@ -18,7 +18,7 @@ $ ./mad dep com pla bun henk
 
 ```
 
-The Henk Systax is the following:
+The Henk Syntax is the following:
 
 ```
    <> ::= #option
@@ -32,11 +32,11 @@ The Henk Systax is the following:
             | ∀ ( I : O ) → O
 ```
 
-Henk is an implementation of PTS with Infinite Number of Universes, the pure lambda calculus with dependent types.
+Henk is an implementation of PTS with an Infinite Number of Universes, the pure lambda calculus with dependent types.
 It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM and LING.
 
-Trusted PTS with Infinite Universes
------------------------------------
+Trusted PTS with an Infinite Universes
+--------------------------------------
 
 In repository `henk` you may found following parts of core:
 
@@ -50,13 +50,13 @@ you may find in `priv` directory. They are selectable with `om:mode("normal")`.
 
 #### [normal](https://github.com/groupoid/henk/tree/main/lib/normal)
 
-This is a minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
-It contains common inductive constructions encoded using plain Church (or Boehm-Berarducci if you wish) encoding,
+This is a minimal practical prelude similar to Morte's base library of Gabriella Gonzalez.
+It contains common inductive constructions encoded using plain Church (or Böhm-Berarducci if you wish) encoding,
 and two basic (co)monadic effect systems: IO (free monad, for finite I/O) and IOI (free comonad,
 for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
-Note: all these folders (modules) are encoded in plain CoC in OM repository to demonstrate
+Note: all these folders (modules) are encoded in plain CoC in Henk repository to demonstrate
 you the basic principles how things work. Later all these should be written in EXE
 languages and translated to OM automatically. You may think of OM as the low-level
 typed assembler of type theory.
