@@ -84,8 +84,8 @@ for infinitary I/O, long-term processes). The generated code is being sewed with
 Erlang effects that are passed as parameters to pure functions.
 
 Note: all these folders (modules) are encoded in plain CoC in Henk repository to demonstrate
-you the basic principles how things work. Later all these should be written in EXE
-languages and translated to OM automatically. You may think of OM as the low-level
+you the basic principles how things work. Later all these should be written in Per
+languages and translated to Henk automatically (if possible). You may think of Henk as the low-level
 typed assembler of type theory.
 
 Articles
