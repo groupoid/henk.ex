@@ -39,10 +39,10 @@ Trusted PTS with an Infinite Universes
 
 In repository `henk` you may find the following parts of core:
 
-* [Parser](https://github.com/groupoid/om/blob/master/src/om_parse.erl)
-* [Typechecker](https://github.com/groupoid/om/blob/master/src/om_type.erl)
-* [Eraser](https://github.com/groupoid/om/blob/master/src/om_erase.erl)
-* [Code Extractor](https://github.com/groupoid/om/blob/master/src/om_extract.erl)
+* [Parser](https://github.com/groupoid/henk/blob/main/src/om_parse.erl)
+* [Typechecker](https://github.com/groupoid/henk/blob/main/src/om_type.erl)
+* [Eraser](https://github.com/groupoid/henk/blob/main/src/om_erase.erl)
+* [Code Extractor](https://github.com/groupoid/henk/blob/main/src/om_extract.erl)
 
 Henk ships with different "modes" (spaces of types with own encodings), or "preludes", which
 you may find in `lib` directory. They are selectable with `om:mode("normal")`.
