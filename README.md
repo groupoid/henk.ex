@@ -8,7 +8,7 @@ Later on in 2015 a new implementation of the ideas in Haskell appeared, called M
 It used the Böhm-Berarducci encoding of recursive data types into non-recursive terms.
 Morte has constants, variables, and kinds, is based only on **П**, **λ** and **apply** constructions,
 one axiom and four deduction rules. The Henk language resembles Henk design and Morte implementation.
-This language indended to be small, concise, easily provable, clean and
+This language is indended to be small, concise, easily provable, clean and
 be able to produce verifiable programs that can be distributed over the networks and compiled at target with safe linkage.
 
 ```
