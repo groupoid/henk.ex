@@ -32,11 +32,11 @@ The Henk Syntax is the following:
             | ∀ ( I : O ) → O
 ```
 
-Henk is an implementation of PTS with Infinite Number of Universes, the pure lambda calculus with dependent types.
+Henk is an implementation of PTS with an Infinite Number of Universes, the pure lambda calculus with dependent types.
 It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM and LING.
 
-Trusted PTS with Infinite Universes
------------------------------------
+Trusted PTS with an Infinite Universes
+--------------------------------------
 
 In repository `henk` you may found following parts of core:
 
