@@ -14,7 +14,7 @@
   "author": "Namdak Tonpa",
   "license": "DHARMA",
   "preinstall": "npm i -g node-sass && npm i -g pug-cli",
-  "dependencies": {
+  "devDependencies": {
     "mathjax-full": "^3.2.0",
     "node-sass": "^7.0.1",
     "npm": "^7.20.6",
