@@ -4,7 +4,7 @@
   "description": "Henk: Pure CoC Type System",
   "main": "",
   "scripts": {
-    "start": "node-sass ../homotopy.dev/styles -o ./ && pug -O ./framework.js ./ ",
+    "start": "node-sass ../anders/styles -o ./ && pug -O ./framework.js ./ ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,10 +16,13 @@
   "preinstall": "npm i -g node-sass && npm i -g pug-cli",
   "devDependencies": {
     "mathjax-full": "^3.2.0",
-    "node-sass": "^7.0.1",
-    "npm": "^7.20.6",
+    "node-sass": "^9.0.0",
+    "npm": "^10.1.0",
     "pug": "^3.0.2",
     "pug-cli": "^1.0.0-alpha6",
-    "sass": "^1.2.1"
+    "sass": "^1.68.0"
+  },
+  "dependencies": {
+    "saas": "^1.0.0"
   }
 }
