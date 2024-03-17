@@ -10,7 +10,7 @@ defmodule AUTOMATH do
       CoC Syntax:
 
       *₁₀₁        -- 101-th Universe
-      [x : A) Exp -- Universal Quantifier
+      [x : A] Exp -- Universal Quantifier
       (x : A) Exp -- Lambda
       M N         -- Application
       L₁          -- Variable with de Bruijn index 1
