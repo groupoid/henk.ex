@@ -1,0 +1,9 @@
+
+-- Compose/Cont Encoding
+
+  λ (Argument: \/(N:*)->(N->N)->N->N)
+→ λ (Nat: *)
+→ λ (Succ.CPS: (#Nat/@ -> Nat) -> #Nat/@ -> Nat)
+→ λ (Succ: Nat -> Nat)
+→ λ (Zero: Nat)
+→ Succ.CPS (λ (C: #Nat/@) -> C Nat Succ Zero) Argument

@@ -1,0 +1,1 @@
+λ(m : * → *) → λ(n : #Nat/@ ) → λ(cmd : m #Unit/@ ) → #Monad/sequence_  m (#List/replicate  (m #Unit/@ ) n cmd)

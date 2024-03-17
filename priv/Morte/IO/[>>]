@@ -1,0 +1,3 @@
+    \(m : #IO/@ #Unit/@)
+->  \(n : #IO/@ #Unit/@)
+->  #IO/[>>=] #Unit/@ #Unit/@ m (\(_x : #Unit/@) -> n)

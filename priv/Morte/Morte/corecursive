@@ -1,0 +1,19 @@
+\(r : *1)
+->  #IOI/MkIO
+    r
+    (#Maybe/@ #IOI/data)
+    (#Maybe/Nothing #IOI/data)
+    (   \(m : #Maybe/@ #IOI/data)
+    ->  #Maybe/maybe
+            #IOI/data
+            m
+            (#IOI/F r (#Maybe/@ #IOI/data))
+            (\(str : #IOI/data) ->
+                #IOI/putLine
+                    r
+                    (#Maybe/@ #IOI/data)
+                    str
+                    (#Maybe/Nothing #IOI/data)
+            )
+            (#IOI/getLine r (#Maybe/@ #IOI/data) (#Maybe/Just #IOI/data))
+    )

@@ -1,0 +1,3 @@
+(\ (x : (#Leibnitz/@ #Nat/@ #Nat/Zero #Nat/Zero)) -> x)
+(#Leibnitz/refl #Nat/@ #Nat/Zero)
+

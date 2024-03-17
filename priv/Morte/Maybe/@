@@ -1,0 +1,7 @@
+  λ (a: *)
+→ ∀ (Maybe: *)
+→ ∀ (Just:
+      ∀ (_Just: a)
+    → Maybe)
+→ ∀ (Nothing : Maybe)
+→ Maybe

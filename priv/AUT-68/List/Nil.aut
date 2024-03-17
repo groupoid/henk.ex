@@ -1,0 +1,2 @@
+--- List/Nil AUT-68
+(A: *) (List: *) (Cons: A -> List -> List) (Nil: List) Nil

@@ -1,0 +1,1 @@
+λ(m : * → *) → λ(cmds : #List/@  (#Cmd/@  m #Unit/@ )) → cmds (#Cmd/@  m #Unit/@ ) (λ(cmd1 : #Cmd/@  m #Unit/@ ) → λ(cmd2 : #Cmd/@  m #Unit/@ ) → #Cmd/[>>=]  #Unit/@  #Unit/@  m cmd1 (λ(_x : #Unit/@ ) → cmd2)) (#Cmd/Pure  m #Unit/@  #Unit/Make )

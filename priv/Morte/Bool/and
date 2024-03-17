@@ -1,0 +1,1 @@
+λ (B1: #Bool/@ ) → λ (B2: #Bool/@ ) → B1 #Bool/@ B2 #Bool/False
