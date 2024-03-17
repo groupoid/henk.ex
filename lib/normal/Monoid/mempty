@@ -1,1 +1,0 @@
-λ(m : *) → λ(monoid : #Monoid/@  m) → monoid (λ(List : *) → λ(Cons : ∀(head : m) → ∀(tail : List) → List) → λ(Nil : List) → Nil)

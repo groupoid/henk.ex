@@ -1,6 +1,5 @@
 -module(om).
 -description('Henk: Pure Type System').
--include("om.hrl").
 -compile(export_all).
 
 % env
@@ -11,25 +10,25 @@ ver()        -> {version,[keyget(I,element(2,application:get_all_key(henk)))||I<
 rec()        -> ch:rec().
 corec()      -> ch:corec().
 restart()    -> [ ets:delete(T) || T <- henk:tables() ], henk:boot().
-libdir()     -> application:get_env(om,lib,"lib").
+libdir()     -> application:get_env(om,lib,"priv").
 mode(S)      -> application:set_env(om,mode,S).
-mode()       -> application:get_env(om,mode,"normal").
+mode()       -> application:get_env(om,mode,"Morte").
 debug(S)     -> application:set_env(om,debug,atom(S)).
 debug()      -> application:get_env(om,debug,false).
 
 % constants
-allmodes()   -> ["normal"].
+allmodes()   -> ["Morte"].
 modes()      -> allmodes().
 
 % providing functions
 
 help(_)      -> help().
 help()       -> om_help:help().
-pwd(_)       -> mad_repl:cwd().
+pwd(_)       -> case file:get_cwd() of {ok, Cwd} -> Cwd; _ -> "." end.
 print(X)     -> io:format("~ts~n",[bin(X)]).
 bin(X)       -> unicode:characters_to_binary(om:flat(om_parse:print(X,0))).
 extract(X)   -> om_extract:extr(X).
-extract()    -> om_extract:extr("normal").
+extract()    -> om_extract:extr("Morte").
 norm(T)      -> om_type:norm(T).
 eq(X,Y)      -> om_type:eq(X,Y).
 type(S)      -> type(S,[]).
@@ -84,7 +83,7 @@ pass(0)      -> "PASSED";
 pass(X)      -> "FAILED " ++ integer_to_list(X).
 all(_)       -> all().
 all()        -> X = lists:flatten([ begin om:restart(), om:mode(M), om:scan() end || M <- allmodes() ]),
-                om:restart(), om:mode("normal"),
+                om:restart(), om:mode("Morte"),
                 X.
 syscard(P)   -> [ {F} || F <- filelib:wildcard(name(mode(),P,"**/*")), filelib:is_dir(F) /= true ].
 wildcard(P)  -> Q = om:name(mode(),P), lists:flatten([ {A}
@@ -115,12 +114,7 @@ keyget(K,D,I)  -> lists:nth(I+1,proplists:get_all_values(K,D)).
 
 file(F) -> case file:read_file(convert(F,[],element(2,os:type()))) of
                 {ok,Bin} -> Bin;
-                {error,_} -> mad(F) end.
-
-mad(F)  -> case mad_repl:load_file(F) of
-                {ok,Bin} -> Bin;
-                {error,_} -> erlang:error({"File not found",F}) % <<>>
-            end.
+                {error,_} -> erlang:error({"File not found",F}) end.
 
 cache(X,Y,Z) -> om_cache:cache(X,Y,Z).
 

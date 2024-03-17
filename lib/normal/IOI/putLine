@@ -1,9 +1,0 @@
-    \(r : *)
-->  \(s : *)
-->  \(str : #IOI/data)
-->  \(vs : s)
-->  \(x : *)
-->  \(PutLine_ : #IOI/data -> s -> x)
-->  \(GetLine_ : (#IOI/data -> s) -> x)
-->  \(Return_ : r -> x)
-->  PutLine_ str vs

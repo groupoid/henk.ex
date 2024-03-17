@@ -1,7 +1,0 @@
--- IO/@
-   \ (a : *)
--> \/ (IO : *)
--> \/ (GetLine_ : (#IO/data -> IO) -> IO)
--> \/ (PutLine_ : #IO/data -> IO -> IO)
--> \/ (Pure_ : a -> IO)
--> IO

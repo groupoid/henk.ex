@@ -1,1 +1,0 @@
-λ(f : * → *) → λ(g : * → *) → λ(k : ∀(a : *) → f a → #Cmd/@  g a) → λ(a : *) → λ(x : #Cmd/@  f a) → λ(Cmd : *) → λ(Bind : ∀(b : *) → g b → (b → Cmd) → Cmd) → x Cmd (λ(b : *) → λ(m : f b) → k b m Cmd Bind)

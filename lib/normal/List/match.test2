@@ -1,4 +1,0 @@
--- List/match.test2
-#List/match #Nat/@ (#List/Cons #Nat/@ #Nat/Zero (#List/Nil #Nat/@))
-            #Nat/@ #Nat/Two #Nat/Five
-

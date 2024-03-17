@@ -1,7 +1,0 @@
-  λ (a : *)
-→ λ (as1 : #List/@  a)
-→ λ (as2 : #List/@  a)
-→ λ (List : *)
-→ λ (Cons : a → List → List)
-→ λ (Nil : List)
-→ as1 List Cons (as2 List Cons Nil)

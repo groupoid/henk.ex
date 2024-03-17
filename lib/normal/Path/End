@@ -1,1 +1,0 @@
-λ(f : * → * → *) → λ(a : *) → λ(Path : ∀(a : *) → ∀(c : *) → *) → λ(Step : ∀(a : *) → ∀(b : *) → ∀(c : *) → ∀(head : f a b) → ∀(tail : Path b c) → Path a c) → λ(End : ∀(a : *) → Path a a) → End a

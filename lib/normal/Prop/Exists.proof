@@ -1,8 +1,0 @@
--- Prop/Exists.proof
-   \ (A: *)
--> \ (P: A -> *)
--> \ (x: A)
--> \ (X: #Prop/@)
--> \ (Z: P x)
--> \ (Y: \/ (y: A) -> P y -> X)
--> Y x Z

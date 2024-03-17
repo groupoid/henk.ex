@@ -1,7 +1,0 @@
-#IO/replicateM
-    (   -- 99 is too slow, so comment +90 out
-        --#Nat/[+] (#Nat/[*] #Nat/Nine #Nat/Ten)
-        #Nat/Five)
-    (#IO/[>>=] #IO/data #Unit/@
-        #IO/getLine
-        #IO/putLine)

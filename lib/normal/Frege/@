@@ -1,7 +1,0 @@
-   forall (p: #Prop/@)
--> forall (q: #Prop/@)
--> forall (r: #Prop/@)
--> (p -> q -> r)
--> (p -> q)
--> p
--> r

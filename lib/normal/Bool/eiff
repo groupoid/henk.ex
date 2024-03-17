@@ -1,5 +1,0 @@
-    \ (X: #Bool/@)
-->  \ (Y: #Nat/@)
--> #Bool/eif #Nat/@ X
-   (#Nat/[+] Y (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ (#Nat/Succ #Nat/Zero))))))
-   (Y)

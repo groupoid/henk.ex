@@ -1,2 +1,0 @@
-λ(a : *) → λ(b : *) → λ(eqA : #Eq a) → λ(eqB : #Eq b) → λ(p1 : #Prod/@  a b) → λ(p2 : #Prod/@  a b)
-→ p1 #Bool/@  (λ(_1 : a) → λ(_2 : b) → p2 #Bool/@  (λ(_1 : a) → λ(_2 : b) → #Bool/[&&]  (eqA _1@1 _1) (eqB _2@1 _2)))

@@ -1,1 +1,0 @@
-λ(f : * → *) → λ(a : *) → λ(b : *) → λ(k : a → b) → λ(cmd : #Cmd/@  f a) → λ(Cmd : *) → λ(Bind : ∀(b : *) → f b → (b → Cmd) → Cmd) → λ(Pure : ∀(r : b) → Cmd) → cmd Cmd Bind (λ(x : a) → Pure (k x))

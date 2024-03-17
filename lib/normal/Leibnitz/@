@@ -1,5 +1,0 @@
-  λ  (T: *)
-→ λ  (a: T)
-→ λ  (b: T)
-→ ∀ (equ: T → #Prop/@)
-→ equ a → equ b
