@@ -1,9 +1,9 @@
 -module(om_type).
 -description('Type Checker').
--compile(export_all).
+-export([type/2, star/1, shift/3, subst/3, norm/1, eq/2, dep/3, hierarchy/2]).
 
 dep(_Arg,Out,impredicative) -> Out;
-dep(Arg,Out,predicative)   -> max(Arg,Out).
+dep(Arg,Out,predicative)   -> erlang:max(Arg,Out).
 
 hierarchy(Arg,Out)         -> dep(Arg,Out,application:get_env(om,hierarchy,impredicative)).
 

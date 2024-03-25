@@ -6,7 +6,7 @@ defmodule AUTOMATH do
       Calculus of Construction (c) 1988, Thierry Coquand
       Morte (c) 2014, Gabriella Gonzalez
       Henk (c) 2018, Namdak Tonpa
- 
+
       CoC Syntax:
 
       *₁₀₁        -- 101-th Universe
