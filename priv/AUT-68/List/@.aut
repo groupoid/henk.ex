@@ -1,7 +1,7 @@
 --- List/@ AUT-68
 
-mod List begin
-var (A : *)
+module List begin
+variable (A : *)
 def rec  := (B: list A) { name : B, surname list A }
 def list := [List: *] [Cons: A → List → List] [Nil: List] List
 def nil  := (List: *) (Cons: A -> List -> List) (Nil: List) Nil

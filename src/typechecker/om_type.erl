@@ -1,6 +1,6 @@
 -module(om_type).
 -description('Type Checker').
--export([type/2, star/1, shift/3, subst/3, norm/1, eq/2, dep/3, hierarchy/2]).
+-export([type/2, star/1, var/2, func/1, shift/3, subst/3, norm/1, eq/2, dep/3, hierarchy/2]).
 
 dep(_Arg,Out,impredicative) -> Out;
 dep(Arg,Out,predicative)   -> erlang:max(Arg,Out).
