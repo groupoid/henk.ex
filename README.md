@@ -12,9 +12,8 @@ This language is indended to be small, concise, easily provable, clean and
 be able to produce verifiable programs that can be distributed over the networks and compiled at target with safe linkage.
 
 ```
-$ curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad
-$ chmod +x mad
-$ ./mad dep com pla bun henk
+$ mix deps.get
+$ iex -S mix
 ```
 
 The Henk Syntax is the following:
